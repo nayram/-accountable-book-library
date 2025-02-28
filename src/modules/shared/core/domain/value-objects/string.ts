@@ -1,13 +1,17 @@
-import { FieldValidationError } from '../field-validation-error';
+import { FieldValidationError } from '../field-validation-error'
 
 function isEmpty(value: string) {
-  return value.length === 0;
+  return value.length === 0
 }
 
-export function createString(string: string, fieldName: string) {
-  if (isEmpty(string.trim())) {
-    throw new FieldValidationError(`${fieldName} must be a non-empty string`);
+function isNotAString(value: string){
+  return typeof value != 'string'
+}
+
+export function createString(value: string, fieldName: string) {
+  if (isNotAString(value) || isEmpty(value.trim())) {
+    throw new FieldValidationError(`${fieldName} must be a non-empty string`)
   }
 
-  return string.trim();
+  return value.trim()
 }

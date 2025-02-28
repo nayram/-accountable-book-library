@@ -1,7 +1,7 @@
-import { createString } from '@modules/shared/core/domain/value-objects/string'
+import { createUuid, Uuid } from '@modules/shared/core/domain/value-objects/uuid'
 
-export type BookId = string
+export type BookId = Uuid
 
 export function createBookId(value: string): BookId {
-  return createString(value, 'book id')
+  return createUuid(value, 'bookId')
 }
