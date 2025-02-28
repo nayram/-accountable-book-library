@@ -12,7 +12,7 @@ export interface Book extends Document {
   updated_at: Date
 }
 
-const bookSchema = new Schema<Book>({
+export const bookSchema = new Schema<Book>({
   _id: { type: Schema.Types.UUID, required: true },
   title: { type: String, required: true },
   author: { type: String, required: true },
