@@ -30,7 +30,6 @@ export function createCatalogBuilder({
     });
 
     const bookExists = await bookRepository.exits(book);
-    console.log(bookExists);
     if (bookExists) {
       throw new BookAlreadyExistsError({ title: book.title, author: book.author, publisher: book.publisher });
     }
