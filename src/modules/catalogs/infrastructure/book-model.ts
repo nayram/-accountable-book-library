@@ -1,15 +1,15 @@
-import mongoose, { Schema, Document } from 'mongoose'
+import mongoose, { Schema, Document } from 'mongoose';
 
 export interface Book extends Document {
-  _id: Schema.Types.UUID
-  title: string
-  author: string
-  publication_year: number
-  publisher: string
-  price: number
-  quantity: number
-  created_at: Date
-  updated_at: Date
+  _id: Schema.Types.UUID;
+  title: string;
+  author: string;
+  publication_year: number;
+  publisher: string;
+  price: number;
+  quantity: number;
+  created_at: Date;
+  updated_at: Date;
 }
 
 export const bookSchema = new Schema<Book>({
@@ -22,8 +22,8 @@ export const bookSchema = new Schema<Book>({
   quantity: { type: Number, required: true },
   created_at: { type: Date, required: true },
   updated_at: { type: Date, required: true },
-})
+});
 
-export const bookModel = mongoose.model<Book>('Book', bookSchema)
+export const bookModel = mongoose.model<Book>('Book', bookSchema);
 
-export type BookModel = typeof bookModel
+export type BookModel = typeof bookModel;

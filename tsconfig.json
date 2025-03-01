@@ -110,7 +110,8 @@
       "@modules/*": ["src/modules/*"],
       "@tests/*": ["__tests__/*"],
       "@resources/*": ["src/resources/*"],
-      "@libs/*": ["src/libs/*"]
+      "@libs/*": ["src/libs/*"],
+      "@api/*": ["src/apps/api/*"]
     }
   },
   "include": ["src/**/*", "__tests__/**/*"],

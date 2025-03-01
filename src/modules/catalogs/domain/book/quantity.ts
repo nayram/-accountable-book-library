@@ -1,8 +1,7 @@
-import { createPositiveInt } from '@modules/shared/core/domain/value-objects/positive-int'
+import { createPositiveInt } from '@modules/shared/core/domain/value-objects/positive-int';
 
-export type Quantity = number
-
+export type Quantity = number;
 
 export function createQuantity(value: number): Quantity {
-  return createPositiveInt(value, 'quantity')
+  return createPositiveInt(value, 'quantity');
 }

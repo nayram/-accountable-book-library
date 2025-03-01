@@ -1,3 +1,3 @@
-import { uuidV4Generator } from './uuid-v4-generator'
+import { uuidV4Generator } from './uuid-v4-generator';
 
-export const uuidGenerator = uuidV4Generator
+export const uuidGenerator = uuidV4Generator;

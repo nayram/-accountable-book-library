@@ -1,8 +1,10 @@
-import { uuidV4Generator } from '@modules/shared/core/infrastructure/uuid-v4-generator'
-import { createCatalogBuilder } from './create-catalog'
-import { bookRepository } from '../infrastructure'
+import { uuidV4Generator } from '@modules/shared/core/infrastructure/uuid-v4-generator';
+
+import { bookRepository } from '../infrastructure';
+
+import { createCatalogBuilder } from './create-catalog';
 
 export const createCatalog = createCatalogBuilder({
   bookRepository,
   uuidGenerator: uuidV4Generator,
-})
+});

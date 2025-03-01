@@ -1,4 +1,4 @@
-import { createPositiveInt } from "@modules/shared/core/domain/value-objects/positive-int";
+import { createPositiveInt } from '@modules/shared/core/domain/value-objects/positive-int';
 
 export type PublicationYear = number;
 

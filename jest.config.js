@@ -2,11 +2,15 @@ module.exports = {
   preset: 'ts-jest',
   testEnvironment: 'node',
   roots: ['<rootDir>/src'],
+  transform: {
+    '^.+\\.(t|j)s$': ['ts-jest', { isolatedModules: true }],
+  },
   moduleNameMapper: {
     '^@/(.*)$': '<rootDir>/src/$1',
     '^@tests/(.*)$': '<rootDir>/__tests__/$1',
     '^@modules/(.*)$': '<rootDir>/src/modules/$1',
     '^@libs/(.*)$': '<rootDir>/src/libs/$1',
     '^@resources/(.*)$': '<rootDir>/src/resources/$1',
+    '^@api/(.*)$': '<rootDir>/src/apps/api/$1',
   },
-}
+};
