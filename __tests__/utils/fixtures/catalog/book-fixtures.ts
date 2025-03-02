@@ -2,6 +2,7 @@ import { faker } from '@faker-js/faker/locale/en';
 
 import { Book } from '@modules/catalogs/domain/book/book';
 import { bookModel } from '@modules/catalogs/infrastructure/book-model';
+import { toDTO } from '@modules/catalogs/infrastructure/book-dto';
 
 import { bookIdFixtures } from './book-id-fixtures';
 import { titleFixtures } from './title-fixtures';
@@ -11,7 +12,6 @@ import { publisherFixtures } from './publisher-fixtures';
 import { priceFixtures } from './price-fixtures';
 import { quantityFixtures } from './quantity-fixtures';
 import { referenceIdFixtures } from './reference-fixtures';
-import { toDTO } from '@modules/catalogs/infrastructure/book-dto';
 
 export const bookFixtures = {
   create(book?: Partial<Book>) {

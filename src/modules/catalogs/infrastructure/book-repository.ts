@@ -58,7 +58,13 @@ export function bookRepositoryBuilder({ model }: { model: BookModel }): BookRepo
       await model.findByIdAndDelete(id);
     },
     async find(pagination, searchParams) {
-      const queryBuilder = model.find(searchParams).lean(true);
+      const filter: Record<string, unknown> = { ...searchParams };
+      if (searchParams.publicationYear) {
+        filter.publication_year = searchParams.publicationYear;
+        delete filter.publicationYear;
+      }
+
+      const queryBuilder = model.find(filter).lean(true);
       if (pagination.cursor) {
         queryBuilder.where({ _id: { $gt: pagination.cursor } });
       }
@@ -66,7 +72,7 @@ export function bookRepositoryBuilder({ model }: { model: BookModel }): BookRepo
 
       const nextCursor = books.length > 0 ? String(books[books.length - 1]._id) : null;
 
-      const count = await model.where(searchParams).countDocuments();
+      const count = await model.where(filter).countDocuments();
 
       return { totalCount: count, cursor: nextCursor, data: books.map(fromDTO) };
     },

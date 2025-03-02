@@ -1,4 +1,3 @@
-import { FieldValidationError } from '@modules/shared/core/domain/field-validation-error';
 import { Author, createAuthor } from './book/author';
 import { createPublicationYear, PublicationYear } from './book/publication-year';
 import { createTitle, Title } from './book/title';
@@ -28,9 +27,6 @@ export function createSearchParams({
 
   if (publicationYear) {
     searchParams.publicationYear = createPublicationYear(publicationYear);
-  }
-  if (!searchParams) {
-    throw new FieldValidationError(`search paramaters should have at least author, title or publicationYear`);
   }
   return searchParams;
 }
