@@ -7,7 +7,7 @@ export const referenceIdFixtures = {
     return faker.string.alphanumeric({ length: { min: 5, max: 10 } });
   },
   invalid(): ReferenceId {
-    const invalidValues = ['123', 123];
-    return faker.helpers.arrayElement(invalidValues) as unknown as ReferenceId;
+    const invalidValues = ['123', ''];
+    return faker.helpers.arrayElement(invalidValues);
   },
 };

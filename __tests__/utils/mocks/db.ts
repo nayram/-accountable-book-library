@@ -5,6 +5,7 @@ const db = connectMongoDb();
 export async function dbSetUp() {
   if (!isConnected()) {
     await db.connect();
+    await db.dropDatabase();
   }
 }
 

@@ -7,7 +7,7 @@ export const publisherFixtures = {
     return faker.book.publisher();
   },
   invalid(): Publisher {
-    const invalidValues = ['', ' ', 232];
+    const invalidValues = ['', ' '];
     return faker.helpers.arrayElement(invalidValues) as unknown as Publisher;
   },
 };

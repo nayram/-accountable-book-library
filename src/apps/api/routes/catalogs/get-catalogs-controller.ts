@@ -1,6 +1,7 @@
 import { NextFunction, Response } from 'express';
-import { FindCatalogsUseCase } from '@modules/catalogs/application/find-catalogs';
 import { StatusCodes } from 'http-status-codes';
+
+import { FindCatalogsUseCase } from '@modules/catalogs/application/find-catalogs';
 import { FieldValidationError } from '@modules/shared/core/domain/field-validation-error';
 import { BadRequest } from '@api/errors/http-error';
 

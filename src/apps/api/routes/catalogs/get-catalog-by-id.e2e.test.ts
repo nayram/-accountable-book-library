@@ -1,5 +1,6 @@
 import supertest from 'supertest';
 import { StatusCodes } from 'http-status-codes';
+
 import app from '@api/app';
 import { bookIdFixtures } from '@tests/utils/fixtures/catalog/book-id-fixtures';
 import { dbSetUp, dbTearDown } from '@tests/utils/mocks/db';

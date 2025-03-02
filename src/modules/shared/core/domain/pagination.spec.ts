@@ -1,4 +1,4 @@
-import { uuidFixtures } from '@tests/utils/fixtures/shared/uuid-fixtures';
+import { cursorFixtures } from '@tests/utils/fixtures/shared/cursor-fixtures';
 
 import { FieldValidationError } from './field-validation-error';
 import { createPagination } from './pagination';
@@ -15,8 +15,8 @@ describe('Pagination', () => {
 
   describe('limit', () => {
     it('should throw a FieldValidationError if limit is not greater than 0', () => {
-      expect(() => createPagination({ cursor: uuidFixtures.create(), limit: 0 })).toThrow(FieldValidationError);
-      expect(() => createPagination({ cursor: uuidFixtures.create(), limit: 0 })).toThrow(
+      expect(() => createPagination({ cursor: cursorFixtures.create(), limit: 0 })).toThrow(FieldValidationError);
+      expect(() => createPagination({ cursor: cursorFixtures.create(), limit: 0 })).toThrow(
         `limit must be greater than 0`,
       );
     });
@@ -24,7 +24,7 @@ describe('Pagination', () => {
 
   it('should create pagination', () => {
     const limit = 10;
-    const cursor = uuidFixtures.create();
+    const cursor = cursorFixtures.create();
     expect(createPagination({ cursor, limit })).toEqual({ cursor, limit });
   });
 });

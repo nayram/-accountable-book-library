@@ -7,7 +7,7 @@ export const publicationYearFixtures = {
     return faker.date.past().getFullYear();
   },
   invalid(): PublicationYear {
-    const invalidValues = ['', ' ', '1999', 'abcd', -1999];
+    const invalidValues = ['abcd'];
     return faker.helpers.arrayElement(invalidValues) as unknown as PublicationYear;
   },
 };

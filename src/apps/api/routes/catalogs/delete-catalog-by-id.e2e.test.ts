@@ -1,7 +1,7 @@
 import supertest from 'supertest';
 import { StatusCodes } from 'http-status-codes';
-import { bookIdFixtures } from '@tests/utils/fixtures/catalog/book-id-fixtures';
 
+import { bookIdFixtures } from '@tests/utils/fixtures/catalog/book-id-fixtures';
 import app from '@api/app';
 import { dbSetUp, dbTearDown } from '@tests/utils/mocks/db';
 import { bookFixtures } from '@tests/utils/fixtures/catalog/book-fixtures';

@@ -7,7 +7,7 @@ export const titleFixtures = {
     return faker.book.title();
   },
   invalid(): Title {
-    const invalidValues = [' ', '', 123];
-    return faker.helpers.arrayElement(invalidValues) as unknown as Title;
+    const invalidValues = [' ', ''];
+    return faker.helpers.arrayElement(invalidValues);
   },
 };

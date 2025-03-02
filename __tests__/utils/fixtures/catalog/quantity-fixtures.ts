@@ -7,7 +7,7 @@ export const quantityFixtures = {
     return faker.number.int({ min: 1, max: 4 });
   },
   invalid(): Quantity {
-    const invalidValues = ['', ' ', -19];
+    const invalidValues = ['', 'abc', -19];
     return faker.helpers.arrayElement(invalidValues) as unknown as Quantity;
   },
 };

@@ -1,5 +1,6 @@
 import { NextFunction, Request, Response } from 'express';
 import { StatusCodes } from 'http-status-codes';
+
 import { FindCatalogByBookIdUseCase } from '@modules/catalogs/application/find-catalog-by-book-id';
 import { BadRequest, NotFound } from '@api/errors/http-error';
 import { BookDoesNotExistsError } from '@modules/catalogs/domain/book-does-not-exist-error';
