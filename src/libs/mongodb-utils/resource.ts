@@ -45,7 +45,16 @@ const mongooseConnector = (dbUrl: string): MongooseConnector => {
       await mongoose.connection.dropDatabase();
     },
     dropCollection: async (collectionName: string) => {
-      await mongoose.connection.dropCollection(collectionName);
+      return new Promise((resolve, reject) => {
+        mongoose.connection.collections[collectionName]
+          .drop()
+          .then(() => resolve(collectionName))
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          .catch((err: any) => {
+            if (err.message !== 'ns not found') return reject(err);
+            return resolve(collectionName);
+          });
+      });
     },
   });
 };

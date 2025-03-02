@@ -1,5 +1,5 @@
 import { bookFixtures } from '@tests/utils/fixtures/catalog/book-fixtures';
-import { dbSetUp, dbTearDown } from '@tests/utils/mocks/db';
+import { dbDropCollection, dbSetUp, dbTearDown } from '@tests/utils/mocks/db';
 import { bookIdFixtures } from '@tests/utils/fixtures/catalog/book-id-fixtures';
 
 import { BookDoesNotExistsError } from '../domain/book-does-not-exist-error';
@@ -94,6 +94,59 @@ describe('BookRepository', () => {
       const res = await bookModel.findById(book.id);
 
       expect(res).toBeNull();
+    });
+  });
+
+  describe('find', () => {
+    beforeEach(async () => {
+      await dbDropCollection('books');
+    });
+    it('should return paginated books with next cursor', async () => {
+      const books = bookFixtures.createMany({ length: 3 });
+      for (const book of books) {
+        await bookRepository.save(book);
+      }
+
+      const pagination = { limit: 2, cursor: null };
+      const searchParams = {};
+
+      const result = await bookRepository.find(pagination, searchParams);
+
+      expect(result.data.length).toBe(2);
+      expect(result.totalCount).toBe(3);
+      expect(result.cursor).not.toBeNull();
+    });
+
+    it('should return paginated books with cursor as null if no search values where provided', async () => {
+      const books = bookFixtures.createMany({ length: 2 });
+      for (const book of books) {
+        await bookRepository.save(book);
+      }
+
+      const pagination = { limit: 2, cursor: null };
+      const searchParams = {};
+
+      const result = await bookRepository.find(pagination, searchParams);
+
+      expect(result.data.length).toBe(2);
+      expect(result.totalCount).toBe(2);
+      expect(result.cursor).toEqual(books[books.length - 1].id);
+    });
+
+    it('should return books matching search parameters', async () => {
+      const book1 = bookFixtures.create();
+      const book2 = bookFixtures.create();
+      await bookRepository.save(book1);
+      await bookRepository.save(book2);
+
+      const pagination = { limit: 2, cursor: null };
+      const searchParams = { title: book1.title };
+
+      const result = await bookRepository.find(pagination, searchParams);
+
+      expect(result.data.length).toBe(1);
+      expect(result.totalCount).toBe(1);
+      expect(result.data[0].title).toBe(book1.title);
     });
   });
 });

@@ -1,6 +1,4 @@
-import { when } from 'jest-when';
 import { mock, MockProxy } from 'jest-mock-extended';
-import { bookFixtures } from '@tests/utils/fixtures/catalog/book-fixtures';
 import { publicationYearFixtures } from '@tests/utils/fixtures/catalog/publication-year-fixtures';
 import { authorFixtures } from '@tests/utils/fixtures/catalog/author-fixtures';
 import { titleFixtures } from '@tests/utils/fixtures/catalog/title-fixtures';
