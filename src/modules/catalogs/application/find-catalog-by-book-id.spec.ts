@@ -1,6 +1,7 @@
 import { faker } from '@faker-js/faker/locale/en';
 import { mock } from 'jest-mock-extended';
 import { when } from 'jest-when';
+
 import { bookFixtures } from '@tests/utils/fixtures/catalog/book-fixtures';
 import { bookIdFixtures } from '@tests/utils/fixtures/catalog/book-id-fixtures';
 import { FieldValidationError } from '@modules/shared/core/domain/field-validation-error';
