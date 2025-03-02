@@ -19,7 +19,9 @@ export const bookFixtures = {
       ...book,
     };
   },
-
+  createMany({ book, length = 5 }: { book?: Partial<Book>; length?: number }): Book[] {
+    return Array.from({ length }, () => this.create(book));
+  },
   async insert(book?: Partial<Book>) {
     const createdBook = this.create(book);
     await bookModel.create({

@@ -7,7 +7,7 @@ export interface Pagination {
   limit: number;
 }
 
-export function createPagination({ cursor, limit }: { cursor?: string; limit: number }): Pagination {
+export function createPagination({ cursor, limit }: { cursor: string | null; limit: number }): Pagination {
   return {
     cursor: cursor ? createUuid(cursor, 'cursor') : null,
     limit: createLimit(limit),

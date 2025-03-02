@@ -8,8 +8,8 @@ describe('Pagination', () => {
     it('should throw a FieldValidationError if cursor is not uuid', () => {
       expect(() => createPagination({ cursor: 'cursor', limit: 10 })).toThrow(FieldValidationError);
     });
-    it('should not throw an error when cursor is not provided', () => {
-      expect(() => createPagination({ limit: 10 })).not.toThrow(FieldValidationError);
+    it('should not throw an error when cursor is null', () => {
+      expect(() => createPagination({ limit: 10, cursor: null })).not.toThrow(FieldValidationError);
     });
   });
 
