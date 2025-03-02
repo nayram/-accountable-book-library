@@ -1,4 +1,6 @@
+import { BookDoesNotExistsError } from '../domain/book-does-not-exist-error';
 import { BookRepository } from '../domain/book-repository';
+import { fromDTO } from './book-dto';
 
 import { BookModel } from './book-model';
 
@@ -38,6 +40,13 @@ export function bookRepositoryBuilder({ model }: { model: BookModel }): BookRepo
     async exits({ title, author, publisher }) {
       const result = await model.findOne({ title, author, publisher });
       return result != null;
+    },
+    async findById(id) {
+      const result = await model.findById(id);
+      if (!result) {
+        throw new BookDoesNotExistsError(id);
+      }
+      return fromDTO(result);
     },
   };
 }

@@ -4,6 +4,8 @@ import { dbSetUp, dbTearDown } from '@tests/utils/mocks/db';
 import { bookModel } from './book-model';
 
 import { bookRepository } from '.';
+import { bookIdFixtures } from '@tests/utils/fixtures/catalog/book-id-fixtures';
+import { BookDoesNotExistsError } from '../domain/book-does-not-exist-error';
 
 describe('BookRepository', () => {
   beforeAll(async () => {
@@ -50,17 +52,30 @@ describe('BookRepository', () => {
     });
   });
 
-  describe('isDuplicate', () => {
-    it('should return true if book is duplicated', async () => {
+  describe('exists', () => {
+    it('should return true if book is already exists', async () => {
       const book = bookFixtures.create();
       await bookRepository.save(book);
       const duplicatedBook = bookFixtures.create({ title: book.title, author: book.author, publisher: book.publisher });
       await expect(bookRepository.exits(duplicatedBook)).resolves.toBe(true);
     });
 
-    it('should return false if book is not duplicated', async () => {
+    it('should return false if book does not exist', async () => {
       const book = bookFixtures.create();
       await expect(bookRepository.exits(book)).resolves.toBe(false);
+    });
+  });
+
+  describe('findById', () => {
+    it('should thow error if book does not exist', async () => {
+      const id = bookIdFixtures.create();
+      await expect(bookRepository.findById(id)).rejects.toThrow(BookDoesNotExistsError);
+    });
+
+    it('should return book if it exists', async () => {
+      const book = bookFixtures.create();
+      await bookRepository.save(book);
+      await expect(bookRepository.findById(book.id)).resolves.toEqual(book);
     });
   });
 });

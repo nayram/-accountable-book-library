@@ -1,5 +1,6 @@
 import supertest from 'supertest';
 import { StatusCodes } from 'http-status-codes';
+
 import app from '@api/app';
 import { dbSetUp, dbTearDown } from '@tests/utils/mocks/db';
 import { titleFixtures } from '@tests/utils/fixtures/catalog/title-fixtures';
@@ -87,6 +88,7 @@ describe('POST /api/catalogs', () => {
         expect(response.body).toEqual({
           status: 'Bad Request',
           statusCode: StatusCodes.BAD_REQUEST,
+          // eslint-disable-next-line max-len
           message: `Book with title ${existingBook.title}, author ${existingBook.author} and publisher ${existingBook.publisher} already exists`,
         });
       });

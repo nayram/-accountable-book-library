@@ -1,6 +1,6 @@
 import mongoose, { Schema, Document } from 'mongoose';
 
-export interface Book extends Document {
+export interface BookDTO extends Document {
   _id: Schema.Types.UUID;
   title: string;
   author: string;
@@ -12,7 +12,7 @@ export interface Book extends Document {
   updated_at: Date;
 }
 
-export const bookSchema = new Schema<Book>({
+export const bookSchema = new Schema<BookDTO>({
   _id: { type: Schema.Types.UUID, required: true },
   title: { type: String, required: true },
   author: { type: String, required: true },
@@ -24,6 +24,6 @@ export const bookSchema = new Schema<Book>({
   updated_at: { type: Date, required: true },
 });
 
-export const bookModel = mongoose.model<Book>('Book', bookSchema);
+export const bookModel = mongoose.model<BookDTO>('Book', bookSchema);
 
 export type BookModel = typeof bookModel;

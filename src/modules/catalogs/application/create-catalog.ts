@@ -23,7 +23,7 @@ export function createCatalogBuilder({
   bookRepository: BookRepository;
   uuidGenerator: UuidGenerator;
 }): CreateCatalogUseCase {
-  return async function createCatalogUseCase(request: CreateCatalogRequest) {
+  return async function createCatalog(request: CreateCatalogRequest) {
     const book = createBook({
       ...request,
       id: uuidGenerator.generate(),
