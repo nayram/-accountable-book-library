@@ -3,12 +3,19 @@ import { Router } from 'express';
 import { SchemaValidator } from '../validations/schema-validators';
 
 import { postCreateCatalogRequestSchema } from './catalogs/post-create-catalog-request';
-import { deleteCatalogByIdController, getFindCatalogByIdController, postCreateCatalogController } from './catalogs';
+import {
+  deleteCatalogByIdController,
+  getCatalogByIdController,
+  getCatalogsController,
+  postCreateCatalogController,
+} from './catalogs';
+import { getCatalogsRequestSchema } from './catalogs/get-catalogs-request';
 
 const routes = Router();
 
 routes.post('/catalogs', SchemaValidator.body(postCreateCatalogRequestSchema), postCreateCatalogController);
-routes.get('/catalogs/:id', getFindCatalogByIdController);
+routes.get('/catalogs/:id', getCatalogByIdController);
+routes.get('/catologs/search', SchemaValidator.query(getCatalogsRequestSchema), getCatalogsController);
 routes.delete('/catalogs/:id', deleteCatalogByIdController);
 
 export default routes;

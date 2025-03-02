@@ -11,6 +11,7 @@ import { publisherFixtures } from './publisher-fixtures';
 import { priceFixtures } from './price-fixtures';
 import { quantityFixtures } from './quantity-fixtures';
 import { referenceIdFixtures } from './reference-fixtures';
+import { toDTO } from '@modules/catalogs/infrastructure/book-dto';
 
 export const bookFixtures = {
   create(book?: Partial<Book>) {
@@ -37,6 +38,11 @@ export const bookFixtures = {
       updated_at: createdBook.updatedAt,
     });
     return createdBook;
+  },
+  async insertMany({ book, length = 5 }: { book?: Partial<Book>; length?: number }): Promise<Book[]> {
+    const books = this.createMany({ book, length });
+    await bookModel.create(books.map(toDTO));
+    return books;
   },
 };
 

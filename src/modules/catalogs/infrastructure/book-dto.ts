@@ -16,3 +16,18 @@ export function fromDTO(dto: BookDTO): Book {
     updatedAt: dto.updated_at,
   };
 }
+
+export function toDTO(book: Book) {
+  return {
+    _id: book.id,
+    reference_id: book.referenceId,
+    title: book.title,
+    author: book.author,
+    publisher: book.publisher,
+    publication_year: book.publicationYear,
+    quantity: book.quantity,
+    price: book.price,
+    created_at: book.createdAt,
+    updated_at: book.updatedAt,
+  };
+}

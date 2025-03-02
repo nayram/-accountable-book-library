@@ -5,6 +5,7 @@ import { bookRepository } from '../infrastructure';
 import { createCatalogBuilder } from './create-catalog';
 import { findCatalogByBookIdBuilder } from './find-catalog-by-book-id';
 import { deleteCatalogByBookIdBuilder } from './delete-catalog-by-book-id';
+import { findCatalogsBuilder } from './find-catalogs';
 
 export const createCatalog = createCatalogBuilder({
   bookRepository,
@@ -12,3 +13,4 @@ export const createCatalog = createCatalogBuilder({
 });
 export const findCatalogByBookId = findCatalogByBookIdBuilder({ bookRepository });
 export const deleteCatalogByBookId = deleteCatalogByBookIdBuilder({ bookRepository });
+export const findCatalogs = findCatalogsBuilder({ bookRepository });

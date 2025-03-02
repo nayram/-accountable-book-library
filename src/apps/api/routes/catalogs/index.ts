@@ -1,11 +1,13 @@
-import { createCatalog, findCatalogByBookId, deleteCatalogByBookId } from '@modules/catalogs/application';
+import { createCatalog, findCatalogByBookId, deleteCatalogByBookId, findCatalogs } from '@modules/catalogs/application';
 
 import { postCreateCatalogControllerBuilder } from './post-create-catalog-controller';
-import { getFindCatalogByIdControllerBuilder } from './get-find-catalog-by-id-controller';
+import { getCatalogByIdControllerBuilder } from './get-catalog-by-id-controller';
 import { deleteCatalogByIdControllerBuilder } from './delete-catalog-by-id-controller';
+import { getCatalogsControllerBuilder } from './get-catalogs-controller';
 
 export const postCreateCatalogController = postCreateCatalogControllerBuilder({
   createCatalog,
 });
-export const getFindCatalogByIdController = getFindCatalogByIdControllerBuilder({ findCatalogByBookId });
+export const getCatalogByIdController = getCatalogByIdControllerBuilder({ findCatalogByBookId });
+export const getCatalogsController = getCatalogsControllerBuilder({ findCatalogs });
 export const deleteCatalogByIdController = deleteCatalogByIdControllerBuilder({ deleteCatalogByBookId });
