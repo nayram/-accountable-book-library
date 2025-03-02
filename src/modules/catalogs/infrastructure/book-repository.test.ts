@@ -1,11 +1,12 @@
 import { bookFixtures } from '@tests/utils/fixtures/catalog/book-fixtures';
 import { dbSetUp, dbTearDown } from '@tests/utils/mocks/db';
+import { bookIdFixtures } from '@tests/utils/fixtures/catalog/book-id-fixtures';
+
+import { BookDoesNotExistsError } from '../domain/book-does-not-exist-error';
 
 import { bookModel } from './book-model';
 
 import { bookRepository } from '.';
-import { bookIdFixtures } from '@tests/utils/fixtures/catalog/book-id-fixtures';
-import { BookDoesNotExistsError } from '../domain/book-does-not-exist-error';
 
 describe('BookRepository', () => {
   beforeAll(async () => {
@@ -23,6 +24,7 @@ describe('BookRepository', () => {
       const result = await bookModel.findById(book.id);
       expect(result).not.toBeNull();
       expect(result?._id).toBe(book.id);
+      expect(result?.reference_id).toBe(book.referenceId);
       expect(result?.title).toBe(book.title);
       expect(result?.author).toBe(book.author);
       expect(result?.publication_year).toBe(book.publicationYear);
@@ -42,6 +44,7 @@ describe('BookRepository', () => {
 
       expect(result).not.toBeNull();
       expect(result?._id).toBe(updatedBook.id);
+      expect(result?.reference_id).toBe(updatedBook.referenceId);
       expect(result?.title).toBe(updatedBook.title);
       expect(result?.author).toBe(updatedBook.author);
       expect(result?.publication_year).toBe(updatedBook.publicationYear);

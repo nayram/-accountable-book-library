@@ -3,6 +3,7 @@ import { ContainerTypes, ValidatedRequest, ValidatedRequestSchema } from 'expres
 
 export const postCreateCatalogRequestSchema = {
   title: Joi.string().required(),
+  referenceId: Joi.string().required(),
   author: Joi.string().required(),
   publicationYear: Joi.number().required(),
   publisher: Joi.string().required(),
@@ -12,6 +13,7 @@ export const postCreateCatalogRequestSchema = {
 
 interface PostCreateCatalogRequestSchema extends ValidatedRequestSchema {
   [ContainerTypes.Body]: {
+    referenceId: string;
     title: string;
     author: string;
     publicationYear: number;

@@ -1,7 +1,7 @@
 import { BookDoesNotExistsError } from '../domain/book-does-not-exist-error';
 import { BookRepository } from '../domain/book-repository';
-import { fromDTO } from './book-dto';
 
+import { fromDTO } from './book-dto';
 import { BookModel } from './book-model';
 
 export function bookRepositoryBuilder({ model }: { model: BookModel }): BookRepository {
@@ -14,6 +14,7 @@ export function bookRepositoryBuilder({ model }: { model: BookModel }): BookRepo
           {
             $set: {
               title: book.title,
+              reference_id: book.referenceId,
               author: book.author,
               publication_year: book.publicationYear,
               quantity: book.quantity,
@@ -26,6 +27,7 @@ export function bookRepositoryBuilder({ model }: { model: BookModel }): BookRepo
       } else {
         await model.create({
           _id: book.id,
+          reference_id: book.referenceId,
           quantity: book.quantity,
           price: book.price,
           author: book.author,

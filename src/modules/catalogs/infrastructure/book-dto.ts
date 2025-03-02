@@ -5,6 +5,7 @@ import { BookDTO } from './book-model';
 export function fromDTO(dto: BookDTO): Book {
   return {
     id: String(dto._id).toString(),
+    referenceId: dto.reference_id,
     title: dto.title,
     author: dto.author,
     publisher: dto.publisher,

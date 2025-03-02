@@ -11,6 +11,7 @@ import { priceFixtures } from '@tests/utils/fixtures/catalog/price-fixtures';
 import { quantityFixtures } from '@tests/utils/fixtures/catalog/quantity-fixtures';
 import { UuidGenerator } from '@modules/shared/core/domain/uuid-generator';
 import { FieldValidationError } from '@modules/shared/core/domain/field-validation-error';
+import { referenceIdFixtures } from '@tests/utils/fixtures/catalog/reference-fixtures';
 
 import { BookRepository } from '../domain/book-repository';
 import { BookAlreadyExistsError } from '../domain/book-already-exists-error';
@@ -52,6 +53,15 @@ describe('create catalog', () => {
   });
 
   describe('should throw FieldValidationError when', () => {
+    it('provided invalid reference id', () => {
+      expect(
+        createCatalog({
+          ...book,
+          referenceId: referenceIdFixtures.invalid(),
+        }),
+      ).rejects.toThrow(FieldValidationError);
+    });
+
     it('provided invalid title value', () => {
       expect(
         createCatalog({

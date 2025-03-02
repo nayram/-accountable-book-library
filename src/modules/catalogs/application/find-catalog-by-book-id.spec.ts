@@ -2,13 +2,13 @@ import { faker } from '@faker-js/faker/locale/en';
 import { mock } from 'jest-mock-extended';
 import { when } from 'jest-when';
 import { bookFixtures } from '@tests/utils/fixtures/catalog/book-fixtures';
-
-import { BookRepository } from '../domain/book-repository';
-
-import { findCatalogByBookIdBuilder, FindCatalogByBookIdUseCase } from './find-catalog-by-book-id';
-import { BookDoesNotExistsError } from '../domain/book-does-not-exist-error';
 import { bookIdFixtures } from '@tests/utils/fixtures/catalog/book-id-fixtures';
 import { FieldValidationError } from '@modules/shared/core/domain/field-validation-error';
+
+import { BookRepository } from '../domain/book-repository';
+import { BookDoesNotExistsError } from '../domain/book-does-not-exist-error';
+
+import { findCatalogByBookIdBuilder, FindCatalogByBookIdUseCase } from './find-catalog-by-book-id';
 
 describe('find catalog by book id', () => {
   let findCatalogByBookId: FindCatalogByBookIdUseCase;

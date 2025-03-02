@@ -7,9 +7,11 @@ import { Author, createAuthor } from './author';
 import { createPublisher, Publisher } from './publisher';
 import { createQuantity, Quantity } from './quantity';
 import { createPrice, Price } from './price';
+import { createReferenceId, ReferenceId } from './reference-id';
 
 export type Book = Entity<{
   id: BookId;
+  referenceId: ReferenceId;
   title: Title;
   publicationYear: PublicationYear;
   author: Author;
@@ -22,6 +24,7 @@ export type Book = Entity<{
 
 export interface BookPrimitives {
   id: string;
+  referenceId: string;
   title: string;
   publicationYear: number;
   author: string;
@@ -30,10 +33,20 @@ export interface BookPrimitives {
   quantity: number;
 }
 
-export function create({ id, title, publicationYear, author, publisher, price, quantity }: BookPrimitives): Book {
+export function create({
+  id,
+  referenceId,
+  title,
+  publicationYear,
+  author,
+  publisher,
+  price,
+  quantity,
+}: BookPrimitives): Book {
   const now = new Date();
   return {
     id: createBookId(id),
+    referenceId: createReferenceId(referenceId),
     title: createTitle(title),
     publicationYear: createPublicationYear(publicationYear),
     price: createPrice(price),

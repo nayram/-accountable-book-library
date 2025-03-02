@@ -10,6 +10,7 @@ import { publicationYearFixtures } from './publication-year-fixtures';
 import { publisherFixtures } from './publisher-fixtures';
 import { priceFixtures } from './price-fixtures';
 import { quantityFixtures } from './quantity-fixtures';
+import { referenceIdFixtures } from './reference-fixtures';
 
 export const bookFixtures = {
   create(book?: Partial<Book>) {
@@ -23,6 +24,7 @@ export const bookFixtures = {
     const createdBook = this.create(book);
     await bookModel.create({
       _id: createdBook.id,
+      reference_id: createdBook.referenceId,
       quantity: createdBook.quantity,
       price: createdBook.price,
       author: createdBook.author,
@@ -39,6 +41,7 @@ export const bookFixtures = {
 function createBook(): Book {
   return {
     id: bookIdFixtures.create(),
+    referenceId: referenceIdFixtures.create(),
     title: titleFixtures.create(),
     author: authorFixtures.create(),
     publicationYear: publicationYearFixtures.create(),

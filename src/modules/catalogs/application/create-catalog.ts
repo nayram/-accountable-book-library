@@ -6,6 +6,7 @@ import { Book, create as createBook } from '../domain/book/book';
 import { BookAlreadyExistsError } from '../domain/book-already-exists-error';
 
 export interface CreateCatalogRequest {
+  referenceId: string;
   title: string;
   author: string;
   publicationYear: number;

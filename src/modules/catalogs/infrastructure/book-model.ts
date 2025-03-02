@@ -2,6 +2,7 @@ import mongoose, { Schema, Document } from 'mongoose';
 
 export interface BookDTO extends Document {
   _id: Schema.Types.UUID;
+  reference_id: string;
   title: string;
   author: string;
   publication_year: number;
@@ -14,6 +15,7 @@ export interface BookDTO extends Document {
 
 export const bookSchema = new Schema<BookDTO>({
   _id: { type: Schema.Types.UUID, required: true },
+  reference_id: { type: String, required: true },
   title: { type: String, required: true },
   author: { type: String, required: true },
   publication_year: { type: Number, required: true },

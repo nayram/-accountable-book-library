@@ -11,6 +11,7 @@ import { quantityFixtures } from '@tests/utils/fixtures/catalog/quantity-fixture
 import { priceFixtures } from '@tests/utils/fixtures/catalog/price-fixtures';
 import { bookFixtures } from '@tests/utils/fixtures/catalog/book-fixtures';
 import { Book } from '@modules/catalogs/domain/book/book';
+import { referenceIdFixtures } from '@tests/utils/fixtures/catalog/reference-fixtures';
 
 import { PostCreateCatalogRequest } from './post-create-catalog-request';
 
@@ -33,6 +34,7 @@ describe('POST /api/catalogs', () => {
     describe('when book does not exist', () => {
       beforeEach(async () => {
         requestBody = {
+          referenceId: referenceIdFixtures.create(),
           title: titleFixtures.create(),
           author: authorFixtures.create(),
           publicationYear: publicationYearFixtures.create(),
@@ -51,6 +53,7 @@ describe('POST /api/catalogs', () => {
       it('should return the created catalog', () => {
         expect(response.body).toEqual({
           id: expect.any(String),
+          referenceId: requestBody.referenceId,
           title: requestBody.title,
           author: requestBody.author,
           publicationYear: requestBody.publicationYear,
@@ -69,6 +72,7 @@ describe('POST /api/catalogs', () => {
         existingBook = await bookFixtures.insert();
 
         requestBody = {
+          referenceId: existingBook.referenceId,
           title: existingBook.title,
           author: existingBook.author,
           publisher: existingBook.publisher,
@@ -101,6 +105,7 @@ describe('POST /api/catalogs', () => {
     beforeEach(async () => {
       const requestBody = {
         title: titleFixtures.invalid(),
+        referenceId: referenceIdFixtures.invalid(),
         author: authorFixtures.create(),
         publicationYear: publicationYearFixtures.create(),
         publisher: publisherFixtures.create(),
