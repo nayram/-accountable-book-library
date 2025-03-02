@@ -7,7 +7,7 @@ export const authorFixtures = {
     return faker.book.author();
   },
   invalid(): Author {
-    const invalidValues = ['', ' '];
+    const invalidValues = ['', 123];
     return faker.helpers.arrayElement(invalidValues) as unknown as Author;
   },
 };
