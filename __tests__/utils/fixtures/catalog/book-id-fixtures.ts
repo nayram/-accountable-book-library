@@ -9,4 +9,7 @@ export const bookIdFixtures = {
   invalid() {
     return uuidFixtures.invalid();
   },
+  invalidPathId() {
+    return uuidFixtures.urlInvalid();
+  },
 };

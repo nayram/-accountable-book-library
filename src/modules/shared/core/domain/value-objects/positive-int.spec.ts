@@ -10,6 +10,10 @@ describe('createPositiveInt', () => {
     });
   });
 
+  it('should throw FieldValidationError when input is not an integer', () => {
+    expect(() => createPositiveInt('1' as unknown as number, 'field')).toThrow(FieldValidationError);
+  });
+
   it('should create a positive int', () => {
     const int = 0;
     expect(createPositiveInt(int, 'field')).toEqual(int);

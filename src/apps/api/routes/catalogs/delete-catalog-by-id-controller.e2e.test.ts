@@ -52,7 +52,7 @@ describe('DELETE /catalogs/:id', () => {
 
   describe('when invalid id is provided', () => {
     beforeEach(async () => {
-      response = await request.delete(path.replace(':id', bookIdFixtures.invalid()));
+      response = await request.delete(path.replace(':id', bookIdFixtures.invalidPathId()));
     });
 
     it('should return 400 status code', () => {

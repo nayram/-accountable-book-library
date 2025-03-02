@@ -61,7 +61,7 @@ describe('GET /catalogs/:id', () => {
 
   describe('when invalid id is provided', () => {
     beforeEach(async () => {
-      response = await request.get(path.replace(':id', bookIdFixtures.invalid()));
+      response = await request.get(path.replace(':id', bookIdFixtures.invalidPathId()));
     });
 
     it('should return 400 status code', () => {
