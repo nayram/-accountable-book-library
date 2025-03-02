@@ -50,5 +50,12 @@ export function bookRepositoryBuilder({ model }: { model: BookModel }): BookRepo
       }
       return fromDTO(result);
     },
+    async deleteById(id) {
+      const result = await model.findById(id);
+      if (!result) {
+        throw new BookDoesNotExistsError(id);
+      }
+      await model.findByIdAndDelete(id);
+    },
   };
 }

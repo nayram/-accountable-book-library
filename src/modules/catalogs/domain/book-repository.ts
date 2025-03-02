@@ -6,4 +6,5 @@ export interface BookRepository {
   save(book: Book): Promise<void>;
   exits(params: { title: string; author: string; publisher: string }): Promise<boolean>;
   findById(id: Uuid): Promise<Book>;
+  deleteById(id: Uuid): Promise<void>;
 }

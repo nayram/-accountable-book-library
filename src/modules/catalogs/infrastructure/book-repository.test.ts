@@ -70,7 +70,7 @@ describe('BookRepository', () => {
   });
 
   describe('findById', () => {
-    it('should thow error if book does not exist', async () => {
+    it('should throw error if book does not exist', async () => {
       const id = bookIdFixtures.create();
       await expect(bookRepository.findById(id)).rejects.toThrow(BookDoesNotExistsError);
     });
@@ -78,7 +78,22 @@ describe('BookRepository', () => {
     it('should return book if it exists', async () => {
       const book = bookFixtures.create();
       await bookRepository.save(book);
-      await expect(bookRepository.findById(book.id)).resolves.toEqual(book);
+      expect(bookRepository.findById(book.id)).resolves.toEqual(book);
+    });
+  });
+
+  describe('deleteById', () => {
+    it('should throw error if book does not exist', () => {
+      const id = bookIdFixtures.create();
+      expect(bookRepository.deleteById(id)).rejects.toThrow(BookDoesNotExistsError);
+    });
+
+    it('should delete book successfully', async () => {
+      const book = await bookFixtures.insert();
+      await bookRepository.deleteById(book.id);
+      const res = await bookModel.findById(book.id);
+
+      expect(res).toBeNull();
     });
   });
 });
