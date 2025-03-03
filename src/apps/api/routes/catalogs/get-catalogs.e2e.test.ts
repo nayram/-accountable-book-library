@@ -155,7 +155,6 @@ describe('GET /catalogs/search', () => {
   describe('when an invalid request is made', () => {
     beforeEach(async () => {
       const publicationYear = publicationYearFixtures.invalid();
-      console.log('publication year --- ', publicationYear);
       response = await request.get(path).query({ publicationYear, limit });
     });
 

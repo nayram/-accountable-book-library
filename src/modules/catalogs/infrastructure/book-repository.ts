@@ -58,10 +58,18 @@ export function bookRepositoryBuilder({ model }: { model: BookModel }): BookRepo
       await model.findByIdAndDelete(id);
     },
     async find(pagination, searchParams) {
-      const filter: Record<string, unknown> = { ...searchParams };
+      const filter: Record<string, unknown> = {};
+
       if (searchParams.publicationYear) {
         filter.publication_year = searchParams.publicationYear;
-        delete filter.publicationYear;
+      }
+
+      if (searchParams.title) {
+        filter.title = { $regex: searchParams.title, $options: 'i' };
+      }
+
+      if (searchParams.author) {
+        filter.author = { $regex: searchParams.author, $options: 'i' };
       }
 
       const queryBuilder = model.find(filter).lean(true);

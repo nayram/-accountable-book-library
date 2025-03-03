@@ -1,6 +1,7 @@
 import { bookFixtures } from '@tests/utils/fixtures/catalog/book-fixtures';
 import { dbDropCollection, dbSetUp, dbTearDown } from '@tests/utils/mocks/db';
 import { bookIdFixtures } from '@tests/utils/fixtures/catalog/book-id-fixtures';
+import { authorFixtures } from '@tests/utils/fixtures/catalog/author-fixtures';
 
 import { BookDoesNotExistsError } from '../domain/book-does-not-exist-error';
 
@@ -117,7 +118,7 @@ describe('BookRepository', () => {
       expect(result.cursor).not.toBeNull();
     });
 
-    it('should return paginated books with cursor as null if no search values where provided', async () => {
+    it('should return paginated books with cursor if no search values where provided', async () => {
       const books = bookFixtures.createMany({ length: 2 });
       for (const book of books) {
         await bookRepository.save(book);
@@ -147,6 +148,30 @@ describe('BookRepository', () => {
       expect(result.data.length).toBe(1);
       expect(result.totalCount).toBe(1);
       expect(result.data[0].title).toBe(book1.title);
+    });
+
+    it('should fetch next batch of data using the cursor', async () => {
+      const author = authorFixtures.create();
+      const books = bookFixtures.createMany({ book: { author }, length: 4 });
+
+      for (const book of books) {
+        await bookRepository.save(book);
+      }
+
+      const pagination = { limit: 2, cursor: null };
+      const searchParams = { author };
+
+      const firstBatch = await bookRepository.find(pagination, searchParams);
+
+      expect(firstBatch.data.length).toBe(2);
+      expect(firstBatch.totalCount).toBe(4);
+      expect(firstBatch.cursor).not.toBeNull();
+
+      const nextPagination = { limit: 2, cursor: firstBatch.cursor };
+      const secondBatch = await bookRepository.find(nextPagination, searchParams);
+
+      expect(secondBatch.data.length).toBe(2);
+      expect(secondBatch.totalCount).toBe(4);
     });
   });
 });
