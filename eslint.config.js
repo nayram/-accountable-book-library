@@ -33,6 +33,7 @@ module.exports = [
         console: 'readonly',
         require: 'readonly',
         module: 'readonly',
+        __dirname: 'readonly',
       },
     },
     rules: {

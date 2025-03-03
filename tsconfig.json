@@ -19,6 +19,6 @@
       "@api/*": ["src/apps/api/*"]
     }
   },
-  "include": ["src/**/*", "__tests__/**/*"],
+  "include": ["src/**/*", "__tests__/**/*", "migrations/**/*"],
   "exclude": ["node_modules"]
 }
