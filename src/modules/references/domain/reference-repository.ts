@@ -9,7 +9,7 @@ import { ReferenceId } from './reference/reference-id';
 export interface ReferenceRepository {
   save(reference: Reference): Promise<void>;
   exits(externalReferenceId: ExternalReferenceId): Promise<boolean>;
-  findById(id: ReferenceId): Promise<Reference>;
+  findByExteranlReferenceId(externalReferenceId: ExternalReferenceId): Promise<Reference>;
   softDeleteById(id: ReferenceId): Promise<void>;
   find(pagination: Pagination, searchParams: SearchParams): Promise<PaginatedResults<Reference>>;
 }

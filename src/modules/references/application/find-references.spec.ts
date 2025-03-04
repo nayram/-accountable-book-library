@@ -27,19 +27,31 @@ describe('find references', () => {
   describe('should throw FieldValidationError when', () => {
     it('provided invalid publicationYear value', () => {
       expect(
-        findReferences({ cursor, limit, publicationYear: publicationYearFixtures.invalid(), title, author }),
+        findReferences({
+          cursor,
+          limit,
+          publicationYear: publicationYearFixtures.invalid(),
+          title,
+          author,
+        }),
       ).rejects.toThrow(FieldValidationError);
     });
 
     it('provided invalid cursor value', () => {
       expect(
-        findReferences({ cursor: cursorFixtures.invalid(), limit, title, author, publicationYear }),
+        findReferences({
+          cursor: cursorFixtures.invalid(),
+          limit,
+          title,
+          author,
+          publicationYear,
+        }),
       ).rejects.toThrow(FieldValidationError);
     });
   });
 
   it('should successfully search through references', async () => {
-    const pagination = { cursor, limit };
+    const pagination = { cursor, limit, sortOrder: 'desc', sortBy: 'createdAt' };
     const searchParams = { title, author, publicationYear };
     await findReferences({ cursor, limit, title, author, publicationYear });
     expect(referenceRepository.find).toHaveBeenCalledWith(pagination, searchParams);

@@ -30,7 +30,7 @@ describe('find reference by id', () => {
 
   beforeEach(() => {
     const referenceRepository = mock<ReferenceRepository>();
-    when(referenceRepository.findById)
+    when(referenceRepository.findByExteranlReferenceId)
       .mockImplementation((id) => {
         throw new ReferenceDoesNotExistsError(id);
       })

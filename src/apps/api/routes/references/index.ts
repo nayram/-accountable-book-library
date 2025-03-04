@@ -6,14 +6,14 @@ import {
 } from '@modules/references/application';
 
 import { postCreateReferenceControllerBuilder } from './post-create-reference-controller';
-import { getReferenceByReferenceIdControllerBuilder } from './get-reference-by-reference-id-controller';
+import { getReferenceByExternalReferenceIdControllerBuilder } from './get-reference-by-external-reference-id-controller';
 import { deleteReferenceByIdControllerBuilder } from './delete-reference-by-id-controller';
 import { getReferencesControllerBuilder } from './get-references-controller';
 
 export const postCreateReferenceController = postCreateReferenceControllerBuilder({
   createReference,
 });
-export const getReferenceByReferenceIdController = getReferenceByReferenceIdControllerBuilder({
+export const getReferenceByExternalReferenceIdController = getReferenceByExternalReferenceIdControllerBuilder({
   findReferenceByExternalReferenceId,
 });
 export const getReferencesController = getReferencesControllerBuilder({ findReferences });

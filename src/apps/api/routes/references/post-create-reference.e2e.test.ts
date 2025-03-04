@@ -2,7 +2,7 @@ import supertest from 'supertest';
 import { StatusCodes } from 'http-status-codes';
 
 import app from '@api/app';
-import { dbSetUp, dbTearDown } from '@tests/utils/mocks/db';
+import { dbSetUp, dbTearDown, dropReferencesCollection } from '@tests/utils/mocks/db';
 import { titleFixtures } from '@tests/utils/fixtures/references/title-fixtures';
 import { authorFixtures } from '@tests/utils/fixtures/references/author-fixtures';
 import { publicationYearFixtures } from '@tests/utils/fixtures/references/publication-year-fixtures';
@@ -33,7 +33,7 @@ describe('POST /api/references', () => {
     describe('when reference does not exist', () => {
       beforeEach(async () => {
         requestBody = {
-          referenceId: externalReferenceIdFixtures.create(),
+          externalReferenceId: externalReferenceIdFixtures.create(),
           title: titleFixtures.create(),
           author: authorFixtures.create(),
           publicationYear: publicationYearFixtures.create(),
@@ -51,7 +51,7 @@ describe('POST /api/references', () => {
       it('should return the created reference', () => {
         expect(response.body).toEqual({
           id: expect.any(String),
-          referenceId: requestBody.referenceId,
+          externalReferenceId: requestBody.externalReferenceId,
           title: requestBody.title,
           author: requestBody.author,
           publicationYear: requestBody.publicationYear,
@@ -69,7 +69,7 @@ describe('POST /api/references', () => {
         existingReference = await referenceFixtures.insert();
 
         requestBody = {
-          referenceId: existingReference.externalReferenceId,
+          externalReferenceId: existingReference.externalReferenceId,
           title: titleFixtures.create(),
           author: authorFixtures.create(),
           publisher: publisherFixtures.create(),

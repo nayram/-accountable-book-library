@@ -6,6 +6,7 @@ import { CreateReferenceUseCase } from '@modules/references/application/create-r
 import { ReferenceAlreadyExistsError } from '@modules/references/domain/reference-already-exists-error';
 
 import { PostCreateReferenceRequest } from './post-create-reference-request';
+import { toDTO } from './dto/reference-dto';
 
 export function postCreateReferenceControllerBuilder({ createReference }: { createReference: CreateReferenceUseCase }) {
   return async function postCreateReferenceController(
@@ -14,11 +15,9 @@ export function postCreateReferenceControllerBuilder({ createReference }: { crea
     next: NextFunction,
   ) {
     try {
-      const {
-        body: { referenceId, ...rest },
-      } = req;
-      const reference = await createReference({ externalReferenceId: referenceId, ...rest });
-      res.status(StatusCodes.CREATED).send(reference);
+      const { body } = req;
+      const reference = await createReference(body);
+      res.status(StatusCodes.CREATED).send(toDTO(reference));
     } catch (error) {
       if (error instanceof FieldValidationError || error instanceof ReferenceAlreadyExistsError) {
         next(BadRequest(error.message));

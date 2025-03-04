@@ -25,6 +25,8 @@ describe('Pagination', () => {
   it('should create pagination', () => {
     const limit = 10;
     const cursor = cursorFixtures.create();
-    expect(createPagination({ cursor, limit })).toEqual({ cursor, limit });
+    const sortBy = 'createdAt';
+    const sortOrder = 'desc';
+    expect(createPagination({ cursor, limit })).toEqual({ cursor, limit, sortBy, sortOrder });
   });
 });

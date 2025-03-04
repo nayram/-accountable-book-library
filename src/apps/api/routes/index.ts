@@ -1,12 +1,11 @@
 import { Router } from 'express';
 
-import { deleteReferenceById } from '@modules/references/application';
-
 import { SchemaValidator } from '../validations/schema-validators';
 
 import { postCreateReferenceRequestSchema } from './references/post-create-reference-request';
 import {
-  getReferenceByReferenceIdController,
+  deleteReferenceByIdController,
+  getReferenceByExternalReferenceIdController,
   getReferencesController,
   postCreateReferenceController,
 } from './references';
@@ -16,7 +15,7 @@ const routes = Router();
 
 routes.post('/references', SchemaValidator.body(postCreateReferenceRequestSchema), postCreateReferenceController);
 routes.get('/references/search', SchemaValidator.query(getReferencesRequestSchema), getReferencesController);
-routes.get('/references/:id', getReferenceByReferenceIdController);
-routes.delete('/references/:id', deleteReferenceById);
+routes.get('/references/:externalReferenceId', getReferenceByExternalReferenceIdController);
+routes.delete('/references/:id', deleteReferenceByIdController);
 
 export default routes;

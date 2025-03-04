@@ -1,10 +1,14 @@
-import { dbSetUp, dbTearDown, dropReferencesCollection } from '@tests/utils/mocks/db';
+import { dbSetUp, dbTearDown } from '@tests/utils/mocks/db';
 import { referenceFixtures } from '@tests/utils/fixtures/references/reference-fixtures';
 import { titleFixtures } from '@tests/utils/fixtures/references/title-fixtures';
 import { referenceIdFixtures } from '@tests/utils/fixtures/references/reference-id-fixtures';
 import { authorFixtures } from '@tests/utils/fixtures/references/author-fixtures';
+import { externalReferenceIdFixtures } from '@tests/utils/fixtures/references/external-reference-id-fixtures';
+import { publicationYearFixtures } from '@tests/utils/fixtures/references/publication-year-fixtures';
+import { Pagination } from '@modules/shared/core/domain/pagination';
 
 import { ReferenceDoesNotExistsError } from '../domain/reference-does-not-exists-error';
+import { SearchParams } from '../domain/search-params';
 
 import { referenceModel } from './repository-model';
 
@@ -13,10 +17,6 @@ import { referenceRepository } from '.';
 describe('ReferenceRepository', () => {
   beforeAll(async () => {
     await dbSetUp();
-  });
-
-  beforeEach(async () => {
-    await dropReferencesCollection();
   });
 
   afterAll(async () => {
@@ -36,8 +36,8 @@ describe('ReferenceRepository', () => {
       expect(result?.publication_year).toBe(reference.publicationYear);
       expect(result?.price).toBe(reference.price);
       expect(result?.soft_delete).toEqual(reference.softDelete);
-      expect(result?.created_at).toBe(reference.createdAt.toISOString());
-      expect(result?.updated_at).toBe(reference.updatedAt.toISOString());
+      expect(result?.created_at.toISOString()).toEqual(reference.createdAt.toISOString());
+      expect(result?.updated_at.toISOString()).toEqual(reference.updatedAt.toISOString());
     });
   });
 
@@ -46,7 +46,7 @@ describe('ReferenceRepository', () => {
       const reference = referenceFixtures.create();
       await referenceRepository.save(reference);
       const secondReference = referenceFixtures.create({ externalReferenceId: reference.externalReferenceId });
-      await expect(referenceRepository.exits(secondReference.author)).resolves.toBe(true);
+      await expect(referenceRepository.exits(secondReference.externalReferenceId)).resolves.toBe(true);
     });
 
     it('should return false if reference does not exist', async () => {
@@ -55,16 +55,18 @@ describe('ReferenceRepository', () => {
     });
   });
 
-  describe('findById', () => {
+  describe('findByExteranlReferenceId', () => {
     it('should throw ReferenceDoesNotExistsError if reference does not exist', async () => {
-      const id = referenceIdFixtures.create();
-      expect(referenceRepository.findById(id)).rejects.toThrow(ReferenceDoesNotExistsError);
+      const externalReferenceId = externalReferenceIdFixtures.create();
+      expect(referenceRepository.findByExteranlReferenceId(externalReferenceId)).rejects.toThrow(
+        ReferenceDoesNotExistsError,
+      );
     });
 
     it('should return reference if it exists', async () => {
       const reference = referenceFixtures.create();
       await referenceRepository.save(reference);
-      expect(referenceRepository.findById(reference.id)).resolves.toEqual(reference);
+      expect(referenceRepository.findByExteranlReferenceId(reference.externalReferenceId)).resolves.toEqual(reference);
     });
   });
 
@@ -78,71 +80,225 @@ describe('ReferenceRepository', () => {
       const reference = referenceFixtures.create({ softDelete: false });
       await referenceRepository.save(reference);
       await referenceRepository.softDeleteById(reference.id);
-      const res = await referenceRepository.findById(reference.id);
-
-      expect(res.softDelete).toBe(true);
+      const res = await referenceModel.findById(reference.id);
+      expect(res?.soft_delete).toBe(true);
     });
   });
 
   describe('find', () => {
-    it('should return paginated references with next cursor', async () => {
-      const totalCount = 4;
-      const limit = 2;
-      const cursor = null;
-      await referenceFixtures.insertMany({ length: totalCount });
-
-      const pagination = { limit, cursor };
-      const searchParams = {};
-
-      const result = await referenceRepository.find(pagination, searchParams);
-
-      expect(result.data.length).toBe(limit);
-      expect(result.totalCount).toBe(totalCount);
-      expect(result.cursor).not.toBeNull();
+    beforeEach(async () => {
+      await referenceModel.deleteMany({});
     });
 
-    it('should return references matching search parameters', async () => {
-      const count = 4;
-      const title = titleFixtures.create();
-      const limit = 2;
+    describe('Basic pagination', () => {
+      it('should return paginated references with next cursor', async () => {
+        const totalCount = 4;
+        const limit = 2;
+        const references = await referenceFixtures.insertMany({ length: totalCount });
+        const pagination: Pagination = {
+          limit,
+          cursor: null,
+          sortBy: 'createdAt',
+          sortOrder: 'asc',
+        };
 
-      await referenceFixtures.insertMany({ reference: { title }, length: count });
-      await referenceFixtures.insertMany({ length: count });
+        const result = await referenceRepository.find(pagination, {});
 
-      const pagination = { limit, cursor: null };
-      const searchParams = { title };
+        expect(result.data.length).toBe(limit);
+        expect(result.totalCount).toBe(totalCount);
+        expect(result.cursor).not.toBeNull();
 
-      const { data, totalCount, cursor } = await referenceRepository.find(pagination, searchParams);
+        expect(result.data).toEqual(
+          references.sort((a, b) => a.createdAt.getTime() - b.createdAt.getTime()).slice(0, limit),
+        );
+      });
 
-      expect(data.length).toBe(limit);
-      expect(totalCount).toBe(count);
-      expect(cursor).not.toBeNull();
-      for (const reference of data) {
-        expect(reference.title).toEqual(title);
-      }
+      it('should return less than limit when not enough items exist', async () => {
+        const totalCount = 2;
+        const limit = 5;
+        await referenceFixtures.insertMany({ length: totalCount });
+        const pagination: Pagination = {
+          limit,
+          cursor: null,
+          sortBy: 'createdAt',
+          sortOrder: 'asc',
+        };
+
+        const result = await referenceRepository.find(pagination, {});
+
+        expect(result.data.length).toBe(totalCount);
+        expect(result.totalCount).toBe(totalCount);
+        expect(result.cursor).toBeNull();
+      });
     });
 
-    it('should fetch next batch of data using the cursor', async () => {
-      const author = authorFixtures.create();
-      const count = 4;
-      const limit = 1;
-      await referenceFixtures.insertMany({ reference: { author }, length: count });
-      await referenceFixtures.insertMany({});
+    describe('Search parameters', () => {
+      it('should return references matching title search parameter', async () => {
+        const count = 4;
+        const title = titleFixtures.create();
+        const limit = 2;
 
-      const pagination = { limit, cursor: null };
-      const searchParams = { author };
+        await referenceFixtures.insertMany({ reference: { title }, length: count });
+        await referenceFixtures.insertMany({ length: count });
 
-      const firstBatch = await referenceRepository.find(pagination, searchParams);
+        const pagination: Pagination = {
+          limit,
+          cursor: null,
+          sortBy: 'createdAt',
+          sortOrder: 'asc',
+        };
+        const searchParams: SearchParams = { title };
+        const { data, totalCount, cursor } = await referenceRepository.find(pagination, searchParams);
 
-      expect(firstBatch.data.length).toBe(limit);
-      expect(firstBatch.totalCount).toBe(count);
-      expect(firstBatch.cursor).not.toBeNull();
+        expect(data.length).toBe(limit);
+        expect(totalCount).toBe(count);
+        expect(cursor).not.toBeNull();
 
-      const nextPagination = { limit, cursor: firstBatch.cursor };
-      const secondBatch = await referenceRepository.find(nextPagination, searchParams);
+        for (const reference of data) {
+          expect(reference.title).toEqual(title);
+        }
+      });
 
-      expect(secondBatch.data.length).toBe(limit);
-      expect(secondBatch.totalCount).toBe(4);
+      it('should return references matching publication year search parameter', async () => {
+        const publicationYear = publicationYearFixtures.create();
+        const otherPublicationYear = publicationYear + 1;
+
+        await referenceFixtures.insertMany({ reference: { publicationYear }, length: 3 });
+        await referenceFixtures.insertMany({ reference: { publicationYear: otherPublicationYear }, length: 2 });
+
+        const pagination: Pagination = {
+          limit: 10,
+          cursor: null,
+          sortBy: 'createdAt',
+          sortOrder: 'asc',
+        };
+        const searchParams: SearchParams = { publicationYear };
+
+        const result = await referenceRepository.find(pagination, searchParams);
+        expect(result.data.length).toBe(3);
+        expect(result.totalCount).toBe(3);
+
+        for (const reference of result.data) {
+          expect(reference.publicationYear).toEqual(publicationYear);
+        }
+      });
+
+      it('should return references matching author search parameter', async () => {
+        const author = authorFixtures.create();
+
+        await referenceFixtures.insertMany({ reference: { author }, length: 3 });
+        await referenceFixtures.insertMany({ length: 2 });
+
+        const pagination: Pagination = {
+          limit: 10,
+          cursor: null,
+          sortBy: 'createdAt',
+          sortOrder: 'asc',
+        };
+        const searchParams: SearchParams = { author };
+
+        const result = await referenceRepository.find(pagination, searchParams);
+
+        expect(result.data.length).toBe(3);
+        expect(result.totalCount).toBe(3);
+
+        for (const reference of result.data) {
+          expect(reference.author).toEqual(author);
+        }
+      });
+
+      it('should return references matching multiple search parameters', async () => {
+        const author = authorFixtures.create();
+        const publicationYear = publicationYearFixtures.create();
+
+        await referenceFixtures.insertMany({
+          reference: { author, publicationYear },
+          length: 2,
+        });
+        await referenceFixtures.insertMany({
+          reference: { author, publicationYear: publicationYear + 1 },
+          length: 2,
+        });
+        await referenceFixtures.insertMany({
+          reference: { author: 'Different Author', publicationYear },
+          length: 2,
+        });
+
+        const pagination: Pagination = {
+          limit: 10,
+          cursor: null,
+          sortBy: 'createdAt',
+          sortOrder: 'asc',
+        };
+        const searchParams: SearchParams = { author, publicationYear };
+
+        const result = await referenceRepository.find(pagination, searchParams);
+
+        expect(result.data.length).toBe(2);
+        expect(result.totalCount).toBe(2);
+
+        for (const reference of result.data) {
+          expect(reference.author).toEqual(author);
+          expect(reference.publicationYear).toEqual(publicationYear);
+        }
+      });
+    });
+
+    describe('Cursor pagination', () => {
+      it('should fetch next batch of data using the cursor', async () => {
+        const totalItems = 5;
+        const limit = 2;
+        const references = await referenceFixtures.insertMany({ length: totalItems });
+
+        const pagination: Pagination = {
+          limit,
+          cursor: null,
+          sortBy: 'createdAt',
+          sortOrder: 'asc',
+        };
+
+        const firstBatch = await referenceRepository.find(pagination, {});
+
+        expect(firstBatch.data.length).toBe(limit);
+        expect(firstBatch.totalCount).toBe(totalItems);
+        expect(firstBatch.cursor).not.toBeNull();
+
+        expect(firstBatch.data).toEqual(
+          references.sort((a, b) => a.createdAt.getTime() - b.createdAt.getTime()).slice(0, limit),
+        );
+
+        const secondPagination: Pagination = {
+          limit,
+          cursor: firstBatch.cursor,
+          sortBy: 'createdAt',
+          sortOrder: 'asc',
+        };
+        const secondBatch = await referenceRepository.find(secondPagination, {});
+
+        expect(secondBatch.data.length).toBe(limit);
+        expect(secondBatch.totalCount).toBe(totalItems);
+        expect(secondBatch.cursor).not.toBeNull();
+
+        expect(secondBatch.data).toEqual(
+          references.sort((a, b) => a.createdAt.getTime() - b.createdAt.getTime()).slice(limit, totalItems - 1),
+        );
+
+        const thirdPagination: Pagination = {
+          limit,
+          cursor: secondBatch.cursor,
+          sortBy: 'createdAt',
+          sortOrder: 'asc',
+        };
+        const thirdBatch = await referenceRepository.find(thirdPagination, {});
+
+        expect(thirdBatch.data.length).toBe(1);
+        expect(thirdBatch.totalCount).toBe(totalItems);
+        expect(thirdBatch.cursor).toBeNull();
+
+        expect(thirdBatch.data).toEqual(
+          references.sort((a, b) => a.createdAt.getTime() - b.createdAt.getTime()).slice(-1),
+        );
+      });
     });
   });
 });

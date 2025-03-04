@@ -26,6 +26,12 @@ export const referenceSchema = new Schema<ReferenceDTO>({
   updated_at: { type: Date, required: true },
 });
 
+referenceSchema.index({ publication_year: 1 });
+referenceSchema.index({ author: 1 });
+referenceSchema.index({ publisher: 1 });
+referenceSchema.index({ soft_delete: 1 });
+referenceSchema.index({ title: 'text' });
+
 export const referenceModel = mongoose.model<ReferenceDTO>('Reference', referenceSchema);
 
 export type ReferenceModel = typeof referenceModel;

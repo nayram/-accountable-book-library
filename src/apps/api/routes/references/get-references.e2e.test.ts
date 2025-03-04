@@ -30,9 +30,9 @@ describe('GET /references/search', () => {
   describe('when valid request is made', () => {
     beforeAll(async () => {
       await Promise.all([
-        referenceFixtures.insertMany({ reference: { author }, length: numberOfreferences }),
-        referenceFixtures.insertMany({ reference: { title }, length: numberOfreferences }),
-        referenceFixtures.insertMany({ reference: { publicationYear }, length: numberOfreferences }),
+        await referenceFixtures.insertMany({ reference: { author }, length: numberOfreferences }),
+        await referenceFixtures.insertMany({ reference: { title }, length: numberOfreferences }),
+        await referenceFixtures.insertMany({ reference: { publicationYear }, length: numberOfreferences }),
       ]);
     });
 

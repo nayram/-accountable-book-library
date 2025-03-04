@@ -9,14 +9,16 @@ import { ReferenceDoesNotExistsError } from '@modules/references/domain/referenc
 
 import { toDTO } from './dto/reference-dto';
 
-export function getReferenceByReferenceIdControllerBuilder({
+export function getReferenceByExternalReferenceIdControllerBuilder({
   findReferenceByExternalReferenceId,
 }: {
   findReferenceByExternalReferenceId: FindReferenceByExternalReferenceIdUseCase;
 }) {
-  return async function getReferenceByReferenceIdController(req: Request, res: Response, next: NextFunction) {
+  return async function getReferenceByExternalReferenceIdController(req: Request, res: Response, next: NextFunction) {
     try {
-      const reference = await findReferenceByExternalReferenceId({ externalReferenceId: req.params.referenceId });
+      const reference = await findReferenceByExternalReferenceId({
+        externalReferenceId: req.params.externalReferenceId,
+      });
       res.status(StatusCodes.OK).send(toDTO(reference));
     } catch (error) {
       if (error instanceof FieldValidationError) {

@@ -1,7 +1,9 @@
 import { ReferenceDoesNotExistsError } from '../domain/reference-does-not-exists-error';
 import { ReferenceRepository } from '../domain/reference-repository';
 
+import { hasTextIndex, mapSortByFieldToReferenceModelField } from './helper-functions';
 import { fromDTO } from './reference-dto';
+import { ReferenceModelError } from './reference-model-error';
 import { ReferenceModel } from './repository-model';
 
 export function referenceRepositoryBuilder({
@@ -17,6 +19,7 @@ export function referenceRepositoryBuilder({
         price: reference.price,
         author: reference.author,
         title: reference.title,
+        soft_delete: reference.softDelete,
         publication_year: reference.publicationYear,
         publisher: reference.publisher,
         created_at: reference.createdAt,
@@ -27,10 +30,10 @@ export function referenceRepositoryBuilder({
       const result = await referenceModel.findOne({ external_reference_id: exterenalReferenceId });
       return result != null;
     },
-    async findById(id) {
-      const result = await referenceModel.findById(id);
+    async findByExteranlReferenceId(externalReferenceId) {
+      const result = await referenceModel.findOne({ external_reference_id: externalReferenceId });
       if (!result) {
-        throw new ReferenceDoesNotExistsError(id);
+        throw new ReferenceDoesNotExistsError(externalReferenceId);
       }
       return fromDTO(result);
     },
@@ -51,31 +54,63 @@ export function referenceRepositoryBuilder({
       );
     },
     async find(pagination, searchParams) {
-      const filter: Record<string, unknown> = {};
+      const limit = Math.min(pagination.limit || 20, 100);
+
+      const sortBy = mapSortByFieldToReferenceModelField(pagination.sortBy);
+
+      const filter: Record<string, unknown> = { soft_delete: false };
 
       if (searchParams.publicationYear) {
         filter.publication_year = searchParams.publicationYear;
       }
 
       if (searchParams.title) {
-        filter.title = { $regex: searchParams.title, $options: 'i' };
+        if (await hasTextIndex()) {
+          filter.$text = { $search: searchParams.title };
+        } else {
+          filter.title = { $regex: searchParams.title, $options: 'i' };
+        }
       }
 
       if (searchParams.author) {
         filter.author = { $regex: searchParams.author, $options: 'i' };
       }
 
-      const queryBuilder = referenceModel.find(filter).lean(true);
+      const sort: Record<string, 1 | -1> = {
+        [sortBy]: pagination.sortOrder === 'desc' ? -1 : 1,
+      };
+
       if (pagination.cursor) {
-        queryBuilder.where({ _id: { $gt: pagination.cursor } });
+        try {
+          const lastDoc = await referenceModel.findById(pagination.cursor).lean();
+          if (!lastDoc) {
+            throw new ReferenceModelError('Invalid cursor');
+          }
+
+          const operator = pagination.sortOrder === 'asc' ? '$gt' : '$lt';
+          filter[sortBy] = { [operator]: (lastDoc as Record<string, unknown>)[sortBy] };
+        } catch (error) {
+          console.error('Error applying cursor:', error);
+          throw new ReferenceModelError('Invalid pagination cursor');
+        }
       }
-      const references = await queryBuilder.limit(pagination.limit);
 
-      const nextCursor = references.length > 0 ? String(references[references.length - 1]._id) : null;
+      const references = await referenceModel
+        .find(filter)
+        .sort(sort)
+        .limit(limit + 1)
+        .lean();
 
-      const count = await referenceModel.where(filter).countDocuments();
+      const hasMore = references.length > limit;
 
-      return { totalCount: count, cursor: nextCursor, data: references.map(fromDTO) };
+      const items = hasMore ? references.slice(0, limit) : references;
+
+      const nextCursor = hasMore && items.length > 0 ? String(items[items.length - 1]._id) : null;
+
+      delete filter[sortBy];
+      const count = await referenceModel.countDocuments(filter);
+
+      return { totalCount: count, cursor: nextCursor, data: items.map(fromDTO) };
     },
   };
 }

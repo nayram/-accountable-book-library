@@ -18,6 +18,6 @@ export function findReferenceByExternalReferenceIdBuilder({
   return async function findReferenceByExternalReferenceId({
     externalReferenceId,
   }: FindReferenceByExternalReferenceIdRequest) {
-    return referenceRepository.findById(createExternalReferenceId(externalReferenceId));
+    return referenceRepository.findByExteranlReferenceId(createExternalReferenceId(externalReferenceId));
   };
 }

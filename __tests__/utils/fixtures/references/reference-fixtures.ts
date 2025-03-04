@@ -41,6 +41,7 @@ export const referenceFixtures = {
 };
 
 function createReference(): Reference {
+  const date = faker.date.recent();
   return {
     id: referenceIdFixtures.create(),
     externalReferenceId: externalReferenceIdFixtures.create(),
@@ -50,7 +51,7 @@ function createReference(): Reference {
     publisher: publisherFixtures.create(),
     softDelete: false,
     price: priceFixtures.create(),
-    createdAt: faker.date.recent(),
-    updatedAt: faker.date.recent(),
+    createdAt: date,
+    updatedAt: date,
   };
 }

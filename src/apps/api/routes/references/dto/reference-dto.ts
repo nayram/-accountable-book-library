@@ -2,7 +2,7 @@ import { Reference } from '@modules/references/domain/reference/reference';
 
 interface ReferenceDTO {
   id: string;
-  referenceId: string;
+  externalReferenceId: string;
   title: string;
   author: string;
   publisher: string;
@@ -15,7 +15,7 @@ interface ReferenceDTO {
 export function toDTO(reference: Reference): ReferenceDTO {
   return {
     id: reference.id,
-    referenceId: reference.externalReferenceId,
+    externalReferenceId: reference.externalReferenceId,
     title: reference.title,
     author: reference.author,
     publisher: reference.publisher,
