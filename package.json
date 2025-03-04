@@ -10,8 +10,7 @@
     "lint:fix": "eslint . --ext .ts,.tsx --fix",
     "format": "prettier --write .",
     "test": "jest --runInBand",
-    "test:watch": "jest --watch --detectOpenHandles --runInBand",
-    "seed:import-catalog": "ts-node -r tsconfig-paths/register migrations/seeders/catalogs/import-catalogs.ts"
+    "test:watch": "jest --watch --detectOpenHandles --runInBand"
   },
   "devDependencies": {
     "@eslint/js": "^9.21.0",

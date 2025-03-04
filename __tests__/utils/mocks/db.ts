@@ -21,3 +21,9 @@ export async function dbDropCollection(collectionName: string) {
     await db.dropCollection(collectionName);
   }
 }
+
+export async function dropReferencesCollection() {
+  if (isConnected()) {
+    await dbDropCollection('references');
+  }
+}

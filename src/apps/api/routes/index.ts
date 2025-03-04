@@ -1,21 +1,22 @@
 import { Router } from 'express';
 
+import { deleteReferenceById } from '@modules/references/application';
+
 import { SchemaValidator } from '../validations/schema-validators';
 
-import { postCreateCatalogRequestSchema } from './catalogs/post-create-catalog-request';
+import { postCreateReferenceRequestSchema } from './references/post-create-reference-request';
 import {
-  deleteCatalogByIdController,
-  getCatalogByIdController,
-  getCatalogsController,
-  postCreateCatalogController,
-} from './catalogs';
-import { getCatalogsRequestSchema } from './catalogs/get-catalogs-request';
+  getReferenceByReferenceIdController,
+  getReferencesController,
+  postCreateReferenceController,
+} from './references';
+import { getReferencesRequestSchema } from './references/get-references-request';
 
 const routes = Router();
 
-routes.post('/catalogs', SchemaValidator.body(postCreateCatalogRequestSchema), postCreateCatalogController);
-routes.get('/catalogs/search', SchemaValidator.query(getCatalogsRequestSchema), getCatalogsController);
-routes.get('/catalogs/:id', getCatalogByIdController);
-routes.delete('/catalogs/:id', deleteCatalogByIdController);
+routes.post('/references', SchemaValidator.body(postCreateReferenceRequestSchema), postCreateReferenceController);
+routes.get('/references/search', SchemaValidator.query(getReferencesRequestSchema), getReferencesController);
+routes.get('/references/:id', getReferenceByReferenceIdController);
+routes.delete('/references/:id', deleteReferenceById);
 
 export default routes;
