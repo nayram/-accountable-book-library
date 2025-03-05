@@ -6,16 +6,16 @@ import { UuidGenerator } from '@modules/shared/core/domain/uuid-generator';
 import { FieldValidationError } from '@modules/shared/core/domain/field-validation-error';
 import { referenceFixtures } from '@tests/utils/fixtures/references/reference-fixtures';
 import { externalReferenceIdFixtures } from '@tests/utils/fixtures/references/external-reference-id-fixtures';
-
-import { ReferenceRepository } from '../domain/reference-repository';
-import { ReferenceAlreadyExistsError } from '../domain/reference-already-exists-error';
-
-import { createReferenceBuilder, CreateReferenceUseCase } from './create-reference';
 import { authorFixtures } from '@tests/utils/fixtures/references/author-fixtures';
 import { priceFixtures } from '@tests/utils/fixtures/references/price-fixtures';
 import { publicationYearFixtures } from '@tests/utils/fixtures/references/publication-year-fixtures';
 import { publisherFixtures } from '@tests/utils/fixtures/references/publisher-fixtures';
 import { titleFixtures } from '@tests/utils/fixtures/references/title-fixtures';
+
+import { ReferenceAlreadyExistsError } from '../domain/reference-already-exists-error';
+import { ReferenceRepository } from '../domain/reference-repository';
+
+import { createReferenceBuilder, CreateReferenceUseCase } from './create-reference';
 
 describe('create reference', () => {
   let createReference: CreateReferenceUseCase;

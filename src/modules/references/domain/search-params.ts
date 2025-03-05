@@ -1,6 +1,6 @@
-import { Author, createAuthor } from '../../shared/references/domain/reference/author';
-import { PublicationYear, createPublicationYear } from '../../shared/references/domain/reference/publication-year';
-import { Title, createTitle } from '../../shared/references/domain/reference/title';
+import { Author, createAuthor } from '@modules/shared/references/domain/author';
+import { PublicationYear, createPublicationYear } from '@modules/shared/references/domain/publication-year';
+import { Title, createTitle } from '@modules/shared/references/domain/title';
 
 export type SearchParams = Partial<{
   publicationYear: PublicationYear;

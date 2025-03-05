@@ -1,10 +1,10 @@
 import { Pagination } from '@modules/shared/core/domain/pagination';
+import { Reference } from '@modules/shared/references/domain/reference';
+import { ExternalReferenceId } from '@modules/shared/references/domain/external-reference-id';
+import { ReferenceId } from '@modules/shared/references/domain/reference-id';
 
-import { SearchParams } from './search-params';
 import { PaginatedResults } from './paginated-results';
-import { Reference } from '../../shared/references/domain/reference/reference';
-import { ExternalReferenceId } from '../../shared/references/domain/reference/external-reference-id';
-import { ReferenceId } from '../../shared/references/domain/reference/reference-id';
+import { SearchParams } from './search-params';
 
 export interface ReferenceRepository {
   save(reference: Reference): Promise<void>;

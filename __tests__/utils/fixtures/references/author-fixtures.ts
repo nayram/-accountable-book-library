@@ -1,5 +1,6 @@
 import { faker } from '@faker-js/faker/locale/en';
-import { Author } from '@modules/shared/references/domain/reference/author';
+
+import { Author } from '@modules/shared/references/domain/author';
 
 export const authorFixtures = {
   create(): Author {

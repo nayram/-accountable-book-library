@@ -1,4 +1,4 @@
-import { Reference } from '@modules/shared/references/domain/reference/reference';
+import { Reference } from '@modules/shared/references/domain/reference';
 
 interface ReferenceDTO {
   id: string;

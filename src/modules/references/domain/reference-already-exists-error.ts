@@ -1,4 +1,4 @@
-import { ExternalReferenceId } from '../../shared/references/domain/reference/external-reference-id';
+import { ExternalReferenceId } from '@modules/shared/references/domain/external-reference-id';
 
 export class ReferenceAlreadyExistsError extends Error {
   constructor(id: ExternalReferenceId) {

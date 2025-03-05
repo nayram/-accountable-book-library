@@ -1,4 +1,5 @@
-import { ReferenceId } from '@modules/shared/references/domain/reference/reference-id';
+import { ReferenceId } from '@modules/shared/references/domain/reference-id';
+
 import { uuidFixtures } from '../shared/uuid-fixtures';
 
 export const referenceIdFixtures = {

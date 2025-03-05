@@ -1,5 +1,6 @@
 import { faker } from '@faker-js/faker/locale/en';
-import { Publisher } from '@modules/shared/references/domain/reference/publisher';
+
+import { Publisher } from '@modules/shared/references/domain/publisher';
 
 export const publisherFixtures = {
   create(): Publisher {

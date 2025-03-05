@@ -1,5 +1,6 @@
 import { faker } from '@faker-js/faker/locale/en';
-import { PublicationYear } from '@modules/shared/references/domain/reference/publication-year';
+
+import { PublicationYear } from '@modules/shared/references/domain/publication-year';
 
 export const publicationYearFixtures = {
   create(): PublicationYear {

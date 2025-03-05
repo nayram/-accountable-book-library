@@ -1,4 +1,4 @@
-import { ReferenceId } from '../../shared/references/domain/reference/reference-id';
+import { ReferenceId } from '@modules/shared/references/domain/reference-id';
 
 export class ReferenceDoesNotExistsError extends Error {
   constructor(id: ReferenceId) {

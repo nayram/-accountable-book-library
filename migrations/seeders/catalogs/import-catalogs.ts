@@ -1,7 +1,7 @@
-import { Schema } from 'mongoose';
 import * as fs from 'fs';
 import * as path from 'path';
 
+import { Schema } from 'mongoose';
 import { parse } from 'csv-parse';
 
 import { uuidGenerator } from '@modules/shared/core/infrastructure';

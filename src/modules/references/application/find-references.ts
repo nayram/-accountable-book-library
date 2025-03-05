@@ -1,9 +1,9 @@
 import { UseCase } from '@modules/shared/core/application/use-case';
 import { createPagination } from '@modules/shared/core/domain/pagination';
+import { Reference } from '@modules/shared/references/domain/reference';
 
 import { PaginatedResults } from '../domain/paginated-results';
 import { createSearchParams } from '../domain/search-params';
-import { Reference } from '../../shared/references/domain/reference/reference';
 import { ReferenceRepository } from '../domain/reference-repository';
 
 export interface FindReferencesRequest {

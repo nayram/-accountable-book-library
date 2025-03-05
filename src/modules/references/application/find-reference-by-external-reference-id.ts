@@ -1,8 +1,8 @@
 import { UseCase } from '@modules/shared/core/application/use-case';
+import { Reference } from '@modules/shared/references/domain/reference';
+import { createExternalReferenceId } from '@modules/shared/references/domain/external-reference-id';
 
-import { Reference } from '../../shared/references/domain/reference/reference';
 import { ReferenceRepository } from '../domain/reference-repository';
-import { createExternalReferenceId } from '../../shared/references/domain/reference/external-reference-id';
 
 export interface FindReferenceByExternalReferenceIdRequest {
   externalReferenceId: string;

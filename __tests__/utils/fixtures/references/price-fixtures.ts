@@ -1,5 +1,6 @@
 import { faker } from '@faker-js/faker/locale/en';
-import { Price } from '@modules/shared/references/domain/reference/price';
+
+import { Price } from '@modules/shared/references/domain/price';
 
 export const priceFixtures = {
   create(): Price {

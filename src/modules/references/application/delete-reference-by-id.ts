@@ -1,7 +1,7 @@
 import { UseCase } from '@modules/shared/core/application/use-case';
+import { createReferenceId } from '@modules/shared/references/domain/reference-id';
 
 import { ReferenceRepository } from '../domain/reference-repository';
-import { createReferenceId } from '../../shared/references/domain/reference/reference-id';
 
 export interface DeleteReferenceByIdRequest {
   id: string;

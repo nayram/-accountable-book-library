@@ -2,14 +2,14 @@ import supertest from 'supertest';
 import { StatusCodes } from 'http-status-codes';
 
 import app from '@api/app';
-import { dbSetUp, dbTearDown, dropReferencesCollection } from '@tests/utils/mocks/db';
+import { dbSetUp, dbTearDown } from '@tests/utils/mocks/db';
 import { titleFixtures } from '@tests/utils/fixtures/references/title-fixtures';
 import { authorFixtures } from '@tests/utils/fixtures/references/author-fixtures';
 import { publicationYearFixtures } from '@tests/utils/fixtures/references/publication-year-fixtures';
 import { publisherFixtures } from '@tests/utils/fixtures/references/publisher-fixtures';
 import { priceFixtures } from '@tests/utils/fixtures/references/price-fixtures';
 import { externalReferenceIdFixtures } from '@tests/utils/fixtures/references/external-reference-id-fixtures';
-import { Reference } from '@modules/shared/references/domain/reference/reference';
+import { Reference } from '@modules/shared/references/domain/reference';
 import { referenceFixtures } from '@tests/utils/fixtures/references/reference-fixtures';
 
 import { PostCreateReferenceRequest } from './post-create-reference-request';

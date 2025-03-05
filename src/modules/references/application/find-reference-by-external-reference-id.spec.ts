@@ -1,6 +1,7 @@
 import { faker } from '@faker-js/faker/locale/en';
 import { mock } from 'jest-mock-extended';
 import { when } from 'jest-when';
+
 import { FieldValidationError } from '@modules/shared/core/domain/field-validation-error';
 import { referenceFixtures } from '@tests/utils/fixtures/references/reference-fixtures';
 import { externalReferenceIdFixtures } from '@tests/utils/fixtures/references/external-reference-id-fixtures';
