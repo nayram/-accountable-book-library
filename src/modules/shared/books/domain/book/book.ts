@@ -24,3 +24,7 @@ export function create({ id, referenceId }: { id: string; referenceId: string })
     updatedAt: now,
   };
 }
+
+export function getAvailableBooks(books: Book[]): Book[] {
+  return books.filter((book) => book.status === BookStatus.Available);
+}
