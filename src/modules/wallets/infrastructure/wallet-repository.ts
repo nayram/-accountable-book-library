@@ -1,6 +1,6 @@
 import { WalletRepository } from '../domain/wallet-repository';
 
-import { WalletModel } from './wallet-model';
+import { WalletModel } from '../../shared/wallets/infrastructure/wallet-model';
 
 export function walletRepositoryBuilder({ model }: { model: WalletModel }): WalletRepository {
   return {

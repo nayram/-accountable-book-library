@@ -11,7 +11,7 @@ export interface WalletDTO {
 
 export const walletSchema = new Schema<WalletDTO>({
   _id: { type: Schema.Types.UUID, required: true },
-  user_id: { type: Schema.Types.UUID, required: true, ref: userModel },
+  user_id: { type: Schema.Types.UUID, required: true, unique: true, ref: userModel },
   balance: { type: Number, required: true },
   created_at: { type: Date, required: true },
   updated_at: { type: Date, required: true },

@@ -3,7 +3,7 @@ import { createUserId, UserId } from '@modules/shared/users/domain/user-id';
 import { createPositiveInt, PositiveInt } from '@modules/shared/core/domain/value-objects/positive-int';
 
 import { createWalletId, WalletId } from './wallet-id';
-import { Balance, createBalance } from './balance';
+import { Balance, createBalance } from '../../../shared/wallets/domain/wallet/balance';
 
 export type Wallet = Entity<{
   id: WalletId;

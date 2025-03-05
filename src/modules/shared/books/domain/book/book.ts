@@ -28,3 +28,11 @@ export function create({ id, referenceId }: { id: string; referenceId: string })
 export function getAvailableBooks(books: Book[]): Book[] {
   return books.filter((book) => book.status === BookStatus.Available);
 }
+
+export function updateStatusToReserved(book: Book): Book {
+  return {
+    ...book,
+    status: BookStatus.Reserved,
+    updatedAt: new Date(),
+  };
+}

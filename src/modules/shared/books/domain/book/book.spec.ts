@@ -1,9 +1,20 @@
+import { Book, updateStatusToReserved } from '@modules/shared/books/domain/book/book';
+import { BookStatus } from '@modules/shared/books/domain/book/book-status';
 import { bookFixtures } from '@tests/utils/fixtures/books/book-fixtures';
+import { faker } from '@faker-js/faker/locale/en';
 
-import { Book, getAvailableBooks } from './book';
-import { BookStatus } from './book-status';
+import { getAvailableBooks } from './book';
 
 describe('Book', () => {
+  const systemDateTime = faker.date.recent();
+  beforeEach(() => {
+    jest.useFakeTimers();
+    jest.setSystemTime(systemDateTime);
+  });
+
+  afterEach(() => {
+    jest.useRealTimers();
+  });
   describe('getAvailableBooks', () => {
     it('should return only books with "available" status', () => {
       const numberOfAvailableBooks = 3;
@@ -31,6 +42,21 @@ describe('Book', () => {
 
       expect(availableBooks).toEqual([]);
       expect(availableBooks.length).toBe(0);
+    });
+  });
+
+  describe('updateStatusToReserved', () => {
+    it('should update book status to reserved', () => {
+      const book = bookFixtures.create({ status: BookStatus.Available });
+      expect(updateStatusToReserved(book).status).toBe(BookStatus.Reserved);
+    });
+
+    it('should update the updatedAt timestamp', () => {
+      const book = bookFixtures.create({ status: BookStatus.Available, updatedAt: faker.date.past() });
+      const updatedBook = updateStatusToReserved(book);
+      expect(updatedBook.updatedAt).toEqual(systemDateTime);
+      expect(updatedBook.updatedAt).not.toEqual(book.updatedAt);
+      expect(updatedBook.status).toBe(BookStatus.Reserved);
     });
   });
 });

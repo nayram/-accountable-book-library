@@ -1,7 +1,7 @@
 import { dbSetUp, dbTearDown } from '@tests/utils/mocks/db';
 import { walletFixtures } from '@tests/utils/fixtures/wallet/wallet-fixtures';
 
-import { walletModel } from './wallet-model';
+import { walletModel } from '../../shared/wallets/infrastructure/wallet-model';
 
 import { walletRepository } from '.';
 

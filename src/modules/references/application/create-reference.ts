@@ -2,8 +2,8 @@ import { UseCase } from '@modules/shared/core/application/use-case';
 import { UuidGenerator } from '@modules/shared/core/domain/uuid-generator';
 import { create, Reference } from '@modules/shared/references/domain/reference';
 import { create as createBook, defaultNumberOfBooks } from '@modules/shared/books/domain/book/book';
-// eslint-disable-next-line max-len
 import { ReferenceBookRepository } from '@modules/shared/core/domain/reference-book-repository';
+import { ReferenceId } from '@modules/shared/references/domain/reference-id';
 
 import { ReferenceAlreadyExistsError } from '../domain/reference-already-exists-error';
 import { ReferenceRepository } from '../domain/reference-repository';
@@ -28,12 +28,16 @@ export function createReferenceBuilder({
   referenceRepository: ReferenceRepository;
   uuidGenerator: UuidGenerator;
 }): CreateReferenceUseCase {
+  function createBooks(referenceId: ReferenceId) {
+    return Array.from({ length: defaultNumberOfBooks }, () =>
+      createBook({ id: uuidGenerator.generate(), referenceId }),
+    );
+  }
   return async function createReference(request: CreateReferenceRequest) {
     const id = uuidGenerator.generate();
     const reference = create({ ...request, id });
-    const books = Array.from({ length: defaultNumberOfBooks }, () =>
-      createBook({ id: uuidGenerator.generate(), referenceId: id }),
-    );
+
+    const books = createBooks(id);
 
     const referenceExists = await referenceRepository.exits(reference.externalReferenceId);
     if (referenceExists) {
