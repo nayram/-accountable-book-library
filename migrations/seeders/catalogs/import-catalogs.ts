@@ -6,7 +6,7 @@ import { parse } from 'csv-parse';
 
 import { uuidGenerator } from '@modules/shared/core/infrastructure';
 import { isConnected, connectMongoDb } from '@resources/mongodb';
-import { ReferenceDTO, referenceModel } from '@modules/references/infrastructure/repository-model';
+import { ReferenceDTO, referenceModel } from '@modules/shared/references/infrastructure/reference-model';
 
 const db = connectMongoDb();
 

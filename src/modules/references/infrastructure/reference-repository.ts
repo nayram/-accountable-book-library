@@ -2,9 +2,9 @@ import { ReferenceDoesNotExistsError } from '../domain/reference-does-not-exists
 import { ReferenceRepository } from '../domain/reference-repository';
 
 import { hasTextIndex, mapSortByFieldToReferenceModelField } from './helper-functions';
-import { fromDTO } from './reference-dto';
+import { fromDTO } from '../../shared/references/infrastructure/reference-dto';
 import { ReferenceModelError } from './reference-model-error';
-import { ReferenceModel } from './repository-model';
+import { ReferenceModel } from '../../shared/references/infrastructure/reference-model';
 
 export function referenceRepositoryBuilder({
   referenceModel,

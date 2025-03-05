@@ -1,6 +1,6 @@
 import { Pagination } from '@modules/shared/core/domain/pagination';
 
-import { referenceModel } from './repository-model';
+import { referenceModel } from '../../shared/references/infrastructure/reference-model';
 
 export function mapSortByFieldToReferenceModelField(sortByField: Pagination['sortBy']): string {
   const fieldMap: Record<Pagination['sortBy'], string> = {

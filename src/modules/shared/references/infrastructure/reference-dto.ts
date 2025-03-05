@@ -1,8 +1,7 @@
 import { Schema } from 'mongoose';
-
 import { Reference } from '@modules/shared/references/domain/reference';
 
-import { ReferenceDTO } from './repository-model';
+import { ReferenceDTO } from './reference-model';
 
 export function fromDTO(dto: ReferenceDTO): Reference {
   return {

@@ -1,21 +1,34 @@
 import mongoose from 'mongoose';
+import { toDTO as toReferenceDTO } from '@modules/shared/references/infrastructure/reference-dto';
+import { toDTO as toBookDTO } from '@modules/shared/books/infrastructure/book-dto';
+import { BookModel } from '@modules/shared/books/infrastructure/book-model';
+import { ReferenceModel } from '@modules/shared/references/infrastructure/reference-model';
 
-import { TransactionalRepository } from '../domain/reference-book-transactional-repository';
+import { ReferenceBookTransactionalRepository } from '../domain/reference-book-transactional-repository';
 
-export function transactionalRepositoryBuilder(): TransactionalRepository {
+import { ReferenceBookTransactionalModelError } from './reference-book-transactional-model-error';
+
+export function referenceBookTransactionalRepositoryBuilder({
+  bookModel,
+  referenceModel,
+}: {
+  referenceModel: ReferenceModel;
+  bookModel: BookModel;
+}): ReferenceBookTransactionalRepository {
   return {
-    async executeTransaction(operations) {
+    async save(reference, books) {
       const session = await mongoose.startSession();
-      session.startTransaction();
       try {
-        await operations(session);
-
+        await referenceModel.create(toReferenceDTO(reference), { session });
+        await bookModel.create(books.map(toBookDTO), { session });
         await session.commitTransaction();
-        session.endSession();
-      } catch (error) {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      } catch (error: any) {
         await session.abortTransaction();
-        session.endSession();
-        throw error;
+        console.error(error);
+        throw new ReferenceBookTransactionalModelError(error.message);
+      } finally {
+        await session.endSession();
       }
     },
   };

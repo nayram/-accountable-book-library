@@ -1,8 +1,8 @@
 import { faker } from '@faker-js/faker/locale/en';
 
 import { Reference } from '@modules/shared/references/domain/reference';
-import { referenceModel } from '@modules/references/infrastructure/repository-model';
-import { toDTO } from '@modules/references/infrastructure/reference-dto';
+import { referenceModel } from '@modules/shared/references/infrastructure/reference-model';
+import { toDTO } from '@modules/shared/references/infrastructure/reference-dto';
 
 import { titleFixtures } from './title-fixtures';
 import { authorFixtures } from './author-fixtures';

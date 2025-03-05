@@ -9,8 +9,7 @@ import { Pagination } from '@modules/shared/core/domain/pagination';
 
 import { ReferenceDoesNotExistsError } from '../domain/reference-does-not-exists-error';
 import { SearchParams } from '../domain/search-params';
-
-import { referenceModel } from './repository-model';
+import { referenceModel } from '../../shared/references/infrastructure/reference-model';
 
 import { referenceRepository } from '.';
 
