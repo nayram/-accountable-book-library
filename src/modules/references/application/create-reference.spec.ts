@@ -11,8 +11,6 @@ import { publicationYearFixtures } from '@tests/utils/fixtures/references/public
 import { publisherFixtures } from '@tests/utils/fixtures/references/publisher-fixtures';
 import { titleFixtures } from '@tests/utils/fixtures/references/title-fixtures';
 import { ReferenceBookRepository } from '@modules/shared/core/domain/reference-book-repository';
-import { bookFixtures } from '@tests/utils/fixtures/books/book-fixtures';
-import { defaultNumberOfBooks } from '@modules/shared/books/domain/book';
 
 import { ReferenceAlreadyExistsError } from '../domain/reference-already-exists-error';
 import { ReferenceRepository } from '../domain/reference-repository';
@@ -31,7 +29,7 @@ describe('create reference', () => {
     updatedAt: systemDateTime,
   });
 
-  const books = bookFixtures.createMany({ book: { referenceId: reference.id }, length: defaultNumberOfBooks });
+  const existingReference = referenceFixtures.create({});
 
   beforeAll(() => {
     jest.useFakeTimers();
@@ -47,8 +45,9 @@ describe('create reference', () => {
 
     when(referenceRepository.exits)
       .calledWith(reference.externalReferenceId)
-      .mockResolvedValueOnce(false)
-      .mockReturnValue(true);
+      .mockResolvedValue(false)
+      .calledWith(existingReference.externalReferenceId)
+      .mockResolvedValue(true);
 
     createReference = createReferenceBuilder({
       referenceBookRepository,
@@ -118,11 +117,14 @@ describe('create reference', () => {
   });
 
   it('should throw ReferenceAlreadyExistsError when reference already exits', async () => {
-    await createReference(reference);
-    expect(createReference(reference)).rejects.toThrow(ReferenceAlreadyExistsError);
+    expect(createReference(existingReference)).rejects.toThrow(ReferenceAlreadyExistsError);
   });
 
   it('should save reference', async () => {
-    await expect(createReference(reference)).resolves.toEqual(reference);
+    await createReference(reference);
+    expect(referenceBookRepository.save).toHaveBeenCalledWith(
+      reference,
+      expect.arrayContaining([expect.objectContaining({ referenceId: reference.id })]),
+    );
   });
 });
