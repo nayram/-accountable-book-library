@@ -1,7 +1,7 @@
 import mongoose, { Schema } from 'mongoose';
 import { referenceModel } from '@modules/shared/references/infrastructure/reference-model';
 
-import { BookStatus } from '../domain/book-status';
+import { BookStatus } from '../domain/book/book-status';
 
 export interface BookDTO {
   _id: Schema.Types.UUID;

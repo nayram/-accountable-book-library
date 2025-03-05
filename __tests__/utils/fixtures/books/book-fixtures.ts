@@ -1,4 +1,4 @@
-import { Book } from '@modules/shared/books/domain/book';
+import { Book } from '@modules/shared/books/domain/book/book';
 import { faker } from '@faker-js/faker/locale/en';
 import { bookModel } from '@modules/shared/books/infrastructure/book-model';
 import { toDTO } from '@modules/shared/books/infrastructure/book-dto';

@@ -1,7 +1,7 @@
 import { UseCase } from '@modules/shared/core/application/use-case';
 import { UuidGenerator } from '@modules/shared/core/domain/uuid-generator';
 import { create, Reference } from '@modules/shared/references/domain/reference';
-import { create as createBook, defaultNumberOfBooks } from '@modules/shared/books/domain/book';
+import { create as createBook, defaultNumberOfBooks } from '@modules/shared/books/domain/book/book';
 // eslint-disable-next-line max-len
 import { ReferenceBookRepository } from '@modules/shared/core/domain/reference-book-repository';
 

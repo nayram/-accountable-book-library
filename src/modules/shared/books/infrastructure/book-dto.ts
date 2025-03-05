@@ -1,6 +1,6 @@
 import { Schema } from 'mongoose';
 
-import { Book } from '../domain/book';
+import { Book } from '../domain/book/book';
 
 import { BookDTO } from './book-model';
 

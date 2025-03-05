@@ -1,4 +1,4 @@
-import { BookId } from '@modules/shared/books/domain/book-id';
+import { BookId } from '@modules/shared/books/domain/book/book-id';
 
 import { uuidFixtures } from '../shared/uuid-fixtures';
 
