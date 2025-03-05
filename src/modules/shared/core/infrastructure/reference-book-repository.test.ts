@@ -4,11 +4,11 @@ import { bookFixtures } from '@tests/utils/fixtures/books/book-fixtures';
 import { referenceFixtures } from '@tests/utils/fixtures/references/reference-fixtures';
 import { dbSetUp, dbTearDown } from '@tests/utils/mocks/db';
 
-import { ReferenceBookTransactionalModelError } from './reference-book-transactional-model-error';
+import { ReferenceBookModelError } from './reference-book-model-error';
 
-import { referenceBookTransactionalRepository } from '.';
+import { referenceBookRepository } from '.';
 
-describe('ReferenceBookTransactionalRepository', () => {
+describe('ReferenceBookRepository', () => {
   beforeAll(async () => {
     await dbSetUp();
   });
@@ -27,7 +27,7 @@ describe('ReferenceBookTransactionalRepository', () => {
     const books = bookFixtures.createMany({ book: { referenceId: reference.id }, length: 3 });
 
     it('should successfully save a reference and its related books in a transaction', async () => {
-      await referenceBookTransactionalRepository.save(reference, books);
+      await referenceBookRepository.save(reference, books);
 
       const savedReference = await referenceModel.findOne({ _id: reference.id });
       const savedBooks = await bookModel.find({ reference_id: reference.id }).sort();
@@ -59,9 +59,21 @@ describe('ReferenceBookTransactionalRepository', () => {
         throw new Error('Simulated reference creation error');
       });
 
-      await expect(referenceBookTransactionalRepository.save(reference, books)).rejects.toThrow(
-        ReferenceBookTransactionalModelError,
-      );
+      await expect(referenceBookRepository.save(reference, books)).rejects.toThrow(ReferenceBookModelError);
+
+      const savedReference = await referenceModel.findOne({ _id: reference.id });
+      const savedBooks = await bookModel.find({ reference_id: reference.id });
+
+      expect(savedReference).toBeNull();
+      expect(savedBooks.length).toBe(0);
+    });
+
+    it('should rollback the transaction if saving any book fails', async () => {
+      jest.spyOn(bookModel, 'create').mockImplementationOnce(() => {
+        throw new Error('Simulated book creation error');
+      });
+
+      await expect(referenceBookRepository.save(reference, books)).rejects.toThrow(ReferenceBookModelError);
 
       const savedReference = await referenceModel.findOne({ _id: reference.id });
       const savedBooks = await bookModel.find({ reference_id: reference.id });

@@ -12,6 +12,7 @@ import { SearchParams } from '../domain/search-params';
 import { referenceModel } from '../../shared/references/infrastructure/reference-model';
 
 import { referenceRepository } from '.';
+import { toDTO } from '@modules/shared/references/infrastructure/reference-dto';
 
 describe('ReferenceRepository', () => {
   beforeAll(async () => {
@@ -22,28 +23,10 @@ describe('ReferenceRepository', () => {
     await dbTearDown();
   });
 
-  describe('save', () => {
-    it('should create a reference', async () => {
-      const reference = referenceFixtures.create();
-      await referenceRepository.save(reference);
-      const result = await referenceModel.findById(reference.id);
-      expect(result).not.toBeNull();
-      expect(result?._id).toBe(reference.id);
-      expect(result?.external_reference_id).toBe(reference.externalReferenceId);
-      expect(result?.title).toBe(reference.title);
-      expect(result?.author).toBe(reference.author);
-      expect(result?.publication_year).toBe(reference.publicationYear);
-      expect(result?.price).toBe(reference.price);
-      expect(result?.soft_delete).toEqual(reference.softDelete);
-      expect(result?.created_at.toISOString()).toEqual(reference.createdAt.toISOString());
-      expect(result?.updated_at.toISOString()).toEqual(reference.updatedAt.toISOString());
-    });
-  });
-
   describe('exists', () => {
     it('should return true if reference exists', async () => {
       const reference = referenceFixtures.create();
-      await referenceRepository.save(reference);
+      await referenceModel.create(toDTO(reference));
       const secondReference = referenceFixtures.create({ externalReferenceId: reference.externalReferenceId });
       await expect(referenceRepository.exits(secondReference.externalReferenceId)).resolves.toBe(true);
     });
@@ -64,7 +47,7 @@ describe('ReferenceRepository', () => {
 
     it('should return reference if it exists', async () => {
       const reference = referenceFixtures.create();
-      await referenceRepository.save(reference);
+      await referenceModel.create(toDTO(reference));
       expect(referenceRepository.findByExteranlReferenceId(reference.externalReferenceId)).resolves.toEqual(reference);
     });
   });
@@ -77,7 +60,7 @@ describe('ReferenceRepository', () => {
 
     it('should soft delete reference successfully', async () => {
       const reference = referenceFixtures.create({ softDelete: false });
-      await referenceRepository.save(reference);
+      await referenceModel.create(toDTO(reference));
       await referenceRepository.softDeleteById(reference.id);
       const res = await referenceModel.findById(reference.id);
       expect(res?.soft_delete).toBe(true);

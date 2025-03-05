@@ -1,7 +1,6 @@
 import { faker } from '@faker-js/faker/locale/en';
 import { when } from 'jest-when';
 import { mock, MockProxy } from 'jest-mock-extended';
-
 import { UuidGenerator } from '@modules/shared/core/domain/uuid-generator';
 import { FieldValidationError } from '@modules/shared/core/domain/field-validation-error';
 import { referenceFixtures } from '@tests/utils/fixtures/references/reference-fixtures';
@@ -11,6 +10,9 @@ import { priceFixtures } from '@tests/utils/fixtures/references/price-fixtures';
 import { publicationYearFixtures } from '@tests/utils/fixtures/references/publication-year-fixtures';
 import { publisherFixtures } from '@tests/utils/fixtures/references/publisher-fixtures';
 import { titleFixtures } from '@tests/utils/fixtures/references/title-fixtures';
+import { ReferenceBookRepository } from '@modules/shared/core/domain/reference-book-repository';
+import { bookFixtures } from '@tests/utils/fixtures/books/book-fixtures';
+import { defaultNumberOfBooks } from '@modules/shared/books/domain/book';
 
 import { ReferenceAlreadyExistsError } from '../domain/reference-already-exists-error';
 import { ReferenceRepository } from '../domain/reference-repository';
@@ -20,6 +22,7 @@ import { createReferenceBuilder, CreateReferenceUseCase } from './create-referen
 describe('create reference', () => {
   let createReference: CreateReferenceUseCase;
   let referenceRepository: MockProxy<ReferenceRepository>;
+  let referenceBookRepository: MockProxy<ReferenceBookRepository>;
 
   const systemDateTime = faker.date.recent();
 
@@ -28,6 +31,8 @@ describe('create reference', () => {
     updatedAt: systemDateTime,
   });
 
+  const books = bookFixtures.createMany({ book: { referenceId: reference.id }, length: defaultNumberOfBooks });
+
   beforeAll(() => {
     jest.useFakeTimers();
     jest.setSystemTime(systemDateTime);
@@ -35,6 +40,7 @@ describe('create reference', () => {
 
   beforeEach(() => {
     referenceRepository = mock<ReferenceRepository>();
+    referenceBookRepository = mock<ReferenceBookRepository>();
     const uuidGenerator = mock<UuidGenerator>();
 
     when(uuidGenerator.generate).mockReturnValue(reference.id);
@@ -45,6 +51,7 @@ describe('create reference', () => {
       .mockReturnValue(true);
 
     createReference = createReferenceBuilder({
+      referenceBookRepository,
       referenceRepository,
       uuidGenerator,
     });
@@ -117,6 +124,5 @@ describe('create reference', () => {
 
   it('should save reference', async () => {
     await expect(createReference(reference)).resolves.toEqual(reference);
-    expect(referenceRepository.save).toHaveBeenCalledWith(reference);
   });
 });

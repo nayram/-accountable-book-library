@@ -1,4 +1,5 @@
 import { uuidV4Generator } from '@modules/shared/core/infrastructure/uuid-v4-generator';
+import { referenceBookRepository } from '@modules/shared/core/infrastructure';
 
 import { referenceRepository } from '../infrastructure';
 
@@ -9,6 +10,7 @@ import { findReferencesBuilder } from './find-references';
 
 export const createReference = createReferenceBuilder({
   referenceRepository,
+  referenceBookRepository,
   uuidGenerator: uuidV4Generator,
 });
 export const findReferenceByExternalReferenceId = findReferenceByExternalReferenceIdBuilder({ referenceRepository });

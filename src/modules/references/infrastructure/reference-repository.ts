@@ -12,20 +12,6 @@ export function referenceRepositoryBuilder({
   referenceModel: ReferenceModel;
 }): ReferenceRepository {
   return {
-    async save(reference) {
-      await referenceModel.create({
-        _id: reference.id,
-        external_reference_id: reference.externalReferenceId,
-        price: reference.price,
-        author: reference.author,
-        title: reference.title,
-        soft_delete: reference.softDelete,
-        publication_year: reference.publicationYear,
-        publisher: reference.publisher,
-        created_at: reference.createdAt,
-        updated_at: reference.updatedAt,
-      });
-    },
     async exits(exterenalReferenceId) {
       const result = await referenceModel.findOne({ external_reference_id: exterenalReferenceId });
       return result != null;
