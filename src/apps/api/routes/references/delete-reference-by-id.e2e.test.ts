@@ -3,7 +3,7 @@ import { StatusCodes } from 'http-status-codes';
 
 import app from '@api/app';
 import { dbSetUp, dbTearDown } from '@tests/utils/mocks/db';
-import { Reference } from '@modules/references/domain/reference/reference';
+import { Reference } from '@modules/shared/references/domain/reference/reference';
 import { referenceFixtures } from '@tests/utils/fixtures/references/reference-fixtures';
 import { referenceIdFixtures } from '@tests/utils/fixtures/references/reference-id-fixtures';
 

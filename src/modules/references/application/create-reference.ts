@@ -2,7 +2,7 @@ import { UseCase } from '@modules/shared/core/application/use-case';
 import { UuidGenerator } from '@modules/shared/core/domain/uuid-generator';
 
 import { ReferenceRepository } from '../domain/reference-repository';
-import { create, Reference } from '../domain/reference/reference';
+import { create, Reference } from '../../shared/references/domain/reference/reference';
 import { ReferenceAlreadyExistsError } from '../domain/reference-already-exists-error';
 
 export interface CreateReferenceRequest {

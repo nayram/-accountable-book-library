@@ -1,6 +1,6 @@
 import { faker } from '@faker-js/faker/locale/en';
 
-import { ExternalReferenceId } from '@modules/references/domain/reference/external-reference-id';
+import { ExternalReferenceId } from '@modules/shared/references/domain/reference/external-reference-id';
 
 export const externalReferenceIdFixtures = {
   create(): ExternalReferenceId {

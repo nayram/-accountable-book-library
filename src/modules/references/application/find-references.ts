@@ -3,7 +3,7 @@ import { createPagination } from '@modules/shared/core/domain/pagination';
 
 import { PaginatedResults } from '../domain/paginated-results';
 import { createSearchParams } from '../domain/search-params';
-import { Reference } from '../domain/reference/reference';
+import { Reference } from '../../shared/references/domain/reference/reference';
 import { ReferenceRepository } from '../domain/reference-repository';
 
 export interface FindReferencesRequest {

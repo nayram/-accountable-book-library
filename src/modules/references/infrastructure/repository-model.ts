@@ -16,21 +16,15 @@ export interface ReferenceDTO {
 export const referenceSchema = new Schema<ReferenceDTO>({
   _id: { type: Schema.Types.UUID, required: true },
   external_reference_id: { type: String, required: true, unique: true },
-  title: { type: String, required: true },
-  author: { type: String, required: true },
-  publication_year: { type: Number, required: true },
-  publisher: { type: String, required: true },
+  title: { type: String, required: true, index: 'text' },
+  author: { type: String, required: true, index: 1 },
+  publication_year: { type: Number, required: true, index: 1 },
+  publisher: { type: String, required: true, index: 1 },
   price: { type: Number, required: true },
   soft_delete: { type: Boolean, required: true },
   created_at: { type: Date, required: true },
   updated_at: { type: Date, required: true },
 });
-
-referenceSchema.index({ publication_year: 1 });
-referenceSchema.index({ author: 1 });
-referenceSchema.index({ publisher: 1 });
-referenceSchema.index({ soft_delete: 1 });
-referenceSchema.index({ title: 'text' });
 
 export const referenceModel = mongoose.model<ReferenceDTO>('Reference', referenceSchema);
 

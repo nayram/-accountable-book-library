@@ -1,6 +1,6 @@
 import { Schema } from 'mongoose';
 
-import { Reference } from '../domain/reference/reference';
+import { Reference } from '../../shared/references/domain/reference/reference';
 
 import { ReferenceDTO } from './repository-model';
 

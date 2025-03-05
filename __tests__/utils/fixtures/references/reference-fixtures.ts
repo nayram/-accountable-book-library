@@ -1,6 +1,6 @@
 import { faker } from '@faker-js/faker/locale/en';
 
-import { Reference } from '@modules/references/domain/reference/reference';
+import { Reference } from '@modules/shared/references/domain/reference/reference';
 import { referenceModel } from '@modules/references/infrastructure/repository-model';
 import { toDTO } from '@modules/references/infrastructure/reference-dto';
 

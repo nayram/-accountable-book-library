@@ -1,5 +1,5 @@
 import { faker } from '@faker-js/faker/locale/en';
-import { Title } from '@modules/references/domain/reference/title';
+import { Title } from '@modules/shared/references/domain/reference/title';
 
 export const titleFixtures = {
   create(): Title {
