@@ -13,3 +13,13 @@ export function toDTO(book: Book): BookDTO {
     updated_at: book.updatedAt,
   };
 }
+
+export function fromDTO(bookDTO: BookDTO): Book {
+  return {
+    id: String(bookDTO._id),
+    referenceId: String(bookDTO.reference_id),
+    status: bookDTO.status,
+    createdAt: bookDTO.created_at,
+    updatedAt: bookDTO.updated_at,
+  };
+}

@@ -19,6 +19,8 @@ export const bookSchema = new Schema<BookDTO>({
   updated_at: { type: Date, required: true },
 });
 
+bookSchema.index({ reference_id: 1 });
+
 export const bookModel = mongoose.model<BookDTO>('Book', bookSchema);
 
 export type BookModel = typeof bookModel;
