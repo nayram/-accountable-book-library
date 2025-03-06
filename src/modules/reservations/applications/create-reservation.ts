@@ -6,6 +6,8 @@ import { createUserId } from '@modules/shared/users/domain/user/user-id';
 import { createReferenceId } from '@modules/shared/references/domain/reference-id';
 import { getAvailableBooks, updateStatusToReserved } from '@modules/shared/books/domain/book/book';
 import { credit as creditWallet } from '@modules/wallets/domain/wallet/wallet';
+import { ReferenceRepository } from '@modules/shared/references/domain/reference-repository';
+import { UserRepository } from '@modules/shared/users/domain/user-repository';
 
 import {
   canAfford,
@@ -15,6 +17,7 @@ import {
 } from '../domain/reservation/reservation';
 import { ReservationFailedError } from '../domain/reservation-failed-error';
 import { CreateReservationRepository } from '../domain/create-reservation-repository';
+import { InsufficientFundsError } from '@modules/shared/wallets/domain/insuffiecient-funds-error';
 
 export interface CreateReservationRequest {
   userId: string;
@@ -27,11 +30,15 @@ export function createReservationBuilder({
   walletRepository,
   bookRepository,
   createReservationRepository,
+  userRepository,
+  referenceRepository,
   uuidGenerator,
 }: {
   walletRepository: WalletRepository;
   bookRepository: BookRepository;
   createReservationRepository: CreateReservationRepository;
+  referenceRepository: ReferenceRepository;
+  userRepository: UserRepository;
   uuidGenerator: UuidGenerator;
 }): CreateReservationUseCase {
   return async function createReservation(req: CreateReservationRequest) {
@@ -39,10 +46,14 @@ export function createReservationBuilder({
     const userId = createUserId(req.userId);
     const referenceId = createReferenceId(req.referenceId);
 
+    await userRepository.exists(userId);
+
+    await referenceRepository.exists(referenceId);
+
     const wallet = await walletRepository.findByUserId(userId);
 
     if (!canAfford(wallet.balance)) {
-      throw ReservationFailedError.withInsufficientFunds();
+      throw new InsufficientFundsError();
     }
 
     const books = await bookRepository.find({ referenceId });

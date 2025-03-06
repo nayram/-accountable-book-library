@@ -15,16 +15,19 @@ import { FieldValidationError } from '@modules/shared/core/domain/field-validati
 import { WalletDoesNotExistsError } from '@modules/shared/wallets/domain/wallet-does-not-exists-error';
 import { Book } from '@modules/shared/books/domain/book/book';
 import { Wallet } from '@modules/wallets/domain/wallet/wallet';
+import { ReferenceRepository } from '@modules/shared/references/domain/reference-repository';
+import { UserRepository } from '@modules/shared/users/domain/user-repository';
+import { UserDoesNotExistsError } from '@modules/shared/users/domain/user-does-not-exists-error';
+import { ReferenceDoesNotExistsError } from '@modules/shared/references/domain/reference-does-not-exists-error';
+import { InsufficientFundsError } from '@modules/shared/wallets/domain/insuffiecient-funds-error';
 
-import { CreateReservationRepository } from '../domain/create-reservation-repository';
 import { ReservationFailedError } from '../domain/reservation-failed-error';
+import { CreateReservationRepository } from '../domain/create-reservation-repository';
 
 import { createReservationBuilder, CreateReservationUseCase } from './create-reservation';
 
 describe('create reservation', () => {
   let createReservation: CreateReservationUseCase;
-  let walletRepository: MockProxy<WalletRepository>;
-  let bookRepository: MockProxy<BookRepository>;
   let createReservationRepository: MockProxy<CreateReservationRepository>;
 
   const systemDateTime = faker.date.recent();
@@ -33,6 +36,7 @@ describe('create reservation', () => {
 
   const userId = userIdFixtures.create();
   const userIdOfUserWithoutEnoughBalance = userIdFixtures.create();
+  const userIdOfUserNoWithNoWallet = userIdFixtures.create();
 
   const referenceId = referenceIdFixtures.create();
   const referenceIdWithUnAvailableBooks = referenceIdFixtures.create();
@@ -84,11 +88,35 @@ describe('create reservation', () => {
 
   beforeEach(() => {
     createReservationRepository = mock<CreateReservationRepository>();
-    walletRepository = mock<WalletRepository>();
-    bookRepository = mock<BookRepository>();
+    const walletRepository = mock<WalletRepository>();
+    const bookRepository = mock<BookRepository>();
+    const referenceRepository = mock<ReferenceRepository>();
+    const userRepository = mock<UserRepository>();
     const uuidGenerator = mock<UuidGenerator>();
 
     when(uuidGenerator.generate).mockReturnValue(id);
+
+    when(userRepository.exists)
+      .mockImplementation((id) => {
+        throw new UserDoesNotExistsError(id);
+      })
+      .calledWith(userId)
+      .mockResolvedValue()
+      .calledWith(userIdOfUserWithoutEnoughBalance)
+      .mockResolvedValue()
+      .calledWith(userIdOfUserNoWithNoWallet)
+      .mockResolvedValue();
+
+    when(referenceRepository.exists)
+      .mockImplementation((id) => {
+        throw new ReferenceDoesNotExistsError(id);
+      })
+      .calledWith(referenceId)
+      .mockResolvedValue()
+      .calledWith(userIdOfUserWithoutEnoughBalance)
+      .mockResolvedValue()
+      .calledWith(referenceIdWithUnAvailableBooks)
+      .mockResolvedValue();
 
     when(walletRepository.findByUserId)
       .mockImplementation((id) => {
@@ -106,6 +134,8 @@ describe('create reservation', () => {
       .mockResolvedValue(unavailableBooks);
 
     createReservation = createReservationBuilder({
+      referenceRepository,
+      userRepository,
       walletRepository,
       bookRepository,
       createReservationRepository,
@@ -134,13 +164,31 @@ describe('create reservation', () => {
     });
   });
 
-  describe('should throw ReservationFailedError when', () => {
-    it('user does not have enough Balance', () => {
-      expect(createReservation({ userId: userIdOfUserWithoutEnoughBalance, referenceId })).rejects.toThrow(
-        ReservationFailedError,
+  describe('should throw UserDoesNotExistsError when', () => {
+    it('userid does not have a corresponding user data', () => {
+      expect(createReservation({ userId: userIdFixtures.create(), referenceId })).rejects.toThrow(
+        UserDoesNotExistsError,
       );
     });
+  });
 
+  describe('should throw ReferenceDoesNotExistsError when', () => {
+    it('refenceId does not have a correspoding user data', () => {
+      expect(createReservation({ userId, referenceId: referenceIdFixtures.create() })).rejects.toThrow(
+        ReferenceDoesNotExistsError,
+      );
+    });
+  });
+
+  describe('should throw InsufficientFundsError', () => {
+    it('user does not have enough Balance', () => {
+      expect(createReservation({ userId: userIdOfUserWithoutEnoughBalance, referenceId })).rejects.toThrow(
+        InsufficientFundsError,
+      );
+    });
+  });
+
+  describe('should throw ReservationFailedError when', () => {
     it('reference does not have enough books', () => {
       expect(createReservation({ userId, referenceId: referenceIdWithUnAvailableBooks })).rejects.toThrow(
         ReservationFailedError,
@@ -149,8 +197,8 @@ describe('create reservation', () => {
   });
 
   describe('should throw WalletDoesNotExistsError when', () => {
-    it('user does not have a wallet', () => {
-      expect(createReservation({ userId: uuidFixtures.create(), referenceId })).rejects.toThrow(
+    it('user does not have a wallet', async () => {
+      expect(createReservation({ userId: userIdOfUserNoWithNoWallet, referenceId })).rejects.toThrow(
         WalletDoesNotExistsError,
       );
     });
