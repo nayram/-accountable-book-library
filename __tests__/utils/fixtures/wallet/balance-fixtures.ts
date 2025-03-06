@@ -1,4 +1,5 @@
 import { faker } from '@faker-js/faker/locale/en';
+
 import { Balance } from '@modules/shared/wallets/domain/wallet/balance';
 
 export const balanceFixtures = {

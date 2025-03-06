@@ -1,7 +1,13 @@
 import { EventEmitter } from 'events';
 
+import { MongoMemoryReplSet } from 'mongodb-memory-server';
 import mongoose from 'mongoose';
+import config from 'config';
 
+const mongoMemoryServerConfig = config.get<{ active: boolean; name: string }>('mongoMemoryServerConfig');
+const db = config.get<{ url: string; name: string }>('db');
+
+let mongoServer: MongoMemoryReplSet | null = null;
 export interface MongooseConnector extends EventEmitter {
   name: string;
   connect(): Promise<void>;
@@ -36,9 +42,25 @@ const mongooseConnector = (dbUrl: string): MongooseConnector => {
   return Object.assign(connections, {
     name: 'MongooseConnection',
     connect: async () => {
-      await mongoose.connect(dbUrl);
+      let url = dbUrl;
+      if (mongoMemoryServerConfig.active) {
+        mongoServer = new MongoMemoryReplSet({
+          replSet: {
+            name: mongoMemoryServerConfig.name,
+            dbName: db.name,
+          },
+        });
+        await mongoServer.start();
+        url = mongoServer.getUri(db.name);
+      }
+      await mongoose.connect(url);
     },
     disconnect: async () => {
+      if (mongoMemoryServerConfig.active && mongoServer) {
+        await mongoServer.stop();
+        mongoServer = null;
+      }
+
       await mongoose.connection.close();
     },
     dropDatabase: async () => {

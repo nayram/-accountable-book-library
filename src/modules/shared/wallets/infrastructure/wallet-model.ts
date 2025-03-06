@@ -1,4 +1,5 @@
 import mongoose, { Schema } from 'mongoose';
+
 import { userModel } from '@modules/shared/users/infrastructure/users-model';
 
 export interface WalletDTO {

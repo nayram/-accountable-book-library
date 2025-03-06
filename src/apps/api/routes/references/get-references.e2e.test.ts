@@ -2,7 +2,6 @@ import supertest from 'supertest';
 import { StatusCodes } from 'http-status-codes';
 
 import app from '@api/app';
-import { dbSetUp, dbTearDown } from '@tests/utils/mocks/db';
 import { authorFixtures } from '@tests/utils/fixtures/references/author-fixtures';
 import { titleFixtures } from '@tests/utils/fixtures/references/title-fixtures';
 import { referenceFixtures } from '@tests/utils/fixtures/references/reference-fixtures';
@@ -18,14 +17,6 @@ describe('GET /references/search', () => {
   const publicationYear = 1900;
   const numberOfreferences = 5;
   const limit = 2;
-
-  beforeAll(async () => {
-    await dbSetUp();
-  });
-
-  afterAll(async () => {
-    await dbTearDown();
-  });
 
   describe('when valid request is made', () => {
     beforeAll(async () => {

@@ -34,6 +34,8 @@ module.exports = [
         require: 'readonly',
         module: 'readonly',
         __dirname: 'readonly',
+        setTimeout: 'readonly',
+        global: 'readonly',
       },
     },
     rules: {

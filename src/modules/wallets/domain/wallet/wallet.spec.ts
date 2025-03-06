@@ -1,4 +1,5 @@
 import { faker } from '@faker-js/faker/locale/en';
+
 import { walletFixtures } from '@tests/utils/fixtures/wallet/wallet-fixtures';
 import { FieldValidationError } from '@modules/shared/core/domain/field-validation-error';
 

@@ -1,5 +1,6 @@
-import { Wallet } from '@modules/wallets/domain/wallet/wallet';
 import { Schema } from 'mongoose';
+
+import { Wallet } from '@modules/wallets/domain/wallet/wallet';
 
 import { WalletDTO } from './wallet-model';
 

@@ -1,10 +1,10 @@
 import { ReferenceDoesNotExistsError } from '../domain/reference-does-not-exists-error';
 import { ReferenceRepository } from '../domain/reference-repository';
+import { fromDTO } from '../../shared/references/infrastructure/reference-dto';
+import { ReferenceModel } from '../../shared/references/infrastructure/reference-model';
 
 import { hasTextIndex, mapSortByFieldToReferenceModelField } from './helper-functions';
-import { fromDTO } from '../../shared/references/infrastructure/reference-dto';
 import { ReferenceModelError } from './reference-model-error';
-import { ReferenceModel } from '../../shared/references/infrastructure/reference-model';
 
 export function referenceRepositoryBuilder({
   referenceModel,

@@ -1,7 +1,8 @@
+import { faker } from '@faker-js/faker/locale/en';
+
 import { Book, updateStatusToReserved } from '@modules/shared/books/domain/book/book';
 import { BookStatus } from '@modules/shared/books/domain/book/book-status';
 import { bookFixtures } from '@tests/utils/fixtures/books/book-fixtures';
-import { faker } from '@faker-js/faker/locale/en';
 
 import { getAvailableBooks } from './book';
 

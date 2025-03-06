@@ -1,4 +1,5 @@
 import mongoose, { Schema } from 'mongoose';
+
 import { referenceModel } from '@modules/shared/references/infrastructure/reference-model';
 
 import { BookStatus } from '../domain/book/book-status';

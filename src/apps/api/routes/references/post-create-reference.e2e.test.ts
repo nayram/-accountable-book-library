@@ -2,7 +2,6 @@ import supertest from 'supertest';
 import { StatusCodes } from 'http-status-codes';
 
 import app from '@api/app';
-import { dbSetUp, dbTearDown } from '@tests/utils/mocks/db';
 import { titleFixtures } from '@tests/utils/fixtures/references/title-fixtures';
 import { authorFixtures } from '@tests/utils/fixtures/references/author-fixtures';
 import { publicationYearFixtures } from '@tests/utils/fixtures/references/publication-year-fixtures';
@@ -17,14 +16,6 @@ import { PostCreateReferenceRequest } from './post-create-reference-request';
 describe('POST /api/references', () => {
   const request = supertest.agent(app);
   const path = '/api/references';
-
-  beforeAll(async () => {
-    await dbSetUp();
-  });
-
-  afterAll(async () => {
-    await dbTearDown();
-  });
 
   describe('when a valid body is sent', () => {
     let requestBody: PostCreateReferenceRequest['body'];

@@ -1,4 +1,5 @@
 import { Schema } from 'mongoose';
+
 import { Reference } from '@modules/shared/references/domain/reference';
 
 import { ReferenceDTO } from './reference-model';

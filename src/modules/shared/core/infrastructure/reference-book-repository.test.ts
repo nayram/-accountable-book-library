@@ -2,24 +2,15 @@ import { bookModel } from '@modules/shared/books/infrastructure/book-model';
 import { referenceModel } from '@modules/shared/references/infrastructure/reference-model';
 import { bookFixtures } from '@tests/utils/fixtures/books/book-fixtures';
 import { referenceFixtures } from '@tests/utils/fixtures/references/reference-fixtures';
-import { dbSetUp, dbTearDown } from '@tests/utils/mocks/db';
 
 import { ReferenceBookModelError } from './reference-book-model-error';
 
 import { referenceBookRepository } from '.';
 
 describe('ReferenceBookRepository', () => {
-  beforeAll(async () => {
-    await dbSetUp();
-  });
-
   beforeEach(async () => {
     await bookModel.deleteMany({});
     await referenceModel.deleteMany({});
-  });
-
-  afterAll(async () => {
-    await dbTearDown();
   });
 
   describe('save', () => {

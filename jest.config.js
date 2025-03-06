@@ -1,7 +1,10 @@
 module.exports = {
   preset: 'ts-jest',
+  globalSetup: '<rootDir>/__tests__/config/global-setup.ts',
+  globalTeardown: '<rootDir>/__tests__/config/global-teardown.ts',
   testEnvironment: 'node',
   roots: ['<rootDir>/src'],
+  setupFilesAfterEnv: ['<rootDir>/__tests__/config/setup-file.ts'],
   transform: {
     '^.+\\.(t|j)s$': ['ts-jest', { isolatedModules: true }],
   },

@@ -6,22 +6,15 @@ import { authorFixtures } from '@tests/utils/fixtures/references/author-fixtures
 import { externalReferenceIdFixtures } from '@tests/utils/fixtures/references/external-reference-id-fixtures';
 import { publicationYearFixtures } from '@tests/utils/fixtures/references/publication-year-fixtures';
 import { Pagination } from '@modules/shared/core/domain/pagination';
+import { toDTO } from '@modules/shared/references/infrastructure/reference-dto';
 
 import { ReferenceDoesNotExistsError } from '../domain/reference-does-not-exists-error';
 import { SearchParams } from '../domain/search-params';
 import { referenceModel } from '../../shared/references/infrastructure/reference-model';
 
 import { referenceRepository } from '.';
-import { toDTO } from '@modules/shared/references/infrastructure/reference-dto';
 
 describe('ReferenceRepository', () => {
-  beforeAll(async () => {
-    await dbSetUp();
-  });
-
-  afterAll(async () => {
-    await dbTearDown();
-  });
 
   describe('exists', () => {
     it('should return true if reference exists', async () => {

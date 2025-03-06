@@ -1,5 +1,6 @@
-import { Wallet } from '@modules/wallets/domain/wallet/wallet';
 import { faker } from '@faker-js/faker/locale/en';
+
+import { Wallet } from '@modules/wallets/domain/wallet/wallet';
 
 import { userIdFixtures } from '../users/user-id-fixtures';
 

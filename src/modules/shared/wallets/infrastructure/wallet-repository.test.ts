@@ -1,4 +1,3 @@
-import { dbSetUp, dbTearDown } from '@tests/utils/mocks/db';
 import { userIdFixtures } from '@tests/utils/fixtures/users/user-id-fixtures';
 import { walletFixtures } from '@tests/utils/fixtures/wallet/wallet-fixtures';
 
@@ -10,14 +9,6 @@ import { toDTO } from './wallet-dto';
 import { walletRepository } from '.';
 
 describe('WalletRepository', () => {
-  beforeAll(async () => {
-    await dbSetUp();
-  });
-
-  afterAll(async () => {
-    await dbTearDown();
-  });
-
   beforeEach(async () => {
     await walletModel.deleteMany({});
   });

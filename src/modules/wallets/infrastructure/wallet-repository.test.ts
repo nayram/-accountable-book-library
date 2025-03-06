@@ -1,4 +1,3 @@
-import { dbSetUp, dbTearDown } from '@tests/utils/mocks/db';
 import { walletFixtures } from '@tests/utils/fixtures/wallet/wallet-fixtures';
 
 import { walletModel } from '../../shared/wallets/infrastructure/wallet-model';
@@ -6,14 +5,6 @@ import { walletModel } from '../../shared/wallets/infrastructure/wallet-model';
 import { walletRepository } from '.';
 
 describe('WalletRepository', () => {
-  beforeAll(async () => {
-    await dbSetUp();
-  });
-
-  afterAll(async () => {
-    await dbTearDown();
-  });
-
   beforeEach(async () => {
     await walletModel.deleteMany({});
   });

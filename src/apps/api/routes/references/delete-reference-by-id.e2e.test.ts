@@ -2,7 +2,6 @@ import supertest from 'supertest';
 import { StatusCodes } from 'http-status-codes';
 
 import app from '@api/app';
-import { dbSetUp, dbTearDown } from '@tests/utils/mocks/db';
 import { Reference } from '@modules/shared/references/domain/reference';
 import { referenceFixtures } from '@tests/utils/fixtures/references/reference-fixtures';
 import { referenceIdFixtures } from '@tests/utils/fixtures/references/reference-id-fixtures';
@@ -11,14 +10,6 @@ describe('DELETE /references/:id', () => {
   const request = supertest.agent(app);
   const path = '/api/references/:id';
   let response: supertest.Response;
-
-  beforeAll(async () => {
-    await dbSetUp();
-  });
-
-  afterAll(async () => {
-    await dbTearDown();
-  });
 
   describe('when reference exists', () => {
     let reference: Reference;
