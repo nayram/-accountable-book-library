@@ -2,8 +2,8 @@ import { Pagination } from '@modules/shared/core/domain/pagination';
 import { Reference } from '@modules/shared/references/domain/reference';
 import { ExternalReferenceId } from '@modules/shared/references/domain/external-reference-id';
 import { ReferenceId } from '@modules/shared/references/domain/reference-id';
+import { PaginatedResults } from '@modules/shared/core/domain/paginated-results';
 
-import { PaginatedResults } from './paginated-results';
 import { SearchParams } from './search-params';
 
 export interface ReferenceRepository {
