@@ -13,7 +13,7 @@ import { referenceFixtures } from '@tests/utils/fixtures/references/reference-fi
 
 import { PostCreateReferenceRequest } from './post-create-reference-request';
 
-describe('POST /api/references', () => {
+describe('POST /references', () => {
   const request = supertest.agent(app);
   const path = '/api/references';
 

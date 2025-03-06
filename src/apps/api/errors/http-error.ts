@@ -24,6 +24,14 @@ export function NotFound(message: string): HttpError {
   };
 }
 
+export function Conflict(message: string): HttpError {
+  return {
+    status: 'Conflict',
+    statusCode: StatusCodes.CONFLICT,
+    message,
+  };
+}
+
 export function BadRequest(message: string): HttpError {
   return {
     status: 'Bad Request',
@@ -38,5 +46,13 @@ export function InternalServerError(error: Error): HttpError {
     statusCode: StatusCodes.INTERNAL_SERVER_ERROR,
     message: 'Something went wrong',
     stack: error.stack,
+  };
+}
+
+export function PaymentRequired(message: string): HttpError {
+  return {
+    status: 'Payment Required',
+    statusCode: StatusCodes.PAYMENT_REQUIRED,
+    message,
   };
 }

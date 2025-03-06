@@ -8,6 +8,7 @@ import { getAvailableBooks, updateStatusToReserved } from '@modules/shared/books
 import { credit as creditWallet } from '@modules/wallets/domain/wallet/wallet';
 import { ReferenceRepository } from '@modules/shared/references/domain/reference-repository';
 import { UserRepository } from '@modules/shared/users/domain/user-repository';
+import { InsufficientFundsError } from '@modules/shared/wallets/domain/insuffiecient-funds-error';
 
 import {
   canAfford,
@@ -17,7 +18,6 @@ import {
 } from '../domain/reservation/reservation';
 import { ReservationFailedError } from '../domain/reservation-failed-error';
 import { CreateReservationRepository } from '../domain/create-reservation-repository';
-import { InsufficientFundsError } from '@modules/shared/wallets/domain/insuffiecient-funds-error';
 
 export interface CreateReservationRequest {
   userId: string;

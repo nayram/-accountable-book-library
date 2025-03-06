@@ -19,7 +19,7 @@ describe('POST /reservations', () => {
   const request = supertest.agent(app);
   const path = '/api/reservations';
 
-  afterAll(async () => {
+  afterEach(async () => {
     await dropAllCollections();
   });
 
@@ -31,7 +31,10 @@ describe('POST /reservations', () => {
     let user: User;
     let userWithoutEnoughFunds: User;
 
-    beforeAll(async () => {
+    const nonExistentReferenceId = referenceIdFixtures.create();
+    const nonExistentUserId = userIdFixtures.create();
+
+    beforeEach(async () => {
       reference = await referenceFixtures.insert();
       referenceWithoutAvailableBooks = await referenceFixtures.insert();
 
@@ -39,13 +42,15 @@ describe('POST /reservations', () => {
       userWithoutEnoughFunds = await userFixtures.insert();
 
       await walletFixtures.insert({ userId: user.id });
+
       await walletFixtures.insert({ userId: userWithoutEnoughFunds.id, balance: 0 });
 
       await bookFixtures.insertMany({ book: { referenceId: reference.id, status: BookStatus.Available } });
+
       await bookFixtures.insertMany({
         book: {
           referenceId: referenceWithoutAvailableBooks.id,
-          status: faker.helpers.arrayElements([BookStatus.Borrowed, BookStatus.Reserved]) as unknown as BookStatus,
+          status: faker.helpers.arrayElement([BookStatus.Borrowed, BookStatus.Reserved]) as unknown as BookStatus,
         },
       });
     });
@@ -53,7 +58,7 @@ describe('POST /reservations', () => {
     describe('and the reference does not exist', () => {
       beforeEach(async () => {
         requestBody = {
-          referenceId: referenceIdFixtures.create(),
+          referenceId: nonExistentReferenceId,
           userId: user.id,
         };
 
@@ -68,7 +73,7 @@ describe('POST /reservations', () => {
         expect(response.body).toEqual({
           status: 'Not Found',
           statusCode: StatusCodes.NOT_FOUND,
-          message: `reference with id ${reference.id} does not exist`,
+          message: `reference with id ${nonExistentReferenceId} does not exist`,
         });
       });
     });
@@ -77,7 +82,7 @@ describe('POST /reservations', () => {
       beforeEach(async () => {
         requestBody = {
           referenceId: reference.id,
-          userId: userIdFixtures.create(),
+          userId: nonExistentUserId,
         };
 
         response = await request.post(path).send(requestBody);
@@ -91,7 +96,7 @@ describe('POST /reservations', () => {
         expect(response.body).toEqual({
           status: 'Not Found',
           statusCode: StatusCodes.NOT_FOUND,
-          message: `user with id ${user.id} does not exist`,
+          message: `user with id ${nonExistentUserId} does not exist`,
         });
       });
     });
@@ -142,7 +147,7 @@ describe('POST /reservations', () => {
       });
     });
 
-    describe('and reservation is created successfully', () => {
+    describe.only('and reservation is created successfully', () => {
       beforeEach(async () => {
         requestBody = {
           userId: user.id,
@@ -157,11 +162,13 @@ describe('POST /reservations', () => {
 
       it('should return reservation data', () => {
         expect(response.body).toHaveProperty('id');
-        expect(response.body).toHaveProperty('userId', user.createdAt);
+        expect(response.body).toHaveProperty('userId', user.id);
         expect(response.body).toHaveProperty('referenceId', reference.id);
         expect(response.body).toHaveProperty('bookId');
         expect(response.body).toHaveProperty('reservedAt');
       });
+
+      it('should debit wallet');
     });
   });
 

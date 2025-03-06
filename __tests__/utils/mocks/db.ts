@@ -27,3 +27,25 @@ export async function dropReferencesCollection() {
     await dbDropCollection('references');
   }
 }
+
+export async function dropWalletCollection() {
+  if (isConnected()) {
+    await dbDropCollection('wallets');
+  }
+}
+
+export async function dropBookCollection() {
+  if (isConnected()) {
+    await dbDropCollection('books');
+  }
+}
+
+export async function dropUserCollection() {
+  if (isConnected()) {
+    await dbDropCollection('users');
+  }
+}
+
+export async function dropAllCollections() {
+  await Promise.all([dropReferencesCollection(), dropBookCollection(), dropUserCollection(), dropWalletCollection()]);
+}

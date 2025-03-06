@@ -15,7 +15,7 @@ export interface BookDTO {
 export const bookSchema = new Schema<BookDTO>({
   _id: { type: Schema.Types.UUID, required: true },
   reference_id: { type: Schema.Types.UUID, required: true, ref: referenceModel },
-  status: { enum: Object.values(BookStatus) },
+  status: { type: String, enum: BookStatus },
   created_at: { type: Date, required: true },
   updated_at: { type: Date, required: true },
 });
