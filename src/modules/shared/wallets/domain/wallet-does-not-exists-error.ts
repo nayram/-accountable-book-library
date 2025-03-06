@@ -1,9 +1,9 @@
-import { UserId } from '@modules/shared/users/domain/user-id';
+import { UserId } from '@modules/shared/users/domain/user/user-id';
 
 export class WalletDoesNotExistsError extends Error {
   constructor(message: string) {
     super(message);
-    this.name = 'ReferenceDoesNotExistsError';
+    this.name = 'WalletDoesNotExistsError';
   }
 
   static withUserId(userId: UserId) {

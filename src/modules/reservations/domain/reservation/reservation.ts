@@ -1,5 +1,5 @@
 import { Entity } from '@modules/shared/core/domain/entity';
-import { createUserId, UserId } from '@modules/shared/users/domain/user-id';
+import { createUserId, UserId } from '@modules/shared/users/domain/user/user-id';
 import { createReferenceId, ReferenceId } from '@modules/shared/references/domain/reference-id';
 import { Balance } from '@modules/shared/wallets/domain/wallet/balance';
 import { BookId, createBookId } from '@modules/shared/books/domain/book/book-id';

@@ -1,4 +1,4 @@
-import { UserId } from '@modules/shared/users/domain/user-id';
+import { UserId } from '@modules/shared/users/domain/user/user-id';
 
 import { uuidFixtures } from '../shared/uuid-fixtures';
 

@@ -1,4 +1,4 @@
-import { UserId } from '@modules/shared/users/domain/user-id';
+import { UserId } from '@modules/shared/users/domain/user/user-id';
 import { Wallet } from '@modules/wallets/domain/wallet/wallet';
 
 export interface WalletRepository {
