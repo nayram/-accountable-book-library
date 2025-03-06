@@ -12,6 +12,10 @@ import { bookFixtures } from '@tests/utils/fixtures/books/book-fixtures';
 import { BookStatus } from '@modules/shared/books/domain/book/book-status';
 import { faker } from '@faker-js/faker/locale/en';
 import { dropAllCollections } from '@tests/utils/mocks/db';
+import { walletModel } from '@modules/shared/wallets/infrastructure/wallet-model';
+import { Wallet } from '@modules/wallets/domain/wallet/wallet';
+import { bookModel } from '@modules/shared/books/infrastructure/book-model';
+import { reservationModel } from '@modules/reservations/infrastructure/reservation-model';
 
 import { PostCreateReservationRequest } from './post-create-reservation.request';
 
@@ -30,6 +34,7 @@ describe('POST /reservations', () => {
     let referenceWithoutAvailableBooks: Reference;
     let user: User;
     let userWithoutEnoughFunds: User;
+    let wallet: Wallet;
 
     const nonExistentReferenceId = referenceIdFixtures.create();
     const nonExistentUserId = userIdFixtures.create();
@@ -41,7 +46,7 @@ describe('POST /reservations', () => {
       user = await userFixtures.insert();
       userWithoutEnoughFunds = await userFixtures.insert();
 
-      await walletFixtures.insert({ userId: user.id });
+      wallet = await walletFixtures.insert({ userId: user.id });
 
       await walletFixtures.insert({ userId: userWithoutEnoughFunds.id, balance: 0 });
 
@@ -147,7 +152,7 @@ describe('POST /reservations', () => {
       });
     });
 
-    describe.only('and reservation is created successfully', () => {
+    describe('and reservation is created successfully', () => {
       beforeEach(async () => {
         requestBody = {
           userId: user.id,
@@ -160,15 +165,29 @@ describe('POST /reservations', () => {
         expect(response.status).toEqual(StatusCodes.CREATED);
       });
 
-      it('should return reservation data', () => {
-        expect(response.body).toHaveProperty('id');
-        expect(response.body).toHaveProperty('userId', user.id);
-        expect(response.body).toHaveProperty('referenceId', reference.id);
-        expect(response.body).toHaveProperty('bookId');
-        expect(response.body).toHaveProperty('reservedAt');
+      it('should return reservation data', async () => {
+        const reservation = await reservationModel.findOne({ user_id: user.id, reference_id: reference.id });
+        expect(response.body).toHaveProperty('id', reservation?.id);
+        expect(response.body).toHaveProperty('userId', reservation?.user_id);
+        expect(response.body).toHaveProperty('referenceId', reservation?.reference_id);
+        expect(response.body).toHaveProperty('bookId', reservation?.book_id);
+        expect(response.body).toHaveProperty('reservedAt', reservation?.reserved_at.toISOString());
       });
 
-      it('should debit wallet');
+      it('should debit user wallet', async () => {
+        const userWallet = await walletModel.findOne({ user_id: user.id });
+        expect(userWallet).not.toBeNull();
+        expect(userWallet?.user_id).toBe(user.id);
+        expect(userWallet?.balance).toBeLessThan(wallet?.balance);
+        expect(userWallet?.balance).toBe(wallet.balance - 3);
+      });
+
+      it('should reserve a book', async () => {
+        const reservation = await reservationModel.findOne({ user_id: user.id, reference_id: reference.id });
+        const book = await bookModel.findById(reservation?.book_id);
+        expect(book).not.toBeNull();
+        expect(book?.status).toBe(BookStatus.Reserved);
+      });
     });
   });
 
