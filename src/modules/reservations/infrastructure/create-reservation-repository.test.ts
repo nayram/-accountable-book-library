@@ -1,10 +1,11 @@
+import { faker } from '@faker-js/faker/locale/en';
+
 import { BookStatus } from '@modules/shared/books/domain/book/book-status';
 import { bookFixtures } from '@tests/utils/fixtures/books/book-fixtures';
 import { reservationFixtures } from '@tests/utils/fixtures/reservations/reservation-fixtures';
 import { userIdFixtures } from '@tests/utils/fixtures/users/user-id-fixtures';
 import { walletFixtures } from '@tests/utils/fixtures/wallet/wallet-fixtures';
 import { bookModel } from '@modules/shared/books/infrastructure/book-model';
-import { faker } from '@faker-js/faker/locale/en';
 import { walletModel } from '@modules/shared/wallets/infrastructure/wallet-model';
 
 import { reservationModel } from './reservation-model';

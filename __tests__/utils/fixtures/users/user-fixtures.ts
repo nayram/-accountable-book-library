@@ -1,5 +1,6 @@
-import { User } from '@modules/shared/users/domain/user/user';
 import { faker } from '@faker-js/faker/locale/en';
+
+import { User } from '@modules/shared/users/domain/user/user';
 import { userModel } from '@modules/shared/users/infrastructure/users-model';
 import { toDTO } from '@modules/shared/users/infrastructure/user-dto';
 

@@ -7,7 +7,6 @@ import { toDTO } from './book-dto';
 import { bookRepository } from '.';
 
 describe('bookRepository', () => {
-
   beforeEach(async () => {
     await bookModel.deleteMany({});
   });

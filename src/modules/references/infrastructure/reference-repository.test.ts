@@ -14,7 +14,6 @@ import { referenceModel } from '../../shared/references/infrastructure/reference
 import { referenceRepository } from '.';
 
 describe('ReferenceRepository', () => {
-
   describe('exists', () => {
     it('should return true if reference exists', async () => {
       const reference = referenceFixtures.create();

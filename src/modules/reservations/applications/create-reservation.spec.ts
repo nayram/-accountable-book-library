@@ -1,4 +1,7 @@
 import { mock, MockProxy } from 'jest-mock-extended';
+import { when } from 'jest-when';
+import { faker } from '@faker-js/faker/locale/en';
+
 import { WalletRepository } from '@modules/shared/wallets/domain/wallet-repository';
 import { BookRepository } from '@modules/shared/books/domain/book-repository';
 import { bookFixtures } from '@tests/utils/fixtures/books/book-fixtures';
@@ -8,9 +11,7 @@ import { userIdFixtures } from '@tests/utils/fixtures/users/user-id-fixtures';
 import { reservationFixtures } from '@tests/utils/fixtures/reservations/reservation-fixtures';
 import { referenceIdFixtures } from '@tests/utils/fixtures/references/reference-id-fixtures';
 import { UuidGenerator } from '@modules/shared/core/domain/uuid-generator';
-import { when } from 'jest-when';
 import { uuidFixtures } from '@tests/utils/fixtures/shared/uuid-fixtures';
-import { faker } from '@faker-js/faker/locale/en';
 import { FieldValidationError } from '@modules/shared/core/domain/field-validation-error';
 import { WalletDoesNotExistsError } from '@modules/shared/wallets/domain/wallet-does-not-exists-error';
 import { Book } from '@modules/shared/books/domain/book/book';

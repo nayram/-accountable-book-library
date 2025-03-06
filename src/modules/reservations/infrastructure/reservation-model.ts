@@ -1,4 +1,5 @@
 import mongoose, { Schema } from 'mongoose';
+
 import { bookModel } from '@modules/shared/books/infrastructure/book-model';
 import { referenceModel } from '@modules/shared/references/infrastructure/reference-model';
 import { userModel } from '@modules/shared/users/infrastructure/users-model';
