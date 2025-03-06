@@ -1,4 +1,3 @@
-import { dbSetUp, dbTearDown } from '@tests/utils/mocks/db';
 import { referenceFixtures } from '@tests/utils/fixtures/references/reference-fixtures';
 import { titleFixtures } from '@tests/utils/fixtures/references/title-fixtures';
 import { referenceIdFixtures } from '@tests/utils/fixtures/references/reference-id-fixtures';

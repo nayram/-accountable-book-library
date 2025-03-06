@@ -2,6 +2,6 @@ import { Reservation } from '@modules/reservations/domain/reservation/reservatio
 import { Book } from '@modules/shared/books/domain/book/book';
 import { Wallet } from '@modules/wallets/domain/wallet/wallet';
 
-export interface ReservationBookWalletTransactionRepository {
+export interface CreateReservationRepository {
   save({ reservation, book, wallet }: { reservation: Reservation; book: Book; wallet: Wallet }): Promise<void>;
 }

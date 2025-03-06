@@ -54,5 +54,10 @@
     "mongoose": "^8.11.0",
     "pino": "^9.6.0",
     "uuid": "^11.1.0"
+  },
+  "config": {
+    "mongodbMemoryServer": {
+      "debug": "0"
+    }
   }
 }
