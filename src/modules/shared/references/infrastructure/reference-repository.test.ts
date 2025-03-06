@@ -7,8 +7,15 @@ import { referenceRepository } from '.';
 
 describe('referenceRepository', () => {
   describe('exists', () => {
-    it('should throw ReferenceDoesNotExistsError if reference does not exist', () => {
-      expect(referenceRepository.exists(referenceIdFixtures.create())).rejects.toThrow(ReferenceDoesNotExistsError);
+    it('should throw ReferenceDoesNotExistsError if reference does not exist', async () => {
+      await expect(referenceRepository.exists(referenceIdFixtures.create())).rejects.toThrow(
+        ReferenceDoesNotExistsError,
+      );
+    });
+
+    it('should ReferenceDoesNotExistsError if soft delete is true', async () => {
+      const reference = await referenceFixtures.insert({ softDelete: true });
+      await expect(referenceRepository.exists(reference.id)).rejects.toThrow(ReferenceDoesNotExistsError);
     });
 
     it('should resolve successfully if user exists', async () => {

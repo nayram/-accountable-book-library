@@ -7,7 +7,7 @@ export function referenceRepositoryBuilder({ model }: { model: ReferenceModel })
   return {
     async exists(id) {
       const reference = await model.findById(id);
-      if (!reference) {
+      if (!reference || reference.soft_delete) {
         throw new ReferenceDoesNotExistsError(id);
       }
     },
