@@ -4,9 +4,10 @@ import { userRepository } from '@modules/shared/users/infrastructure';
 import { bookRepository } from '@modules/shared/books/infrastructure';
 import { uuidV4Generator } from '@modules/shared/core/infrastructure/uuid-v4-generator';
 
-import { createReservationRepository } from '../infrastructure';
+import { createReservationRepository, reservationRepository } from '../infrastructure';
 
 import { createReservationBuilder } from './create-reservation';
+import { findReservationsBuilder } from './find-reservations';
 
 export const createReservation = createReservationBuilder({
   walletRepository,
@@ -16,3 +17,5 @@ export const createReservation = createReservationBuilder({
   createReservationRepository,
   uuidGenerator: uuidV4Generator,
 });
+
+export const findReservations = findReservationsBuilder({ reservationRepository });

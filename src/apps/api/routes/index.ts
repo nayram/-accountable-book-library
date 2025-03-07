@@ -11,7 +11,8 @@ import {
 } from './references';
 import { getReferencesRequestSchema } from './references/get-references-request';
 import { postCreateReservationRequestSchema } from './reservations/post-create-reservation.request';
-import { postCreateReservationController } from './reservations';
+import { getReservationsController, postCreateReservationController } from './reservations';
+import { getReservationsRequestSchema } from './reservations/get-reservations-request';
 
 const routes = Router();
 
@@ -21,5 +22,6 @@ routes.get('/references/:externalReferenceId', getReferenceByExternalReferenceId
 routes.delete('/references/:id', deleteReferenceByIdController);
 
 routes.post('/reservations', SchemaValidator.body(postCreateReservationRequestSchema), postCreateReservationController);
+routes.get('/reservations', SchemaValidator.query(getReservationsRequestSchema), getReservationsController);
 
 export default routes;
