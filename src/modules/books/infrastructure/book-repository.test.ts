@@ -1,0 +1,66 @@
+import { bookModel } from '@modules/shared/books/infrastructure/book-model';
+import { bookFixtures } from '@tests/utils/fixtures/books/book-fixtures';
+import { BookStatus } from '@modules/shared/books/domain/book/book-status';
+
+import { BookAlreadyExistsError } from '../domain/book-already-exists-error';
+
+import { bookRepository } from '.';
+
+describe('bookRepository', () => {
+  beforeEach(async () => {
+    await bookModel.deleteMany({});
+  });
+
+  it('should create a book if it does not exist', async () => {
+    const book = bookFixtures.create();
+    await bookRepository.save(book);
+
+    const retrievedBook = await bookModel.findById(book.id).lean();
+
+    expect(retrievedBook).not.toBeNull();
+
+    expect(String(retrievedBook?._id)).toEqual(book.id);
+    expect(retrievedBook?.barcode).toEqual(book.barcode);
+    expect(retrievedBook?.status).toEqual(book.status);
+    expect(String(retrievedBook?.reference_id)).toEqual(book.referenceId);
+    expect(retrievedBook?.created_at.toISOString()).toEqual(book.createdAt.toISOString());
+    expect(retrievedBook?.updated_at.toISOString()).toEqual(book.updatedAt.toISOString());
+  });
+
+  it('should update a book if it already exists', async () => {
+    const initialBook = await bookFixtures.insert();
+
+    const updatedBook = bookFixtures.create({
+      id: initialBook.id,
+      barcode: initialBook.barcode,
+      createdAt: initialBook.createdAt,
+      status: BookStatus.Borrowed,
+    });
+
+    await bookRepository.save(updatedBook);
+
+    const retrievedBook = await bookModel.findById(updatedBook.id).lean();
+
+    expect(retrievedBook).not.toBeNull();
+
+    expect(String(retrievedBook?._id)).toEqual(initialBook.id);
+    expect(retrievedBook?.barcode).toEqual(updatedBook.barcode);
+    expect(retrievedBook?.status).toEqual(updatedBook.status);
+    expect(String(retrievedBook?.reference_id)).toEqual(updatedBook.referenceId);
+    expect(retrievedBook?.created_at.toISOString()).toEqual(initialBook.createdAt.toISOString());
+    expect(retrievedBook?.updated_at.toISOString()).toEqual(updatedBook.updatedAt.toISOString());
+  });
+
+  describe('exists', () => {
+    it('should throw error BookAlreadyExistsError', async () => {
+      const book = await bookFixtures.insert();
+
+      expect(bookRepository.exists(book.barcode)).rejects.toThrow(BookAlreadyExistsError);
+    });
+
+    it('should resolve successfully if book does not exists', async () => {
+      const book = bookFixtures.create();
+      await expect(bookRepository.exists(book.barcode)).resolves.toBeUndefined();
+    });
+  });
+});

@@ -9,6 +9,7 @@ export function toDTO(book: Book): BookDTO {
     _id: book.id as unknown as Schema.Types.UUID,
     reference_id: book.referenceId as unknown as Schema.Types.UUID,
     status: book.status,
+    barcode: book.barcode,
     created_at: book.createdAt,
     updated_at: book.updatedAt,
   };
@@ -18,6 +19,7 @@ export function fromDTO(bookDTO: BookDTO): Book {
   return {
     id: String(bookDTO._id),
     referenceId: String(bookDTO.reference_id),
+    barcode: bookDTO.barcode,
     status: bookDTO.status,
     createdAt: bookDTO.created_at,
     updatedAt: bookDTO.updated_at,

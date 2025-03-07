@@ -1,10 +1,10 @@
-import { ReferenceDoesNotExistsError } from '../domain/reference-does-not-exists-error';
-import { ReferenceRepository } from '../domain/reference-repository';
-import { fromDTO } from '../../shared/references/infrastructure/reference-dto';
-import { ReferenceModel } from '../../shared/references/infrastructure/reference-model';
+import { fromDTO, toDTO } from '@modules/shared/references/infrastructure/reference-dto';
+import { ReferenceModel } from '@modules/shared/references/infrastructure/reference-model';
+import { hasTextIndex, mapSortByFieldToModelField } from '@modules/shared/core/infrastructure/helper-functions';
+import { RepositoryError } from '@modules/shared/core/domain/repository-error';
 
-import { hasTextIndex, mapSortByFieldToModelField } from '../../shared/core/infrastructure/helper-functions';
-import { ReferenceModelError } from './reference-model-error';
+import { ReferenceRepository } from '../domain/reference-repository';
+import { ReferenceDoesNotExistsError } from '../domain/reference-does-not-exists-error';
 
 export function referenceRepositoryBuilder({
   referenceModel,
@@ -12,6 +12,27 @@ export function referenceRepositoryBuilder({
   referenceModel: ReferenceModel;
 }): ReferenceRepository {
   return {
+    async save(reference) {
+      const existingReference = await referenceModel.findOne({
+        _id: reference.id,
+        external_reference_id: reference.externalReferenceId,
+      });
+      if (existingReference) {
+        await referenceModel.updateOne(
+          { _id: reference.id, external_reference_id: reference.externalReferenceId },
+          {
+            updated_at: reference.updatedAt,
+            author: reference.author,
+            title: reference.title,
+            price: reference.price,
+            publication_year: reference.publicationYear,
+            publisher: reference.publisher,
+          },
+        );
+      } else {
+        await referenceModel.create(toDTO(reference));
+      }
+    },
     async exits(exterenalReferenceId) {
       const result = await referenceModel.findOne({ external_reference_id: exterenalReferenceId });
       return result != null;
@@ -70,14 +91,14 @@ export function referenceRepositoryBuilder({
         try {
           const lastDoc = await referenceModel.findById(pagination.cursor).lean();
           if (!lastDoc) {
-            throw new ReferenceModelError('Invalid cursor');
+            throw new RepositoryError('Invalid cursor');
           }
 
           const operator = pagination.sortOrder === 'asc' ? '$gt' : '$lt';
           filter[sortBy] = { [operator]: (lastDoc as Record<string, unknown>)[sortBy] };
         } catch (error) {
           console.error('Error applying cursor:', error);
-          throw new ReferenceModelError('Invalid pagination cursor');
+          throw new RepositoryError('Invalid pagination cursor');
         }
       }
 

@@ -7,6 +7,6 @@ export const userIdFixtures = {
     return uuidFixtures.create();
   },
   invalid() {
-    return uuidFixtures.invalid();
+    return uuidFixtures.urlInvalid();
   },
 };

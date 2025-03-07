@@ -26,6 +26,8 @@ export const referenceSchema = new Schema<ReferenceDTO>({
   updated_at: { type: Date, required: true },
 });
 
+referenceSchema.index({ _id: 1, external_reference_id: 1 });
+
 export const referenceModel = mongoose.model<ReferenceDTO>('Reference', referenceSchema);
 
 export type ReferenceModel = typeof referenceModel;

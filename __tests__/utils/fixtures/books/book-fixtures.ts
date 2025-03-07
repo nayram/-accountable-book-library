@@ -8,6 +8,7 @@ import { referenceIdFixtures } from '../references/reference-id-fixtures';
 
 import { bookIdFixtures } from './book-id-fixtures';
 import { bookStatusFixtures } from './book-status-fixtures';
+import { barcodeFixtures } from './bar-code-fixtures';
 
 export const bookFixtures = {
   create(book?: Partial<Book>) {
@@ -39,6 +40,7 @@ function createBook(): Book {
     id: bookIdFixtures.create(),
     referenceId: referenceIdFixtures.create(),
     status: bookStatusFixtures.create(),
+    barcode: barcodeFixtures.create(),
     createdAt: date,
     updatedAt: date,
   };

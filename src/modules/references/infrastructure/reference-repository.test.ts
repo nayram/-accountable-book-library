@@ -14,6 +14,49 @@ import { referenceModel } from '../../shared/references/infrastructure/reference
 import { referenceRepository } from '.';
 
 describe('ReferenceRepository', () => {
+  describe('save', () => {
+    it('should create a reference if it does not exist', async () => {
+      const reference = referenceFixtures.create();
+      await referenceRepository.save(reference);
+
+      const retrievedReference = await referenceModel.findById(reference.id);
+      expect(retrievedReference).not.toBeNull();
+      expect(String(retrievedReference?._id)).toEqual(reference.id);
+      expect(retrievedReference?.external_reference_id).toEqual(reference.externalReferenceId);
+      expect(retrievedReference?.soft_delete).toBe(reference.softDelete);
+      expect(retrievedReference?.author).toBe(reference.author);
+      expect(retrievedReference?.title).toBe(reference.title);
+      expect(retrievedReference?.publication_year).toBe(reference.publicationYear);
+      expect(retrievedReference?.publisher).toBe(reference.publisher);
+      expect(retrievedReference?.price).toBe(reference.price);
+      expect(retrievedReference?.updated_at.toISOString()).toBe(reference.updatedAt.toISOString());
+      expect(retrievedReference?.created_at.toISOString()).toBe(reference.createdAt.toISOString());
+    });
+
+    it('should update a reference if it exists', async () => {
+      const initialRefernce = await referenceFixtures.insert();
+      const updatedReference = referenceFixtures.create({
+        id: initialRefernce.id,
+        externalReferenceId: initialRefernce.externalReferenceId,
+      });
+      await referenceRepository.save(updatedReference);
+
+      const retrievedReference = await referenceModel.findById(initialRefernce.id);
+
+      expect(retrievedReference).not.toBeNull();
+      expect(String(retrievedReference?._id)).toEqual(initialRefernce.id);
+      expect(retrievedReference?.external_reference_id).toEqual(initialRefernce.externalReferenceId);
+      expect(retrievedReference?.soft_delete).toBe(updatedReference.softDelete);
+      expect(retrievedReference?.author).toBe(updatedReference.author);
+      expect(retrievedReference?.title).toBe(updatedReference.title);
+      expect(retrievedReference?.publication_year).toBe(updatedReference.publicationYear);
+      expect(retrievedReference?.publisher).toBe(updatedReference.publisher);
+      expect(retrievedReference?.price).toBe(updatedReference.price);
+      expect(retrievedReference?.updated_at.toISOString()).toBe(updatedReference.updatedAt.toISOString());
+      expect(retrievedReference?.created_at.toISOString()).toBe(initialRefernce.createdAt.toISOString());
+    });
+  });
+
   describe('exists', () => {
     it('should return true if reference exists', async () => {
       const reference = referenceFixtures.create();

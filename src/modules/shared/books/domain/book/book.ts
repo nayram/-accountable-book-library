@@ -3,23 +3,36 @@ import { createReferenceId, ReferenceId } from '@modules/shared/references/domai
 
 import { BookId, createBookId } from './book-id';
 import { BookStatus } from './book-status';
+import { Barcode, createBarcode } from './bar-code';
 
 export const defaultNumberOfBooks = 4;
 
 export type Book = Entity<{
   id: BookId;
   referenceId: ReferenceId;
+  barcode: Barcode;
   status: BookStatus;
   createdAt: Date;
   updatedAt: Date;
 }>;
 
-export function create({ id, referenceId }: { id: string; referenceId: string }): Book {
+export function create({
+  id,
+  referenceId,
+  barcode,
+  status,
+}: {
+  id: string;
+  referenceId: string;
+  barcode: string;
+  status: BookStatus;
+}): Book {
   const now = new Date();
   return {
     id: createBookId(id),
     referenceId: createReferenceId(referenceId),
-    status: BookStatus.Available,
+    status,
+    barcode: createBarcode(barcode),
     createdAt: now,
     updatedAt: now,
   };

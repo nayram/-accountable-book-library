@@ -11,7 +11,6 @@ import { priceFixtures } from '@tests/utils/fixtures/references/price-fixtures';
 import { publicationYearFixtures } from '@tests/utils/fixtures/references/publication-year-fixtures';
 import { publisherFixtures } from '@tests/utils/fixtures/references/publisher-fixtures';
 import { titleFixtures } from '@tests/utils/fixtures/references/title-fixtures';
-import { ReferenceBookRepository } from '@modules/shared/core/domain/reference-book-repository';
 
 import { ReferenceAlreadyExistsError } from '../domain/reference-already-exists-error';
 import { ReferenceRepository } from '../domain/reference-repository';
@@ -21,7 +20,6 @@ import { createReferenceBuilder, CreateReferenceUseCase } from './create-referen
 describe('create reference', () => {
   let createReference: CreateReferenceUseCase;
   let referenceRepository: MockProxy<ReferenceRepository>;
-  let referenceBookRepository: MockProxy<ReferenceBookRepository>;
 
   const systemDateTime = faker.date.recent();
 
@@ -39,7 +37,6 @@ describe('create reference', () => {
 
   beforeEach(() => {
     referenceRepository = mock<ReferenceRepository>();
-    referenceBookRepository = mock<ReferenceBookRepository>();
     const uuidGenerator = mock<UuidGenerator>();
 
     when(uuidGenerator.generate).mockReturnValue(reference.id);
@@ -51,7 +48,6 @@ describe('create reference', () => {
       .mockResolvedValue(true);
 
     createReference = createReferenceBuilder({
-      referenceBookRepository,
       referenceRepository,
       uuidGenerator,
     });
@@ -122,10 +118,15 @@ describe('create reference', () => {
   });
 
   it('should save reference', async () => {
-    await createReference(reference);
-    expect(referenceBookRepository.save).toHaveBeenCalledWith(
-      reference,
-      expect.arrayContaining([expect.objectContaining({ referenceId: reference.id })]),
-    );
+    const res = await createReference({
+      externalReferenceId: reference.externalReferenceId,
+      author: reference.author,
+      price: reference.price,
+      publicationYear: reference.publicationYear,
+      publisher: reference.publisher,
+      title: reference.title,
+    });
+    expect(res).toEqual(reference);
+    expect(referenceRepository.save).toHaveBeenCalledWith(reference);
   });
 });
