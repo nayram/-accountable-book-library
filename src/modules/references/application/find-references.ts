@@ -24,7 +24,7 @@ export function findReferencesBuilder({
   return async function findReferences(req: FindReferencesRequest) {
     const { cursor, limit, author, publicationYear, title } = req;
     return referenceRepository.find(
-      createPagination({ limit, cursor }),
+      createPagination({ limit, cursor, sortBy: 'createdAt' }),
       createSearchParams({ author, publicationYear, title }),
     );
   };

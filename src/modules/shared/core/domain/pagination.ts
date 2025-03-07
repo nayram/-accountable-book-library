@@ -5,15 +5,23 @@ import { createUuid, Uuid } from './value-objects/uuid';
 export interface Pagination {
   cursor: Uuid | null;
   limit: number;
-  sortBy: 'id' | 'createdAt';
+  sortBy: 'id' | 'createdAt' | 'reservedAt';
   sortOrder: 'asc' | 'desc';
 }
 
-export function createPagination({ cursor, limit }: { cursor: string | null; limit: number }): Pagination {
+export function createPagination({
+  cursor,
+  limit,
+  sortBy,
+}: {
+  cursor: string | null;
+  limit: number;
+  sortBy: Pagination['sortBy'];
+}): Pagination {
   return {
     cursor: cursor ? createUuid(cursor, 'cursor') : null,
     limit: createLimit(limit),
-    sortBy: 'createdAt',
+    sortBy,
     sortOrder: 'desc',
   };
 }

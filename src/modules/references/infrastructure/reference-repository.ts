@@ -3,7 +3,7 @@ import { ReferenceRepository } from '../domain/reference-repository';
 import { fromDTO } from '../../shared/references/infrastructure/reference-dto';
 import { ReferenceModel } from '../../shared/references/infrastructure/reference-model';
 
-import { hasTextIndex, mapSortByFieldToReferenceModelField } from './helper-functions';
+import { hasTextIndex, mapSortByFieldToModelField } from '../../shared/core/infrastructure/helper-functions';
 import { ReferenceModelError } from './reference-model-error';
 
 export function referenceRepositoryBuilder({
@@ -42,7 +42,7 @@ export function referenceRepositoryBuilder({
     async find(pagination, searchParams) {
       const limit = Math.min(pagination.limit || 20, 100);
 
-      const sortBy = mapSortByFieldToReferenceModelField(pagination.sortBy);
+      const sortBy = mapSortByFieldToModelField(pagination.sortBy);
 
       const filter: Record<string, unknown> = { soft_delete: false };
 
