@@ -5,6 +5,7 @@ import { BookStatus } from '@modules/shared/books/domain/book/book-status';
 import { BookAlreadyExistsError } from '../domain/book-already-exists-error';
 
 import { bookRepository } from '.';
+import { BookDoesNotExistsError } from '../domain/book-does-not-exist-error';
 
 describe('bookRepository', () => {
   beforeEach(async () => {
@@ -55,12 +56,31 @@ describe('bookRepository', () => {
     it('should throw error BookAlreadyExistsError', async () => {
       const book = await bookFixtures.insert();
 
-      expect(bookRepository.exists(book.barcode)).rejects.toThrow(BookAlreadyExistsError);
+      await expect(bookRepository.exists(book.barcode)).rejects.toThrow(BookAlreadyExistsError);
     });
 
     it('should resolve successfully if book does not exists', async () => {
       const book = bookFixtures.create();
       await expect(bookRepository.exists(book.barcode)).resolves.toBeUndefined();
+    });
+  });
+
+  describe('findById', () => {
+    it('should throw error BookDoesNotExist', async () => {
+      const book = bookFixtures.create();
+
+      await expect(bookRepository.findById(book.id)).rejects.toThrow(BookDoesNotExistsError);
+    });
+
+    it('should return book', async () => {
+      const book = await bookFixtures.insert();
+      const res = await bookRepository.findById(book.id);
+      expect(res.id).toBe(book.id);
+      expect(res.barcode).toBe(book.barcode);
+      expect(res.referenceId).toBe(book.referenceId);
+      expect(res.status).toBe(book.status);
+      expect(res.createdAt.toISOString()).toBe(book.createdAt.toISOString());
+      expect(res.updatedAt.toISOString()).toBe(book.updatedAt.toISOString());
     });
   });
 });

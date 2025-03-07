@@ -2,7 +2,7 @@ import { Entity } from '@modules/shared/core/domain/entity';
 import { createReferenceId, ReferenceId } from '@modules/shared/references/domain/reference-id';
 
 import { BookId, createBookId } from './book-id';
-import { BookStatus } from './book-status';
+import { BookStatus, createBookStatus } from './book-status';
 import { Barcode, createBarcode } from './bar-code';
 
 export const defaultNumberOfBooks = 4;
@@ -25,13 +25,13 @@ export function create({
   id: string;
   referenceId: string;
   barcode: string;
-  status: BookStatus;
+  status: string;
 }): Book {
   const now = new Date();
   return {
     id: createBookId(id),
     referenceId: createReferenceId(referenceId),
-    status,
+    status: createBookStatus(status),
     barcode: createBarcode(barcode),
     createdAt: now,
     updatedAt: now,

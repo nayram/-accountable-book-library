@@ -6,6 +6,9 @@ import { FieldValidationError } from '@modules/shared/core/domain/field-validati
 import { bookFixtures } from '@tests/utils/fixtures/books/book-fixtures';
 import { referenceIdFixtures } from '@tests/utils/fixtures/references/reference-id-fixtures';
 import { barcodeFixtures } from '@tests/utils/fixtures/books/bar-code-fixtures';
+import { bookStatusFixtures } from '@tests/utils/fixtures/books/book-status-fixtures';
+import { ReferenceRepository } from '@modules/shared/references/domain/reference-repository';
+import { ReferenceDoesNotExistsError } from '@modules/shared/references/domain/reference-does-not-exists-error';
 
 import { BookAlreadyExistsError } from '../domain/book-already-exists-error';
 import { BookRepository } from '../domain/book-repository';
@@ -32,9 +35,19 @@ describe('create book', () => {
 
   beforeEach(() => {
     bookRepository = mock<BookRepository>();
+    const referenceRepository = mock<ReferenceRepository>();
     const uuidGenerator = mock<UuidGenerator>();
 
     when(uuidGenerator.generate).mockReturnValue(book.id);
+
+    when(referenceRepository.exists)
+      .mockImplementation((id) => {
+        throw new ReferenceDoesNotExistsError(id);
+      })
+      .calledWith(book.referenceId)
+      .mockResolvedValue()
+      .calledWith(existingBook.referenceId)
+      .mockResolvedValue();
 
     when(bookRepository.exists)
       .mockImplementation((barcode) => {
@@ -44,6 +57,7 @@ describe('create book', () => {
       .mockResolvedValue();
 
     createBook = createBookBuilder({
+      referenceRepository,
       bookRepository,
       uuidGenerator,
     });
@@ -54,7 +68,7 @@ describe('create book', () => {
   });
 
   describe('should throw FieldValidationError when', () => {
-    it('provided invalid reference id', () => {
+    it('provided with invalid reference id', () => {
       expect(
         createBook({
           ...book,
@@ -63,7 +77,7 @@ describe('create book', () => {
       ).rejects.toThrow(FieldValidationError);
     });
 
-    it('provided invalid barcode value', () => {
+    it('provided with invalid barcode value', () => {
       expect(
         createBook({
           ...book,
@@ -71,10 +85,25 @@ describe('create book', () => {
         }),
       ).rejects.toThrow(FieldValidationError);
     });
+
+    it('provided with invalid status', async () => {
+      expect(
+        createBook({
+          ...book,
+          status: bookStatusFixtures.invalid(),
+        }),
+      ).rejects.toThrow(FieldValidationError);
+    });
+  });
+
+  it('should throw ReferenceDoesNotExists when reference id provided has no corresponding reference', async () => {
+    await expect(createBook({ ...book, referenceId: referenceIdFixtures.create() })).rejects.toThrow(
+      ReferenceDoesNotExistsError,
+    );
   });
 
   it('should throw BookAlreadyExists when book already exits', async () => {
-    expect(createBook(existingBook)).rejects.toThrow(BookAlreadyExistsError);
+    await expect(createBook(existingBook)).rejects.toThrow(BookAlreadyExistsError);
   });
 
   it('should save book', async () => {

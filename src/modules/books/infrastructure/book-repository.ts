@@ -1,7 +1,9 @@
 import { BookModel } from '@modules/shared/books/infrastructure/book-model';
+import { fromDTO } from '@modules/shared/books/infrastructure/book-dto';
 
 import { BookRepository } from '../domain/book-repository';
 import { BookAlreadyExistsError } from '../domain/book-already-exists-error';
+import { BookDoesNotExistsError } from '../domain/book-does-not-exist-error';
 
 export function bookRepositoryBuilder({ model }: { model: BookModel }): BookRepository {
   return {
@@ -36,6 +38,14 @@ export function bookRepositoryBuilder({ model }: { model: BookModel }): BookRepo
       if (book) {
         throw BookAlreadyExistsError.withBarCode(barcode);
       }
+    },
+
+    async findById(id) {
+      const book = await model.findById(id);
+      if (!book) {
+        throw new BookDoesNotExistsError(id);
+      }
+      return fromDTO(book);
     },
   };
 }

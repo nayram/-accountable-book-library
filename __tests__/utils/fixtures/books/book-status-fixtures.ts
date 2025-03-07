@@ -6,4 +6,7 @@ export const bookStatusFixtures = {
   create(): BookStatus {
     return faker.helpers.enumValue(BookStatus);
   },
+  invalid() {
+    return faker.helpers.arrayElement(['N/A', 'UnAvailable']);
+  },
 };
