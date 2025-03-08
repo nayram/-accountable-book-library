@@ -1,10 +1,11 @@
+import { StatusCodes } from 'http-status-codes';
+import supertest from 'supertest';
+
 import app from '@api/app';
 import { Book } from '@modules/shared/books/domain/book/book';
 import { bookFixtures } from '@tests/utils/fixtures/books/book-fixtures';
 import { bookIdFixtures } from '@tests/utils/fixtures/books/book-id-fixtures';
 import { referenceFixtures } from '@tests/utils/fixtures/references/reference-fixtures';
-import { StatusCodes } from 'http-status-codes';
-import supertest from 'supertest';
 
 describe('GET /books/:id/status', () => {
   const request = supertest.agent(app);

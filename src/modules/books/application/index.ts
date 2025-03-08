@@ -4,7 +4,7 @@ import { uuidGenerator } from '@modules/shared/core/infrastructure';
 import { bookRepository } from '../infrastructure';
 
 import { createBookBuilder } from './create-book';
-import { getBookStatusBuilder } from './get-book-status';
+import { getBookByIdBuilder } from './get-book-by-Id';
 
 export const createBook = createBookBuilder({ bookRepository, uuidGenerator, referenceRepository });
-export const getBookStatus = getBookStatusBuilder({ bookRepository });
+export const getBookById = getBookByIdBuilder({ bookRepository });

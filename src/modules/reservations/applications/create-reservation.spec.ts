@@ -166,32 +166,32 @@ describe('create reservation', () => {
   });
 
   describe('should throw UserDoesNotExistsError when', () => {
-    it('userid does not have a corresponding user data', () => {
-      expect(createReservation({ userId: userIdFixtures.create(), referenceId })).rejects.toThrow(
+    it('userid does not have a corresponding user data', async () => {
+      await expect(createReservation({ userId: userIdFixtures.create(), referenceId })).rejects.toThrow(
         UserDoesNotExistsError,
       );
     });
   });
 
   describe('should throw ReferenceDoesNotExistsError when', () => {
-    it('refenceId does not have a correspoding user data', () => {
-      expect(createReservation({ userId, referenceId: referenceIdFixtures.create() })).rejects.toThrow(
+    it('refenceId does not have a correspoding user data', async () => {
+      await expect(createReservation({ userId, referenceId: referenceIdFixtures.create() })).rejects.toThrow(
         ReferenceDoesNotExistsError,
       );
     });
   });
 
   describe('should throw InsufficientFundsError', () => {
-    it('user does not have enough Balance', () => {
-      expect(createReservation({ userId: userIdOfUserWithoutEnoughBalance, referenceId })).rejects.toThrow(
+    it('user does not have enough Balance', async () => {
+      await expect(createReservation({ userId: userIdOfUserWithoutEnoughBalance, referenceId })).rejects.toThrow(
         InsufficientFundsError,
       );
     });
   });
 
   describe('should throw ReservationFailedError when', () => {
-    it('reference does not have enough books', () => {
-      expect(createReservation({ userId, referenceId: referenceIdWithUnAvailableBooks })).rejects.toThrow(
+    it('reference does not have enough books', async () => {
+      await expect(createReservation({ userId, referenceId: referenceIdWithUnAvailableBooks })).rejects.toThrow(
         ReservationFailedError,
       );
     });
@@ -199,7 +199,7 @@ describe('create reservation', () => {
 
   describe('should throw WalletDoesNotExistsError when', () => {
     it('user does not have a wallet', async () => {
-      expect(createReservation({ userId: userIdOfUserNoWithNoWallet, referenceId })).rejects.toThrow(
+      await expect(createReservation({ userId: userIdOfUserNoWithNoWallet, referenceId })).rejects.toThrow(
         WalletDoesNotExistsError,
       );
     });
