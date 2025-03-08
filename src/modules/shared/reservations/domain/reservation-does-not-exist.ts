@@ -1,4 +1,4 @@
-import { ReservationId } from './reservation/reservation-id';
+import { ReservationId } from '../../../reservations/domain/reservation/reservation-id';
 
 export class ReservationDoesNotExistError extends Error {
   constructor(id: ReservationId) {

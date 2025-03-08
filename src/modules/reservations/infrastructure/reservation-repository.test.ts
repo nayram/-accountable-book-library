@@ -5,7 +5,7 @@ import { userIdFixtures } from '@tests/utils/fixtures/users/user-id-fixtures';
 
 import { SearchParams } from '../domain/search-params';
 
-import { reservationModel } from './reservation-model';
+import { reservationModel } from '../../shared/reservations/infrastructure/reservation-model';
 
 import { reservationRepository } from '.';
 

@@ -5,7 +5,7 @@ import { when } from 'jest-when';
 import { reservationFixtures } from '@tests/utils/fixtures/reservations/reservation-fixtures';
 
 import { ReservationRepository } from '../domain/reservation-repository';
-import { ReservationDoesNotExistError } from '../domain/reservation-does-not-exist';
+import { ReservationDoesNotExistError } from '../../shared/reservations/domain/reservation-does-not-exist';
 import { ReservationId } from '../domain/reservation/reservation-id';
 
 import { findReservationByIdBuilder, FindReservationByIdUseCase } from './find-reservation-by-id';

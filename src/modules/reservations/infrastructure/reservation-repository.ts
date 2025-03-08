@@ -3,9 +3,9 @@ import { RepositoryError } from '@modules/shared/core/domain/repository-error';
 
 import { ReservationRepository } from '../domain/reservation-repository';
 
-import { ReservationModel } from './reservation-model';
+import { ReservationModel } from '../../shared/reservations/infrastructure/reservation-model';
 import { fromDTO } from './reservation-dto';
-import { ReservationDoesNotExistError } from '../domain/reservation-does-not-exist';
+import { ReservationDoesNotExistError } from '../../shared/reservations/domain/reservation-does-not-exist';
 
 export function reservationRepositoryBuilder({ model }: { model: ReservationModel }): ReservationRepository {
   return {

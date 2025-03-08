@@ -16,7 +16,7 @@ import { dropAllCollections } from '@tests/utils/mocks/db';
 import { walletModel } from '@modules/shared/wallets/infrastructure/wallet-model';
 import { Wallet } from '@modules/wallets/domain/wallet/wallet';
 import { bookModel } from '@modules/shared/books/infrastructure/book-model';
-import { reservationModel } from '@modules/reservations/infrastructure/reservation-model';
+import { reservationModel } from '@modules/shared/reservations/infrastructure/reservation-model';
 
 import { PostCreateReservationRequest } from './post-create-reservation.request';
 

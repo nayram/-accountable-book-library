@@ -2,7 +2,7 @@ import { Schema } from 'mongoose';
 
 import { Reservation } from '../domain/reservation/reservation';
 
-import { ReservationDTO } from './reservation-model';
+import { ReservationDTO } from '../../shared/reservations/infrastructure/reservation-model';
 
 export function toDTO(reservation: Reservation): ReservationDTO {
   return {

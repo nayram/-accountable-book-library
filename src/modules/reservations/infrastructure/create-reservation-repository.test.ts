@@ -8,7 +8,7 @@ import { walletFixtures } from '@tests/utils/fixtures/wallet/wallet-fixtures';
 import { bookModel } from '@modules/shared/books/infrastructure/book-model';
 import { walletModel } from '@modules/shared/wallets/infrastructure/wallet-model';
 
-import { reservationModel } from './reservation-model';
+import { reservationModel } from '../../shared/reservations/infrastructure/reservation-model';
 
 import { createReservationRepository } from '.';
 

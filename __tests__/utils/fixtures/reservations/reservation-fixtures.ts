@@ -1,7 +1,7 @@
 import { faker } from '@faker-js/faker/locale/en';
 
 import { Reservation } from '@modules/reservations/domain/reservation/reservation';
-import { reservationModel } from '@modules/reservations/infrastructure/reservation-model';
+import { reservationModel } from '@modules/shared/reservations/infrastructure/reservation-model';
 import { toDTO } from '@modules/reservations/infrastructure/reservation-dto';
 
 import { userIdFixtures } from '../users/user-id-fixtures';
