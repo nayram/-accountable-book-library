@@ -1,4 +1,5 @@
 import { mock, MockProxy } from 'jest-mock-extended';
+
 import { FieldValidationError } from '@modules/shared/core/domain/field-validation-error';
 import { cursorFixtures } from '@tests/utils/fixtures/shared/cursor-fixtures';
 import { userIdFixtures } from '@tests/utils/fixtures/users/user-id-fixtures';

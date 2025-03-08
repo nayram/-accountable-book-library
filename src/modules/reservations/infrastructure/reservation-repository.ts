@@ -5,6 +5,7 @@ import { ReservationRepository } from '../domain/reservation-repository';
 
 import { ReservationModel } from './reservation-model';
 import { fromDTO } from './reservation-dto';
+import { ReservationDoesNotExistError } from '../domain/reservation-does-not-exist';
 
 export function reservationRepositoryBuilder({ model }: { model: ReservationModel }): ReservationRepository {
   return {
@@ -58,6 +59,14 @@ export function reservationRepositoryBuilder({ model }: { model: ReservationMode
       const count = await model.countDocuments(filter);
 
       return { totalCount: count, cursor: nextCursor, data: items.map(fromDTO) };
+    },
+
+    async findById(id) {
+      const reservation = await model.findById(id);
+      if (!reservation) {
+        throw new ReservationDoesNotExistError(id);
+      }
+      return fromDTO(reservation);
     },
   };
 }
