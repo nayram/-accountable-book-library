@@ -133,15 +133,17 @@ describe('POST /reservations/:id/borrow', () => {
   describe('when an invalid request is sent', () => {
     let requestBody: PostBorrowBookRequest['body'];
     let response: supertest.Response;
+    let user: User;
 
     beforeEach(async () => {
+      user = await userFixtures.insert();
       requestBody = {
         dueAt: reservationDueAtFixtures.create(),
       };
 
       response = await request
         .post(path.replace(':id', reservationIdFixtures.urlInvalid()))
-        .set('Authorization', userIdFixtures.create())
+        .set('Authorization', user.id)
         .send(requestBody);
     });
 

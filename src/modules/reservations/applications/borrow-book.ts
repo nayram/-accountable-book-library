@@ -23,6 +23,7 @@ export type BorrowBookUseCase = UseCase<BorrowBookRequest, Reservation>;
 export function borrowBookBuilder({
   reservationRepository,
   reservationTransactionsRepository,
+  userRepository,
   getBookById,
 }: {
   reservationRepository: ReservationRepository;
@@ -31,9 +32,10 @@ export function borrowBookBuilder({
   getBookById: GetBookByIdUseCase;
 }): BorrowBookUseCase {
   return async function borrowBook(req: BorrowBookRequest) {
+    await userRepository.exists(createUserId(req.userId));
     const reservation = await reservationRepository.findById(createReservationId(req.reservationId));
 
-    if (reservation.userId != createUserId(req.userId)) {
+    if (reservation.userId != req.userId) {
       throw ReservationFailedError.withUserId();
     }
 

@@ -20,4 +20,9 @@ export const createReservation = createReservationBuilder({
 
 export const findReservations = findReservationsBuilder({ reservationRepository });
 
-export const borrowBook = borrowBookBuilder({ reservationRepository, reservationTransactionsRepository, getBookById });
+export const borrowBook = borrowBookBuilder({
+  reservationRepository,
+  reservationTransactionsRepository,
+  userRepository,
+  getBookById,
+});
