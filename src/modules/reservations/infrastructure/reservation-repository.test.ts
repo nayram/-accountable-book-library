@@ -2,14 +2,105 @@ import { Pagination } from '@modules/shared/core/domain/pagination';
 import { reservationFixtures } from '@tests/utils/fixtures/reservations/reservation-fixtures';
 import { referenceIdFixtures } from '@tests/utils/fixtures/references/reference-id-fixtures';
 import { userIdFixtures } from '@tests/utils/fixtures/users/user-id-fixtures';
+import { reservationStatusFixtures } from '@tests/utils/fixtures/reservations/reservation-status-fixtures';
+import { reservationIdFixtures } from '@tests/utils/fixtures/reservations/reservation-id-fixtures';
+import { ReservationDoesNotExistError } from '@modules/shared/reservations/domain/reservation-does-not-exist';
 
 import { SearchParams } from '../domain/search-params';
-
 import { reservationModel } from '../../shared/reservations/infrastructure/reservation-model';
 
 import { reservationRepository } from '.';
 
 describe('ReservationRepository', () => {
+  describe('findBySearchParams', () => {
+    it('should find reservations by referenceId', async () => {
+      const referenceId = referenceIdFixtures.create();
+
+      await reservationFixtures.insertMany({ reservation: { referenceId } });
+      await reservationFixtures.insertMany({});
+
+      const searchParams = { referenceId };
+
+      const reservations = await reservationRepository.findBySearchParams(searchParams);
+
+      for (const reservation of reservations) {
+        expect(reservation.referenceId).toBe(referenceId);
+      }
+    });
+
+    it('should find reservations by userId', async () => {
+      const userId = userIdFixtures.create();
+      await reservationFixtures.insertMany({ reservation: { userId } });
+      await reservationFixtures.insertMany({});
+
+      const searchParams = { userId };
+
+      const reservations = await reservationRepository.findBySearchParams(searchParams);
+
+      for (const reservation of reservations) {
+        expect(reservation.userId).toBe(userId);
+      }
+    });
+
+    it('should find reservations by status', async () => {
+      const status = reservationStatusFixtures.create();
+      await reservationFixtures.insertMany({ reservation: { status } });
+      await reservationFixtures.insertMany({});
+
+      const searchParams = { status };
+
+      const reservations = await reservationRepository.findBySearchParams(searchParams);
+
+      for (const reservation of reservations) {
+        expect(reservation.status).toBe(status);
+      }
+    });
+
+    it('should find reservations by both userId and status', async () => {
+      const status = reservationStatusFixtures.create();
+      const userId = userIdFixtures.create();
+      await reservationFixtures.insertMany({ reservation: { status, userId } });
+      await reservationFixtures.insertMany({});
+
+      const searchParams = { status, userId };
+
+      const reservations = await reservationRepository.findBySearchParams(searchParams);
+
+      for (const reservation of reservations) {
+        expect(reservation.status).toBe(status);
+        expect(reservation.userId).toBe(userId);
+      }
+    });
+
+    it('should find reservations by both referenceId and userId', async () => {
+      const userId = userIdFixtures.create();
+      const referenceId = referenceIdFixtures.create();
+
+      const searchParams = { referenceId, userId };
+      const reservations = await reservationRepository.findBySearchParams(searchParams);
+
+      for (const reservation of reservations) {
+        expect(reservation.userId).toBe(userId);
+        expect(reservation.referenceId).toBe(referenceId);
+      }
+    });
+  });
+
+  describe('findById', () => {
+    it('should throw ReservationDoesNotExistError if no corresponding reservation data is found', async () => {
+      await expect(reservationRepository.findById(reservationIdFixtures.create())).rejects.toThrow(
+        ReservationDoesNotExistError,
+      );
+    });
+
+    it('should return reservation', async () => {
+      const reservation = await reservationFixtures.insert({});
+      const result = await reservationRepository.findById(reservation.id);
+      expect(result).not.toBeNull();
+      expect(result.id).toBe(reservation.id);
+    });
+  });
+
   describe('find', () => {
     beforeEach(async () => {
       await reservationModel.deleteMany({});

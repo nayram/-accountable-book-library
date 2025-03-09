@@ -1,14 +1,20 @@
 import { faker } from '@faker-js/faker/locale/en';
+import config from 'config';
 
 import { Reservation } from '@modules/reservations/domain/reservation/reservation';
 import { reservationModel } from '@modules/shared/reservations/infrastructure/reservation-model';
 import { toDTO } from '@modules/reservations/infrastructure/reservation-dto';
+import { Money } from '@modules/shared/core/domain/value-objects/money';
 
 import { userIdFixtures } from '../users/user-id-fixtures';
 import { referenceIdFixtures } from '../references/reference-id-fixtures';
 import { bookIdFixtures } from '../books/book-id-fixtures';
 
 import { reservationIdFixtures } from './reservation-id-fixtures';
+import { reservationStatusFixtures } from './reservation-status-fixtures';
+
+const lateFee = config.get<Money>('lateFee');
+const reservationFee = config.get<Money>('reservationFee');
 
 export const reservationFixtures = {
   create(reservation?: Partial<Reservation>) {
@@ -39,11 +45,19 @@ export const reservationFixtures = {
 };
 
 function createReservation(): Reservation {
+  const date = faker.date.recent();
+  const dueAt = faker.helpers.arrayElement([null, faker.date.soon({ days: 7, refDate: date })]);
   return {
     id: reservationIdFixtures.create(),
     userId: userIdFixtures.create(),
     referenceId: referenceIdFixtures.create(),
     bookId: bookIdFixtures.create(),
-    reservedAt: faker.date.recent(),
+    status: reservationStatusFixtures.create(),
+    reservedAt: date,
+    borrowedAt: faker.helpers.arrayElement([null, date]),
+    lateFee: faker.helpers.arrayElement([0, lateFee]),
+    reservationFee,
+    dueAt,
+    returnedAt: dueAt,
   };
 }

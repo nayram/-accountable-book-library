@@ -2,10 +2,10 @@ import { mapSortByFieldToModelField } from '@modules/shared/core/infrastructure/
 import { RepositoryError } from '@modules/shared/core/domain/repository-error';
 
 import { ReservationRepository } from '../domain/reservation-repository';
-
 import { ReservationModel } from '../../shared/reservations/infrastructure/reservation-model';
-import { fromDTO } from './reservation-dto';
 import { ReservationDoesNotExistError } from '../../shared/reservations/domain/reservation-does-not-exist';
+
+import { fromDTO } from './reservation-dto';
 
 export function reservationRepositoryBuilder({ model }: { model: ReservationModel }): ReservationRepository {
   return {
@@ -59,6 +59,26 @@ export function reservationRepositoryBuilder({ model }: { model: ReservationMode
       const count = await model.countDocuments(filter);
 
       return { totalCount: count, cursor: nextCursor, data: items.map(fromDTO) };
+    },
+
+    async findBySearchParams(searchParams) {
+      const filter: Record<string, unknown> = {};
+
+      if (searchParams.referenceId) {
+        filter.reference_id = searchParams.referenceId;
+      }
+
+      if (searchParams.userId) {
+        filter.user_id = searchParams.userId;
+      }
+
+      if (searchParams.status) {
+        filter.status = searchParams.status;
+      }
+
+      const reservations = await model.find(filter);
+
+      return reservations.map(fromDTO);
     },
 
     async findById(id) {

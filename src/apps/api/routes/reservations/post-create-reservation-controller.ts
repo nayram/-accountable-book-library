@@ -4,11 +4,11 @@ import { StatusCodes } from 'http-status-codes';
 import { BadRequest, Conflict, NotFound, PaymentRequired } from '@api/errors/http-error';
 import { FieldValidationError } from '@modules/shared/core/domain/field-validation-error';
 import { CreateReservationUseCase } from '@modules/reservations/applications/create-reservation';
-import { ReferenceDoesNotExistsError } from '@modules/shared/references/domain/reference-does-not-exists-error';
 import { UserDoesNotExistsError } from '@modules/shared/users/domain/user-does-not-exists-error';
 import { ReservationFailedError } from '@modules/reservations/domain/reservation-failed-error';
 import { WalletDoesNotExistsError } from '@modules/shared/wallets/domain/wallet-does-not-exists-error';
 import { InsufficientFundsError } from '@modules/shared/wallets/domain/insuffiecient-funds-error';
+import { BookDoesNotExistsError } from '@modules/books/domain/book-does-not-exist-error';
 
 import { PostCreateReservationRequest } from './post-create-reservation.request';
 
@@ -29,7 +29,7 @@ export function postCreateReservationControllerBuilder({
     } catch (error) {
       if (error instanceof FieldValidationError) {
         next(BadRequest(error.message));
-      } else if (error instanceof ReferenceDoesNotExistsError || error instanceof UserDoesNotExistsError) {
+      } else if (error instanceof UserDoesNotExistsError || error instanceof BookDoesNotExistsError) {
         next(NotFound(error.message));
       } else if (error instanceof ReservationFailedError || error instanceof WalletDoesNotExistsError) {
         next(Conflict(error.message));

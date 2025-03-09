@@ -10,7 +10,7 @@ export interface GetBookByIdRequest {
 
 export type GetBookByIdUseCase = UseCase<GetBookByIdRequest, Book>;
 
-export function getBookByIdBuilder({ bookRepository }: { bookRepository: BookRepository }): GetBookBookUseCase {
+export function getBookByIdBuilder({ bookRepository }: { bookRepository: BookRepository }): GetBookByIdUseCase {
   return async function getBookById(req: GetBookByIdRequest) {
     return await bookRepository.findById(createBookId(req.id));
   };

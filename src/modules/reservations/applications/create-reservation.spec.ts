@@ -1,27 +1,26 @@
-import { mock, MockProxy } from 'jest-mock-extended';
+import { mock, mockFn, MockProxy } from 'jest-mock-extended';
 import { when } from 'jest-when';
 import { faker } from '@faker-js/faker/locale/en';
 
 import { WalletRepository } from '@modules/shared/wallets/domain/wallet-repository';
-import { BookRepository } from '@modules/shared/books/domain/book-repository';
-import { bookFixtures } from '@tests/utils/fixtures/books/book-fixtures';
-import { BookStatus } from '@modules/shared/books/domain/book/book-status';
-import { walletFixtures } from '@tests/utils/fixtures/wallet/wallet-fixtures';
 import { userIdFixtures } from '@tests/utils/fixtures/users/user-id-fixtures';
-import { reservationFixtures } from '@tests/utils/fixtures/reservations/reservation-fixtures';
 import { referenceIdFixtures } from '@tests/utils/fixtures/references/reference-id-fixtures';
 import { UuidGenerator } from '@modules/shared/core/domain/uuid-generator';
 import { uuidFixtures } from '@tests/utils/fixtures/shared/uuid-fixtures';
 import { FieldValidationError } from '@modules/shared/core/domain/field-validation-error';
-import { WalletDoesNotExistsError } from '@modules/shared/wallets/domain/wallet-does-not-exists-error';
-import { Book } from '@modules/shared/books/domain/book/book';
-import { Wallet } from '@modules/wallets/domain/wallet/wallet';
-import { ReferenceRepository } from '@modules/shared/references/domain/reference-repository';
 import { UserRepository } from '@modules/shared/users/domain/user-repository';
 import { UserDoesNotExistsError } from '@modules/shared/users/domain/user-does-not-exists-error';
-import { ReferenceDoesNotExistsError } from '@modules/shared/references/domain/reference-does-not-exists-error';
 import { InsufficientFundsError } from '@modules/shared/wallets/domain/insuffiecient-funds-error';
+import { GetBookByIdUseCase } from '@modules/books/application/get-book-by-Id';
+import { bookIdFixtures } from '@tests/utils/fixtures/books/book-id-fixtures';
+import { bookFixtures } from '@tests/utils/fixtures/books/book-fixtures';
+import { BookDoesNotExistsError } from '@modules/books/domain/book-does-not-exist-error';
+import { reservationFixtures } from '@tests/utils/fixtures/reservations/reservation-fixtures';
+import { BookStatus } from '@modules/shared/books/domain/book/book-status';
+import { walletFixtures } from '@tests/utils/fixtures/wallet/wallet-fixtures';
 
+import { ReservationStatus } from '../domain/reservation/reservation-status';
+import { ReservationRepository } from '../domain/reservation-repository';
 import { ReservationFailedError } from '../domain/reservation-failed-error';
 import { CreateReservationRepository } from '../domain/create-reservation-repository';
 
@@ -36,51 +35,60 @@ describe('create reservation', () => {
   const id = uuidFixtures.create();
 
   const userId = userIdFixtures.create();
-  const userIdOfUserWithoutEnoughBalance = userIdFixtures.create();
-  const userIdOfUserNoWithNoWallet = userIdFixtures.create();
+  const userIdExceedingBorrowLimit = userIdFixtures.create();
+  const userIdWithExistingBorrowedReference = userIdFixtures.create();
+  const userIdWithInsufficientBalance = userIdFixtures.create();
 
   const referenceId = referenceIdFixtures.create();
-  const referenceIdWithUnAvailableBooks = referenceIdFixtures.create();
 
-  const availableBooks = bookFixtures.createMany({
-    book: { id, status: BookStatus.Available, referenceId, createdAt: systemDateTime, updatedAt: systemDateTime },
-  });
-  const unavailableBooks = bookFixtures.createMany({
-    book: {
-      id,
-      status: faker.helpers.arrayElements([BookStatus.Borrowed, BookStatus.Reserved]) as unknown as BookStatus,
-      referenceId: referenceIdWithUnAvailableBooks,
-      createdAt: systemDateTime,
-      updatedAt: systemDateTime,
-    },
+  const availableBook = bookFixtures.create({
+    referenceId,
+    status: BookStatus.Available,
   });
 
-  const walletWithEnoughBalance = walletFixtures.create({
-    id,
-    userId,
-    createdAt: systemDateTime,
-    updatedAt: systemDateTime,
+  const unAvailableBook = bookFixtures.create({
+    referenceId,
+    status: faker.helpers.arrayElement([BookStatus.Borrowed, BookStatus.Reserved]),
   });
 
-  const walletWithoutEnoughBalance = walletFixtures.create({
-    id,
-    userId: userIdOfUserWithoutEnoughBalance,
-    balance: 0,
-    createdAt: systemDateTime,
-    updatedAt: systemDateTime,
+  const reservations = reservationFixtures.createMany({
+    length: 2,
+    reservation: { status: ReservationStatus.Borrowed, userId },
   });
 
-  const reservedBook: Book = { ...availableBooks[0], status: BookStatus.Reserved };
+  const reservationsOfUserWithInsuficientBalance = reservationFixtures.createMany({
+    length: 2,
+    reservation: { status: ReservationStatus.Borrowed, userId: userIdWithInsufficientBalance },
+  });
 
-  const creditedWallet: Wallet = { ...walletWithEnoughBalance, balance: walletWithEnoughBalance.balance - 3 };
+  const reservationsExceedingBorrowLimit = reservationFixtures.createMany({
+    reservation: { status: ReservationStatus.Borrowed, userId: userIdExceedingBorrowLimit },
+    length: 5,
+  });
+
+  const reservationsWithExistingBorrowedReference = [
+    reservationFixtures.create({
+      status: ReservationStatus.Borrowed,
+      userId: userIdWithExistingBorrowedReference,
+      referenceId,
+    }),
+  ];
 
   const reservation = reservationFixtures.create({
     id,
-    userId,
-    bookId: reservedBook.id,
-    referenceId,
+    dueAt: null,
+    returnedAt: null,
+    borrowedAt: null,
     reservedAt: systemDateTime,
+    userId,
+    referenceId,
+    bookId: availableBook.id,
+    status: ReservationStatus.Reserved,
+    lateFee: 0,
   });
+
+  const wallet = walletFixtures.create({ userId });
+  const walletOFUserInsufficientFunds = walletFixtures.create({ userId: userIdWithInsufficientBalance, balance: 0 });
 
   beforeAll(() => {
     jest.useFakeTimers();
@@ -88,12 +96,12 @@ describe('create reservation', () => {
   });
 
   beforeEach(() => {
-    createReservationRepository = mock<CreateReservationRepository>();
-    const walletRepository = mock<WalletRepository>();
-    const bookRepository = mock<BookRepository>();
-    const referenceRepository = mock<ReferenceRepository>();
-    const userRepository = mock<UserRepository>();
     const uuidGenerator = mock<UuidGenerator>();
+    const walletRepository = mock<WalletRepository>();
+    const userRepository = mock<UserRepository>();
+    const reservationRepository = mock<ReservationRepository>();
+    createReservationRepository = mock<CreateReservationRepository>();
+    const getBookById = mockFn<GetBookByIdUseCase>();
 
     when(uuidGenerator.generate).mockReturnValue(id);
 
@@ -103,42 +111,43 @@ describe('create reservation', () => {
       })
       .calledWith(userId)
       .mockResolvedValue()
-      .calledWith(userIdOfUserWithoutEnoughBalance)
+      .calledWith(userIdExceedingBorrowLimit)
       .mockResolvedValue()
-      .calledWith(userIdOfUserNoWithNoWallet)
+      .calledWith(userIdWithExistingBorrowedReference)
+      .mockResolvedValue()
+      .calledWith(userIdWithInsufficientBalance)
       .mockResolvedValue();
 
-    when(referenceRepository.exists)
-      .mockImplementation((id) => {
-        throw new ReferenceDoesNotExistsError(id);
+    when(getBookById)
+      .mockImplementation(({ id }) => {
+        throw new BookDoesNotExistsError(id);
       })
-      .calledWith(referenceId)
-      .mockResolvedValue()
-      .calledWith(userIdOfUserWithoutEnoughBalance)
-      .mockResolvedValue()
-      .calledWith(referenceIdWithUnAvailableBooks)
-      .mockResolvedValue();
+      .calledWith({ id: availableBook.id })
+      .mockResolvedValue(availableBook)
+      .calledWith({ id: unAvailableBook.id })
+      .mockResolvedValue(unAvailableBook);
+
+    when(reservationRepository.findBySearchParams)
+      .calledWith({ userId, status: ReservationStatus.Borrowed })
+      .mockResolvedValue(reservations)
+      .calledWith({ userId: userIdWithInsufficientBalance, status: ReservationStatus.Borrowed })
+      .mockResolvedValue(reservationsOfUserWithInsuficientBalance)
+      .calledWith({ userId: userIdExceedingBorrowLimit, status: ReservationStatus.Borrowed })
+      .mockResolvedValue(reservationsExceedingBorrowLimit)
+      .calledWith({ userId: userIdWithExistingBorrowedReference, status: ReservationStatus.Borrowed })
+      .mockResolvedValue(reservationsWithExistingBorrowedReference);
 
     when(walletRepository.findByUserId)
-      .mockImplementation((id) => {
-        throw new WalletDoesNotExistsError(id);
-      })
       .calledWith(userId)
-      .mockResolvedValue(walletWithEnoughBalance)
-      .calledWith(userIdOfUserWithoutEnoughBalance)
-      .mockResolvedValue(walletWithoutEnoughBalance);
-
-    when(bookRepository.find)
-      .calledWith({ referenceId })
-      .mockResolvedValue(availableBooks)
-      .calledWith({ referenceId: referenceIdWithUnAvailableBooks })
-      .mockResolvedValue(unavailableBooks);
+      .mockResolvedValue(wallet)
+      .calledWith(userIdWithInsufficientBalance)
+      .mockResolvedValue(walletOFUserInsufficientFunds);
 
     createReservation = createReservationBuilder({
-      referenceRepository,
       userRepository,
       walletRepository,
-      bookRepository,
+      getBookById,
+      reservationRepository,
       createReservationRepository,
       uuidGenerator,
     });
@@ -150,68 +159,63 @@ describe('create reservation', () => {
 
   describe('should throw FieldValidationError when', () => {
     it('provided invalid user id', () => {
-      expect(createReservation({ userId: userIdFixtures.invalid(), referenceId })).rejects.toThrow(
+      expect(createReservation({ userId: userIdFixtures.invalid(), bookId: availableBook.id })).rejects.toThrow(
         FieldValidationError,
       );
     });
 
-    it('provided invalid reference id', () => {
+    it('provided invalid book id', () => {
       expect(
         createReservation({
           userId,
-          referenceId: referenceIdFixtures.invalid(),
+          bookId: bookIdFixtures.invalid(),
         }),
       ).rejects.toThrow(FieldValidationError);
     });
   });
 
-  describe('should throw UserDoesNotExistsError when', () => {
-    it('userid does not have a corresponding user data', async () => {
-      await expect(createReservation({ userId: userIdFixtures.create(), referenceId })).rejects.toThrow(
-        UserDoesNotExistsError,
-      );
-    });
+  it('should throw UserDoesNotExistsError when the userid does not have a corresponding user data', async () => {
+    await expect(createReservation({ userId: userIdFixtures.create(), bookId: availableBook.id })).rejects.toThrow(
+      UserDoesNotExistsError,
+    );
   });
 
-  describe('should throw ReferenceDoesNotExistsError when', () => {
-    it('refenceId does not have a correspoding user data', async () => {
-      await expect(createReservation({ userId, referenceId: referenceIdFixtures.create() })).rejects.toThrow(
-        ReferenceDoesNotExistsError,
-      );
-    });
-  });
-
-  describe('should throw InsufficientFundsError', () => {
-    it('user does not have enough Balance', async () => {
-      await expect(createReservation({ userId: userIdOfUserWithoutEnoughBalance, referenceId })).rejects.toThrow(
-        InsufficientFundsError,
-      );
-    });
+  it('should throw BookDoesNotExistError when bookId does not have a correspoding book data', async () => {
+    await expect(createReservation({ userId, bookId: bookIdFixtures.create() })).rejects.toThrow(
+      BookDoesNotExistsError,
+    );
   });
 
   describe('should throw ReservationFailedError when', () => {
-    it('reference does not have enough books', async () => {
-      await expect(createReservation({ userId, referenceId: referenceIdWithUnAvailableBooks })).rejects.toThrow(
+    it('provided with an unavaible book id', async () => {
+      await expect(createReservation({ userId, bookId: unAvailableBook.id })).rejects.toThrow(ReservationFailedError);
+    });
+
+    it('provided with the userid of a user that has exceeded the borrow limit', async () => {
+      await expect(createReservation({ userId: userIdExceedingBorrowLimit, bookId: availableBook.id })).rejects.toThrow(
         ReservationFailedError,
       );
     });
-  });
 
-  describe('should throw WalletDoesNotExistsError when', () => {
-    it('user does not have a wallet', async () => {
-      await expect(createReservation({ userId: userIdOfUserNoWithNoWallet, referenceId })).rejects.toThrow(
-        WalletDoesNotExistsError,
-      );
+    it('provided with the userId of a user that has an active borrowed reservation of a reference', async () => {
+      await expect(
+        createReservation({ userId: userIdWithExistingBorrowedReference, bookId: availableBook.id }),
+      ).rejects.toThrow(ReservationFailedError);
     });
   });
 
+  it('should throw InsufficientFundsError user does not have enough Balance', async () => {
+    await expect(
+      createReservation({ userId: userIdWithInsufficientBalance, bookId: availableBook.id }),
+    ).rejects.toThrow(InsufficientFundsError);
+  });
+
   it('should create reservation', async () => {
-    const result = await createReservation({ userId, referenceId });
+    const result = await createReservation({ userId, bookId: availableBook.id });
     expect(result).toEqual(reservation);
     expect(createReservationRepository.save).toHaveBeenCalledWith({
       reservation,
-      book: reservedBook,
-      wallet: creditedWallet,
+      book: { ...availableBook, status: ReservationStatus.Reserved, updatedAt: systemDateTime },
     });
   });
 });

@@ -1,5 +1,6 @@
 import supertest from 'supertest';
 import { StatusCodes } from 'http-status-codes';
+
 import app from '@api/app';
 import { userIdFixtures } from '@tests/utils/fixtures/users/user-id-fixtures';
 import { referenceIdFixtures } from '@tests/utils/fixtures/references/reference-id-fixtures';

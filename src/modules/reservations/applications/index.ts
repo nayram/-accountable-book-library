@@ -1,8 +1,7 @@
 import { walletRepository } from '@modules/shared/wallets/infrastructure';
-import { referenceRepository } from '@modules/shared/references/infrastructure';
 import { userRepository } from '@modules/shared/users/infrastructure';
-import { bookRepository } from '@modules/shared/books/infrastructure';
 import { uuidGenerator } from '@modules/shared/core/infrastructure';
+import { getBookById } from '@modules/books/application';
 
 import { createReservationRepository, reservationRepository } from '../infrastructure';
 
@@ -11,9 +10,9 @@ import { findReservationsBuilder } from './find-reservations';
 
 export const createReservation = createReservationBuilder({
   walletRepository,
-  referenceRepository,
   userRepository,
-  bookRepository,
+  reservationRepository,
+  getBookById,
   createReservationRepository,
   uuidGenerator,
 });

@@ -7,5 +7,9 @@
   "mongoMemoryServerConfig": {
     "active": true,
     "name": "local-set"
-  }
+  },
+  "reservationCost": 3,
+  "borrowLimit": 3,
+  "lateFee": 0.2,
+  "reservationFee": 3
 }

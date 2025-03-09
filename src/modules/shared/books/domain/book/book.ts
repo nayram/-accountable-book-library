@@ -49,3 +49,11 @@ export function updateStatusToReserved(book: Book): Book {
     updatedAt: new Date(),
   };
 }
+
+export function updateStatusToBorrowed(book: Book): Book {
+  return {
+    ...book,
+    status: BookStatus.Borrowed,
+    updatedAt: new Date(),
+  };
+}

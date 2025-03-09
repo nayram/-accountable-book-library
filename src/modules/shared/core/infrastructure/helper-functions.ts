@@ -1,5 +1,4 @@
 import { Pagination } from '@modules/shared/core/domain/pagination';
-
 import { referenceModel } from '@modules/shared/references/infrastructure/reference-model';
 
 export function mapSortByFieldToModelField(sortByField: Pagination['sortBy']): string {

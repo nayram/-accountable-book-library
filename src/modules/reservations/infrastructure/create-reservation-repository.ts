@@ -2,7 +2,6 @@ import mongoose from 'mongoose';
 
 import { ReservationModel } from '@modules/shared/reservations/infrastructure/reservation-model';
 import { BookModel } from '@modules/shared/books/infrastructure/book-model';
-import { WalletModel } from '@modules/shared/wallets/infrastructure/wallet-model';
 import { toDTO as toReservationDTO } from '@modules/reservations/infrastructure/reservation-dto';
 import { RepositoryError } from '@modules/shared/core/domain/repository-error';
 
@@ -50,15 +49,13 @@ async function runTransactionWithRetry(
 
 export function createReservationRepositoryBuilder({
   bookModel,
-  walletModel,
   reservationModel,
 }: {
   bookModel: BookModel;
-  walletModel: WalletModel;
   reservationModel: ReservationModel;
 }): CreateReservationRepository {
   return {
-    async save({ reservation, book, wallet }) {
+    async save({ reservation, book }) {
       const session = await mongoose.startSession();
       try {
         await runTransactionWithRetry(session, async () => {
@@ -70,19 +67,6 @@ export function createReservationRepositoryBuilder({
               $set: {
                 status: book.status,
                 updated_at: book.updatedAt,
-              },
-            },
-            {
-              session,
-            },
-          );
-
-          await walletModel.updateOne(
-            { _id: wallet.id },
-            {
-              $set: {
-                balance: wallet.balance,
-                updated_at: wallet.updatedAt,
               },
             },
             {

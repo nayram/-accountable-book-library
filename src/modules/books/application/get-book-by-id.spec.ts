@@ -1,6 +1,7 @@
 import { mock } from 'jest-mock-extended';
-import { bookFixtures } from '@tests/utils/fixtures/books/book-fixtures';
 import { when } from 'jest-when';
+
+import { bookFixtures } from '@tests/utils/fixtures/books/book-fixtures';
 import { bookIdFixtures } from '@tests/utils/fixtures/books/book-id-fixtures';
 import { FieldValidationError } from '@modules/shared/core/domain/field-validation-error';
 

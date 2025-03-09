@@ -1,17 +1,16 @@
-import app from '@api/app';
 import supertest from 'supertest';
+import { StatusCodes } from 'http-status-codes';
+
 import { referenceIdFixtures } from '@tests/utils/fixtures/references/reference-id-fixtures';
 import { barcodeFixtures } from '@tests/utils/fixtures/books/bar-code-fixtures';
 import { bookStatusFixtures } from '@tests/utils/fixtures/books/book-status-fixtures';
-import { StatusCodes } from 'http-status-codes';
-
-import { PostCreateBookRequest } from './post-create-book-request';
+import app from '@api/app';
 import { dropAllCollections } from '@tests/utils/mocks/db';
-import { Book } from '@modules/shared/books/domain/book/book';
 import { bookFixtures } from '@tests/utils/fixtures/books/book-fixtures';
-import { Barcode } from '@modules/shared/books/domain/book/bar-code';
 import { Reference } from '@modules/shared/references/domain/reference';
 import { referenceFixtures } from '@tests/utils/fixtures/references/reference-fixtures';
+
+import { PostCreateBookRequest } from './post-create-book-request';
 
 describe('POST /books', () => {
   const request = supertest.agent(app);

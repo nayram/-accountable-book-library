@@ -13,10 +13,12 @@ import { walletFixtures } from '@tests/utils/fixtures/wallet/wallet-fixtures';
 import { bookFixtures } from '@tests/utils/fixtures/books/book-fixtures';
 import { BookStatus } from '@modules/shared/books/domain/book/book-status';
 import { dropAllCollections } from '@tests/utils/mocks/db';
-import { walletModel } from '@modules/shared/wallets/infrastructure/wallet-model';
-import { Wallet } from '@modules/wallets/domain/wallet/wallet';
 import { bookModel } from '@modules/shared/books/infrastructure/book-model';
 import { reservationModel } from '@modules/shared/reservations/infrastructure/reservation-model';
+import { bookIdFixtures } from '@tests/utils/fixtures/books/book-id-fixtures';
+import { Book } from '@modules/shared/books/domain/book/book';
+import { ReservationStatus } from '@modules/reservations/domain/reservation/reservation-status';
+import { reservationFixtures } from '@tests/utils/fixtures/reservations/reservation-fixtures';
 
 import { PostCreateReservationRequest } from './post-create-reservation.request';
 
@@ -31,40 +33,48 @@ describe('POST /reservations', () => {
   describe('when a valid body is sent', () => {
     let requestBody: PostCreateReservationRequest['body'];
     let response: supertest.Response;
-    let reference: Reference;
-    let referenceWithoutAvailableBooks: Reference;
+    let book: Book;
+    let unAvailableBook: Book;
     let user: User;
     let userWithoutEnoughFunds: User;
-    let wallet: Wallet;
+    let userAtBorrowLimit: User;
+    let userWithExistingBorrowedReference: User;
 
-    const nonExistentReferenceId = referenceIdFixtures.create();
+    const nonExistentBookId = bookIdFixtures.create();
     const nonExistentUserId = userIdFixtures.create();
 
     beforeEach(async () => {
-      reference = await referenceFixtures.insert();
-      referenceWithoutAvailableBooks = await referenceFixtures.insert();
+      book = await bookFixtures.insert({ status: BookStatus.Available });
+      unAvailableBook = await bookFixtures.insert({
+        status: faker.helpers.arrayElement([BookStatus.Borrowed, BookStatus.Reserved]),
+      });
 
       user = await userFixtures.insert();
+      userAtBorrowLimit = await userFixtures.insert();
       userWithoutEnoughFunds = await userFixtures.insert();
-
-      wallet = await walletFixtures.insert({ userId: user.id });
+      userWithExistingBorrowedReference = await userFixtures.insert();
 
       await walletFixtures.insert({ userId: userWithoutEnoughFunds.id, balance: 0 });
+      await walletFixtures.insert({ userId: userWithExistingBorrowedReference.id });
+      await walletFixtures.insert({ userId: user.id });
 
-      await bookFixtures.insertMany({ book: { referenceId: reference.id, status: BookStatus.Available } });
+      await reservationFixtures.insertMany({
+        reservation: { userId: userAtBorrowLimit.id, status: ReservationStatus.Borrowed },
+        length: 3,
+      });
 
-      await bookFixtures.insertMany({
-        book: {
-          referenceId: referenceWithoutAvailableBooks.id,
-          status: faker.helpers.arrayElement([BookStatus.Borrowed, BookStatus.Reserved]) as unknown as BookStatus,
-        },
+      await reservationFixtures.insert({
+        referenceId: book.referenceId,
+        bookId: book.id,
+        userId: userWithExistingBorrowedReference.id,
+        status: ReservationStatus.Borrowed,
       });
     });
 
-    describe('and the reference does not exist', () => {
+    describe('and the book does not exist', () => {
       beforeEach(async () => {
         requestBody = {
-          referenceId: nonExistentReferenceId,
+          bookId: nonExistentBookId,
           userId: user.id,
         };
 
@@ -79,7 +89,7 @@ describe('POST /reservations', () => {
         expect(response.body).toEqual({
           status: 'Not Found',
           statusCode: StatusCodes.NOT_FOUND,
-          message: `reference with id ${nonExistentReferenceId} does not exist`,
+          message: `book with id ${nonExistentBookId} does not exist`,
         });
       });
     });
@@ -87,7 +97,7 @@ describe('POST /reservations', () => {
     describe('and the user does not exist', () => {
       beforeEach(async () => {
         requestBody = {
-          referenceId: reference.id,
+          bookId: book.id,
           userId: nonExistentUserId,
         };
 
@@ -107,10 +117,56 @@ describe('POST /reservations', () => {
       });
     });
 
+    describe('and the user has reached the borrow limit', () => {
+      beforeEach(async () => {
+        requestBody = {
+          userId: userAtBorrowLimit.id,
+          bookId: book.id,
+        };
+
+        response = await request.post(path).send(requestBody);
+      });
+
+      it('should return a 409 status', () => {
+        expect(response.status).toEqual(StatusCodes.CONFLICT);
+      });
+
+      it('should return an error response', () => {
+        expect(response.body).toEqual({
+          status: 'Conflict',
+          statusCode: StatusCodes.CONFLICT,
+          message: `Borrow limit reached`,
+        });
+      });
+    });
+
+    describe('and a user who already has a reservation for a reference in the Borrowed status', () => {
+      beforeEach(async () => {
+        requestBody = {
+          userId: userWithExistingBorrowedReference.id,
+          bookId: book.id,
+        };
+
+        response = await request.post(path).send(requestBody);
+      });
+
+      it('should return a 409 status', () => {
+        expect(response.status).toEqual(StatusCodes.CONFLICT);
+      });
+
+      it('should return an error response', () => {
+        expect(response.body).toEqual({
+          status: 'Conflict',
+          statusCode: StatusCodes.CONFLICT,
+          message: `Already borrowed book with the same reference`,
+        });
+      });
+    });
+
     describe('and the user has no funds', () => {
       beforeEach(async () => {
         requestBody = {
-          referenceId: reference.id,
+          bookId: book.id,
           userId: userWithoutEnoughFunds.id,
         };
 
@@ -130,11 +186,11 @@ describe('POST /reservations', () => {
       });
     });
 
-    describe('and there are no available books', () => {
+    describe('and book is not Available', () => {
       beforeEach(async () => {
         requestBody = {
           userId: user.id,
-          referenceId: referenceWithoutAvailableBooks.id,
+          bookId: unAvailableBook.id,
         };
 
         response = await request.post(path).send(requestBody);
@@ -148,7 +204,7 @@ describe('POST /reservations', () => {
         expect(response.body).toEqual({
           status: 'Conflict',
           statusCode: StatusCodes.CONFLICT,
-          message: `There are no available books for reference with id ${referenceWithoutAvailableBooks.id}`,
+          message: `book with id ${unAvailableBook.id} is not available`,
         });
       });
     });
@@ -157,7 +213,7 @@ describe('POST /reservations', () => {
       beforeEach(async () => {
         requestBody = {
           userId: user.id,
-          referenceId: reference.id,
+          bookId: book.id,
         };
         response = await request.post(path).send(requestBody);
       });
@@ -167,27 +223,28 @@ describe('POST /reservations', () => {
       });
 
       it('should return reservation data', async () => {
-        const reservation = await reservationModel.findOne({ user_id: user.id, reference_id: reference.id });
+        const reservation = await reservationModel.findOne({
+          user_id: user.id,
+          book_id: book.id,
+        });
         expect(response.body).toHaveProperty('id', reservation?.id);
         expect(response.body).toHaveProperty('userId', reservation?.user_id);
         expect(response.body).toHaveProperty('referenceId', reservation?.reference_id);
         expect(response.body).toHaveProperty('bookId', reservation?.book_id);
+        expect(response.body).toHaveProperty('status', ReservationStatus.Reserved);
+        expect(response.body).toHaveProperty('reservationFee', reservation?.reservation_fee);
+        expect(response.body).toHaveProperty('lateFee', reservation?.late_fee);
+        expect(response.body).toHaveProperty('dueAt', null);
+        expect(response.body).toHaveProperty('returnedAt', null);
+        expect(response.body).toHaveProperty('borrowedAt', null);
         expect(response.body).toHaveProperty('reservedAt', reservation?.reserved_at.toISOString());
       });
 
-      it('should debit user wallet', async () => {
-        const userWallet = await walletModel.findOne({ user_id: user.id });
-        expect(userWallet).not.toBeNull();
-        expect(userWallet?.user_id).toBe(user.id);
-        expect(userWallet?.balance).toBeLessThan(wallet?.balance);
-        expect(userWallet?.balance).toBe(wallet.balance - 3);
-      });
-
       it('should reserve a book', async () => {
-        const reservation = await reservationModel.findOne({ user_id: user.id, reference_id: reference.id });
-        const book = await bookModel.findById(reservation?.book_id);
-        expect(book).not.toBeNull();
-        expect(book?.status).toBe(BookStatus.Reserved);
+        const reservation = await reservationModel.findOne({ user_id: user.id, book_id: book.id });
+        const result = await bookModel.findById(reservation?.book_id);
+        expect(result).not.toBeNull();
+        expect(result?.status).toBe(BookStatus.Reserved);
       });
     });
   });
@@ -199,7 +256,7 @@ describe('POST /reservations', () => {
     beforeEach(async () => {
       requestBody = {
         userId: userIdFixtures.invalid(),
-        referenceId: referenceIdFixtures.create(),
+        bookId: bookIdFixtures.create(),
       };
       response = await request.post(path).send(requestBody);
     });

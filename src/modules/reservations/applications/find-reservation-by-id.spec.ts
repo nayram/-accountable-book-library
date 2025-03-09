@@ -1,7 +1,8 @@
 import { mock } from 'jest-mock-extended';
+import { when } from 'jest-when';
+
 import { FieldValidationError } from '@modules/shared/core/domain/field-validation-error';
 import { reservationIdFixtures } from '@tests/utils/fixtures/reservations/reservation-id-fixtures';
-import { when } from 'jest-when';
 import { reservationFixtures } from '@tests/utils/fixtures/reservations/reservation-fixtures';
 
 import { ReservationRepository } from '../domain/reservation-repository';

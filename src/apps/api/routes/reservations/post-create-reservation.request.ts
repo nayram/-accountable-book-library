@@ -3,13 +3,13 @@ import { ContainerTypes, ValidatedRequest, ValidatedRequestSchema } from 'expres
 
 export const postCreateReservationRequestSchema = {
   userId: Joi.string().required(),
-  referenceId: Joi.string().required(),
+  bookId: Joi.string().required(),
 };
 
 interface PostCreateReservationRequestSchema extends ValidatedRequestSchema {
   [ContainerTypes.Body]: {
     userId: string;
-    referenceId: string;
+    bookId: string;
   };
 }
 

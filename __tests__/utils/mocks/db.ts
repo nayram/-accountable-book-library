@@ -24,6 +24,16 @@ export async function dropUserCollection() {
   await dbDropCollection('users');
 }
 
+export async function dropReservationCollection() {
+  await dbDropCollection('reservations');
+}
+
 export async function dropAllCollections() {
-  await Promise.all([dropReferencesCollection(), dropBookCollection(), dropUserCollection(), dropWalletCollection()]);
+  await Promise.all([
+    dropReferencesCollection(),
+    dropBookCollection(),
+    dropUserCollection(),
+    dropWalletCollection(),
+    dropReservationCollection(),
+  ]);
 }
