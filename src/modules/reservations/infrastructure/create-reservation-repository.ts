@@ -34,7 +34,7 @@ async function runTransactionWithRetry(
         console.log(
           `TransientTransactionError encountered. Retrying transaction (attempt ${attempt}/${maxRetries})...`,
         );
-        // wait for a short delay before retrying
+
         await new Promise((resolve) => setTimeout(resolve, RETRY_DELAY_MS));
       } else {
         if (session.inTransaction()) {

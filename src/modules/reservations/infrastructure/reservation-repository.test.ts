@@ -129,7 +129,7 @@ describe('ReservationRepository', () => {
         );
       });
 
-      it('should return less than limit when not enough items exist', async () => {
+      it('should return less data than limit when not enough items exist', async () => {
         const totalCount = 2;
         const limit = 5;
         await reservationFixtures.insertMany({ length: totalCount });
