@@ -1,5 +1,3 @@
-import { describe } from 'node:test';
-
 import supertest from 'supertest';
 import { StatusCodes } from 'http-status-codes';
 
@@ -29,7 +27,7 @@ describe('POST /reservations/:id/borrow', () => {
 
   describe('when valid request is sent', () => {
     let requestBody: PostBorrowBookRequest['body'];
-
+    let response: supertest.Response;
     let user: User;
     let dueAt = reservationDueAtFixtures.create();
     let reservation: Reservation;
@@ -65,7 +63,6 @@ describe('POST /reservations/:id/borrow', () => {
     });
 
     describe('and the reservation does not exist', () => {
-      let response: supertest.Response;
       beforeEach(async () => {
         requestBody = {
           dueAt,
@@ -91,7 +88,6 @@ describe('POST /reservations/:id/borrow', () => {
     });
 
     describe('and the reservation status is not "reserved"', () => {
-      let response: supertest.Response;
       beforeEach(async () => {
         requestBody = {
           dueAt,
@@ -117,7 +113,6 @@ describe('POST /reservations/:id/borrow', () => {
     });
 
     describe('and a book is borrowed successfully', () => {
-      let response: supertest.Response;
       beforeEach(async () => {
         requestBody = {
           dueAt,

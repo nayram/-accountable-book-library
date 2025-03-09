@@ -13,13 +13,10 @@ export function referenceRepositoryBuilder({
 }): ReferenceRepository {
   return {
     async save(reference) {
-      const existingReference = await referenceModel.findOne({
-        _id: reference.id,
-        external_reference_id: reference.externalReferenceId,
-      });
+      const existingReference = await referenceModel.findById(reference.id);
       if (existingReference) {
         await referenceModel.updateOne(
-          { _id: reference.id, external_reference_id: reference.externalReferenceId },
+          { _id: reference.id },
           {
             updated_at: reference.updatedAt,
             author: reference.author,

@@ -3,6 +3,7 @@ import { updateStatusToBorrowed as updateBookStatusToBorrowed } from '@modules/s
 import { GetBookByIdUseCase } from '@modules/books/application/get-book-by-Id';
 import { BookStatus } from '@modules/shared/books/domain/book/book-status';
 import { createUserId } from '@modules/shared/users/domain/user/user-id';
+import { UserRepository } from '@modules/shared/users/domain/user-repository';
 
 import { createReservationUpdate, Reservation, update } from '../domain/reservation/reservation';
 import { ReservationRepository } from '../domain/reservation-repository';
@@ -26,6 +27,7 @@ export function borrowBookBuilder({
 }: {
   reservationRepository: ReservationRepository;
   reservationTransactionsRepository: ReservationTransactionsRepository;
+  userRepository: UserRepository;
   getBookById: GetBookByIdUseCase;
 }): BorrowBookUseCase {
   return async function borrowBook(req: BorrowBookRequest) {

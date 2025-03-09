@@ -90,19 +90,11 @@ export function reservationRepositoryBuilder({ model }: { model: ReservationMode
     },
 
     async save(reservation) {
-      const existingReservation = await model.findOne({
-        _id: reservation.id,
-        user_id: reservation.userId,
-        reference_id: reservation.referenceId,
-        book_id: reservation.bookId,
-      });
+      const existingReservation = await model.findById(reservation.id);
       if (existingReservation) {
         await model.updateOne(
           {
             _id: reservation.id,
-            user_id: reservation.userId,
-            reference_id: reservation.referenceId,
-            book_id: reservation.bookId,
           },
           {
             $set: {

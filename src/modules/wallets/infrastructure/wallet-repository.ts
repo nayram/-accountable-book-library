@@ -4,10 +4,10 @@ import { WalletModel } from '../../shared/wallets/infrastructure/wallet-model';
 export function walletRepositoryBuilder({ model }: { model: WalletModel }): WalletRepository {
   return {
     async save(wallet) {
-      const existingWallet = await model.findOne({ _id: wallet.id, user_id: wallet.userId });
+      const existingWallet = await model.findById(wallet.id);
       if (existingWallet) {
         await model.updateOne(
-          { _id: wallet.id, user_id: wallet.userId },
+          { _id: wallet.id },
           {
             $set: {
               balance: wallet.balance,

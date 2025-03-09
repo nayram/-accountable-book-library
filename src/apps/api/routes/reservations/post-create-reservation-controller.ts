@@ -23,8 +23,11 @@ export function postCreateReservationControllerBuilder({
     next: NextFunction,
   ) {
     try {
-      const { body } = req;
-      const reservation = await createReservation(body);
+      const {
+        body: { bookId },
+      } = req;
+      const userId = req.headers['authorization'];
+      const reservation = await createReservation({ userId, bookId });
       res.status(StatusCodes.CREATED).send(reservation);
     } catch (error) {
       if (error instanceof FieldValidationError) {

@@ -75,10 +75,9 @@ describe('POST /reservations', () => {
       beforeEach(async () => {
         requestBody = {
           bookId: nonExistentBookId,
-          userId: user.id,
         };
 
-        response = await request.post(path).send(requestBody);
+        response = await request.post(path).set('Authorization', user.id).send(requestBody);
       });
 
       it('should return a 404 status', () => {
@@ -98,10 +97,9 @@ describe('POST /reservations', () => {
       beforeEach(async () => {
         requestBody = {
           bookId: book.id,
-          userId: nonExistentUserId,
         };
 
-        response = await request.post(path).send(requestBody);
+        response = await request.post(path).set('Authorization', nonExistentUserId).send(requestBody);
       });
 
       it('should return a 404 status', () => {
@@ -120,11 +118,10 @@ describe('POST /reservations', () => {
     describe('and the user has reached the borrow limit', () => {
       beforeEach(async () => {
         requestBody = {
-          userId: userAtBorrowLimit.id,
           bookId: book.id,
         };
 
-        response = await request.post(path).send(requestBody);
+        response = await request.post(path).set('Authorization', userAtBorrowLimit.id).send(requestBody);
       });
 
       it('should return a 409 status', () => {
@@ -143,11 +140,13 @@ describe('POST /reservations', () => {
     describe('and a user who already has a reservation for a reference in the Borrowed status', () => {
       beforeEach(async () => {
         requestBody = {
-          userId: userWithExistingBorrowedReference.id,
           bookId: book.id,
         };
 
-        response = await request.post(path).send(requestBody);
+        response = await request
+          .post(path)
+          .set('Authorization', userWithExistingBorrowedReference.id)
+          .send(requestBody);
       });
 
       it('should return a 409 status', () => {
@@ -167,10 +166,9 @@ describe('POST /reservations', () => {
       beforeEach(async () => {
         requestBody = {
           bookId: book.id,
-          userId: userWithoutEnoughFunds.id,
         };
 
-        response = await request.post(path).send(requestBody);
+        response = await request.post(path).set('Authorization', userWithoutEnoughFunds.id).send(requestBody);
       });
 
       it('should return a 402 status', () => {
@@ -189,11 +187,10 @@ describe('POST /reservations', () => {
     describe('and book is not Available', () => {
       beforeEach(async () => {
         requestBody = {
-          userId: user.id,
           bookId: unAvailableBook.id,
         };
 
-        response = await request.post(path).send(requestBody);
+        response = await request.post(path).set('Authorization', user.id).send(requestBody);
       });
 
       it('should return a 409 status', () => {
@@ -212,10 +209,9 @@ describe('POST /reservations', () => {
     describe('and reservation is created successfully', () => {
       beforeEach(async () => {
         requestBody = {
-          userId: user.id,
           bookId: book.id,
         };
-        response = await request.post(path).send(requestBody);
+        response = await request.post(path).set('Authorization', user.id).send(requestBody);
       });
 
       it('should return a 201', () => {
@@ -263,10 +259,9 @@ describe('POST /reservations', () => {
 
     beforeEach(async () => {
       requestBody = {
-        userId: userIdFixtures.invalid(),
         bookId: bookIdFixtures.create(),
       };
-      response = await request.post(path).send(requestBody);
+      response = await request.post(path).set('Authorization', userIdFixtures.invalid()).send(requestBody);
     });
 
     it('should return a 400 status', () => {

@@ -60,17 +60,11 @@ export function reservationTransactionsRepositoryBuilder({
       const session = await mongoose.startSession();
       try {
         await runTransactionWithRetry(session, async () => {
-          const query = {
-            _id: reservation.id,
-            user_id: reservation.userId,
-            book_id: reservation.bookId,
-            reference_id: book.referenceId,
-          };
-          const existingReservation = await reservationModel.findOne(query);
+          const existingReservation = await reservationModel.findById(reservation.id);
 
           if (existingReservation) {
             await reservationModel.updateOne(
-              query,
+              { _id: reservation.id },
               {
                 $set: {
                   borrowed_at: reservation.borrowedAt,
