@@ -1,3 +1,5 @@
+import { faker } from '@faker-js/faker/locale/en';
+
 import { Pagination } from '@modules/shared/core/domain/pagination';
 import { reservationFixtures } from '@tests/utils/fixtures/reservations/reservation-fixtures';
 import { referenceIdFixtures } from '@tests/utils/fixtures/references/reference-id-fixtures';
@@ -8,6 +10,7 @@ import { ReservationDoesNotExistError } from '@modules/shared/reservations/domai
 
 import { SearchParams } from '../domain/search-params';
 import { reservationModel } from '../../shared/reservations/infrastructure/reservation-model';
+import { ReservationStatus } from '../domain/reservation/reservation-status';
 
 import { reservationRepository } from '.';
 
@@ -129,7 +132,7 @@ describe('ReservationRepository', () => {
         );
       });
 
-      it('should return less data than limit when not enough items exist', async () => {
+      it('should return less than limit when not enough items exist', async () => {
         const totalCount = 2;
         const limit = 5;
         await reservationFixtures.insertMany({ length: totalCount });
@@ -255,6 +258,69 @@ describe('ReservationRepository', () => {
           reservations.sort((a, b) => a.reservedAt.getTime() - b.reservedAt.getTime()).slice(-1),
         );
       });
+    });
+  });
+
+  describe('save', () => {
+    it('should create a new reservation if it does not exist', async () => {
+      const newReservation = reservationFixtures.create({
+        dueAt: faker.date.future(),
+        returnedAt: null,
+        borrowedAt: faker.date.recent(),
+      });
+
+      await reservationRepository.save(newReservation);
+
+      const result = await reservationRepository.findById(newReservation.id);
+
+      expect(result.id).toEqual(newReservation.id);
+      expect(result.userId).toEqual(newReservation.userId);
+      expect(result.bookId).toEqual(newReservation.bookId);
+      expect(result.referenceId).toEqual(newReservation.referenceId);
+      expect(result.reservationFee).toEqual(newReservation.reservationFee);
+      expect(result.lateFee).toEqual(newReservation.lateFee);
+      expect(result.status).toEqual(newReservation.status);
+      expect(result.dueAt?.toISOString()).toEqual(newReservation.dueAt?.toISOString());
+      expect(result.borrowedAt?.toISOString()).toEqual(newReservation.borrowedAt?.toISOString());
+      expect(result.reservedAt.toISOString()).toEqual(newReservation.reservedAt.toISOString());
+      expect(result.returnedAt).toBeNull();
+    });
+
+    it('should update an existing reservation (all fields) if it exists', async () => {
+      const existingReservation = await reservationFixtures.insert({
+        dueAt: null,
+        returnedAt: null,
+        borrowedAt: null,
+      });
+
+      const updatedReservation = reservationFixtures.create({
+        id: existingReservation.id,
+        userId: existingReservation.userId,
+        bookId: existingReservation.bookId,
+        referenceId: existingReservation.referenceId,
+        reservedAt: existingReservation.reservedAt,
+        lateFee: 0.2,
+        status: ReservationStatus.Borrowed,
+        borrowedAt: faker.date.recent(),
+        returnedAt: null,
+        dueAt: faker.date.future(),
+      });
+
+      await reservationRepository.save(updatedReservation);
+
+      const result = await reservationRepository.findById(existingReservation.id);
+
+      expect(result.id).toEqual(updatedReservation.id);
+      expect(result.userId).toEqual(updatedReservation.userId);
+      expect(result.bookId).toEqual(updatedReservation.bookId);
+      expect(result.referenceId).toEqual(updatedReservation.referenceId);
+      expect(result.lateFee).toEqual(updatedReservation.lateFee);
+      expect(result.reservationFee).toEqual(updatedReservation.reservationFee);
+      expect(result.borrowedAt?.toISOString()).toEqual(updatedReservation.borrowedAt?.toISOString());
+      expect(result.returnedAt).toBeNull();
+      expect(result.dueAt?.toISOString()).toEqual(updatedReservation.dueAt?.toISOString());
+      expect(result.status).toEqual(updatedReservation.status);
+      expect(result.reservedAt.toISOString()).toEqual(updatedReservation.reservedAt.toISOString());
     });
   });
 });

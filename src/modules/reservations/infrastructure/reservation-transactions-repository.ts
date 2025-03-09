@@ -2,10 +2,11 @@ import mongoose from 'mongoose';
 
 import { ReservationModel } from '@modules/shared/reservations/infrastructure/reservation-model';
 import { BookModel } from '@modules/shared/books/infrastructure/book-model';
+import { WalletModel } from '@modules/shared/wallets/infrastructure/wallet-model';
 import { toDTO as toReservationDTO } from '@modules/reservations/infrastructure/reservation-dto';
 import { RepositoryError } from '@modules/shared/core/domain/repository-error';
 
-import { CreateReservationRepository } from '../domain/create-reservation-repository';
+import { ReservationTransactionsRepository } from '../domain/reservation-transactions-repository';
 
 const MAX_RETRIES = 5;
 const RETRY_DELAY_MS = 100;
@@ -34,7 +35,7 @@ async function runTransactionWithRetry(
         console.log(
           `TransientTransactionError encountered. Retrying transaction (attempt ${attempt}/${maxRetries})...`,
         );
-
+        // wait for a short delay before retrying
         await new Promise((resolve) => setTimeout(resolve, RETRY_DELAY_MS));
       } else {
         if (session.inTransaction()) {
@@ -47,15 +48,17 @@ async function runTransactionWithRetry(
   throw new Error('Transaction failed after maximum retry attempts.');
 }
 
-export function createReservationRepositoryBuilder({
+export function reservationTransactionsRepositoryBuilder({
   bookModel,
+  walletModel,
   reservationModel,
 }: {
   bookModel: BookModel;
+  walletModel: WalletModel;
   reservationModel: ReservationModel;
-}): CreateReservationRepository {
+}): ReservationTransactionsRepository {
   return {
-    async save({ reservation, book }) {
+    async save({ reservation, book, wallet }) {
       const session = await mongoose.startSession();
       try {
         await runTransactionWithRetry(session, async () => {
@@ -67,6 +70,19 @@ export function createReservationRepositoryBuilder({
               $set: {
                 status: book.status,
                 updated_at: book.updatedAt,
+              },
+            },
+            {
+              session,
+            },
+          );
+
+          await walletModel.updateOne(
+            { _id: wallet.id },
+            {
+              $set: {
+                balance: wallet.balance,
+                updated_at: wallet.updatedAt,
               },
             },
             {

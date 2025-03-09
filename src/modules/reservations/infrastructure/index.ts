@@ -3,10 +3,10 @@ import { walletModel } from '@modules/shared/wallets/infrastructure/wallet-model
 
 import { reservationModel } from '../../shared/reservations/infrastructure/reservation-model';
 
-import { createReservationRepositoryBuilder } from './create-reservation-repository';
+import { reservationTransactionsRepositoryBuilder } from './reservation-transactions-repository';
 import { reservationRepositoryBuilder } from './reservation-repository';
 
-export const createReservationRepository = createReservationRepositoryBuilder({
+export const reservationTransactionsRepository = reservationTransactionsRepositoryBuilder({
   bookModel,
   reservationModel,
   walletModel: walletModel,

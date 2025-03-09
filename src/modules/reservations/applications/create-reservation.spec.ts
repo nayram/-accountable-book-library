@@ -22,13 +22,13 @@ import { walletFixtures } from '@tests/utils/fixtures/wallet/wallet-fixtures';
 import { ReservationStatus } from '../domain/reservation/reservation-status';
 import { ReservationRepository } from '../domain/reservation-repository';
 import { ReservationFailedError } from '../domain/reservation-failed-error';
-import { CreateReservationRepository } from '../domain/create-reservation-repository';
+import { ReservationTransactionsRepository } from '../domain/reservation-transactions-repository';
 
 import { createReservationBuilder, CreateReservationUseCase } from './create-reservation';
 
 describe('create reservation', () => {
   let createReservation: CreateReservationUseCase;
-  let createReservationRepository: MockProxy<CreateReservationRepository>;
+  let reservationTransactionsRepository: MockProxy<ReservationTransactionsRepository>;
 
   const systemDateTime = faker.date.recent();
 
@@ -100,7 +100,7 @@ describe('create reservation', () => {
     const walletRepository = mock<WalletRepository>();
     const userRepository = mock<UserRepository>();
     const reservationRepository = mock<ReservationRepository>();
-    createReservationRepository = mock<CreateReservationRepository>();
+    reservationTransactionsRepository = mock<ReservationTransactionsRepository>();
     const getBookById = mockFn<GetBookByIdUseCase>();
 
     when(uuidGenerator.generate).mockReturnValue(id);
@@ -148,7 +148,7 @@ describe('create reservation', () => {
       walletRepository,
       getBookById,
       reservationRepository,
-      createReservationRepository,
+      reservationTransactionsRepository,
       uuidGenerator,
     });
   });
@@ -213,9 +213,10 @@ describe('create reservation', () => {
   it('should create reservation', async () => {
     const result = await createReservation({ userId, bookId: availableBook.id });
     expect(result).toEqual(reservation);
-    expect(createReservationRepository.save).toHaveBeenCalledWith({
+    expect(reservationTransactionsRepository.save).toHaveBeenCalledWith({
       reservation,
       book: { ...availableBook, status: ReservationStatus.Reserved, updatedAt: systemDateTime },
+      wallet: { ...wallet, updatedAt: systemDateTime, balance: wallet.balance - reservation.reservationFee },
     });
   });
 });

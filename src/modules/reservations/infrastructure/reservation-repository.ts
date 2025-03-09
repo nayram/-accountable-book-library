@@ -5,7 +5,7 @@ import { ReservationRepository } from '../domain/reservation-repository';
 import { ReservationModel } from '../../shared/reservations/infrastructure/reservation-model';
 import { ReservationDoesNotExistError } from '../../shared/reservations/domain/reservation-does-not-exist';
 
-import { fromDTO } from './reservation-dto';
+import { fromDTO, toDTO } from './reservation-dto';
 
 export function reservationRepositoryBuilder({ model }: { model: ReservationModel }): ReservationRepository {
   return {
@@ -87,6 +87,37 @@ export function reservationRepositoryBuilder({ model }: { model: ReservationMode
         throw new ReservationDoesNotExistError(id);
       }
       return fromDTO(reservation);
+    },
+
+    async save(reservation) {
+      const existingReservation = await model.findOne({
+        _id: reservation.id,
+        user_id: reservation.userId,
+        reference_id: reservation.referenceId,
+        book_id: reservation.bookId,
+      });
+      if (existingReservation) {
+        await model.updateOne(
+          {
+            _id: reservation.id,
+            user_id: reservation.userId,
+            reference_id: reservation.referenceId,
+            book_id: reservation.bookId,
+          },
+          {
+            $set: {
+              due_at: reservation.dueAt,
+              status: reservation.status,
+              returned_at: reservation.returnedAt,
+              late_fee: reservation.lateFee,
+              reservation_fee: reservation.reservationFee,
+              borrowed_at: reservation.borrowedAt,
+            },
+          },
+        );
+      } else {
+        await model.create(toDTO(reservation));
+      }
     },
   };
 }

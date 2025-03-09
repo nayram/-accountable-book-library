@@ -8,6 +8,7 @@ import { GetBookByIdUseCase } from '@modules/books/application/get-book-by-Id';
 import { createBookId } from '@modules/shared/books/domain/book/book-id';
 import { BookStatus } from '@modules/shared/books/domain/book/book-status';
 import { updateStatusToReserved } from '@modules/shared/books/domain/book/book';
+import { credit as creditWallet } from '@modules/wallets/domain/wallet/wallet';
 
 import { ReservationFailedError } from '../domain/reservation-failed-error';
 import {
@@ -18,7 +19,7 @@ import {
 } from '../domain/reservation/reservation';
 import { ReservationRepository } from '../domain/reservation-repository';
 import { ReservationStatus } from '../domain/reservation/reservation-status';
-import { CreateReservationRepository } from '../domain/create-reservation-repository';
+import { ReservationTransactionsRepository } from '../domain/reservation-transactions-repository';
 
 export interface CreateReservationRequest {
   userId: string;
@@ -32,14 +33,14 @@ export function createReservationBuilder({
   reservationRepository,
   userRepository,
   uuidGenerator,
-  createReservationRepository,
+  reservationTransactionsRepository,
   getBookById,
 }: {
   walletRepository: WalletRepository;
   reservationRepository: ReservationRepository;
   userRepository: UserRepository;
   uuidGenerator: UuidGenerator;
-  createReservationRepository: CreateReservationRepository;
+  reservationTransactionsRepository: ReservationTransactionsRepository;
   getBookById: GetBookByIdUseCase;
 }): CreateReservationUseCase {
   return async function createReservation(req: CreateReservationRequest) {
@@ -73,7 +74,9 @@ export function createReservationBuilder({
 
     const updatedBook = updateStatusToReserved(book);
 
-    await createReservationRepository.save({ reservation, book: updatedBook });
+    const creditedWallet = creditWallet({ wallet, amount: reservation.reservationFee });
+
+    await reservationTransactionsRepository.save({ reservation, book: updatedBook, wallet: creditedWallet });
 
     return reservation;
   };

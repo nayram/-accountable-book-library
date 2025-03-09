@@ -9,4 +9,7 @@ export class ReservationFailedError extends Error {
   static withBookId(bookId: BookId) {
     return new ReservationFailedError(`book with id ${bookId} is not available`);
   }
+  static withBorrowBook() {
+    return new ReservationFailedError(`Failed to complete borrow action`);
+  }
 }

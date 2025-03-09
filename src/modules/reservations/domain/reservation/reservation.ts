@@ -8,8 +8,9 @@ import { BookId, createBookId } from '@modules/shared/books/domain/book/book-id'
 import { Money } from '@modules/shared/core/domain/value-objects/money';
 
 import { createReservationId, ReservationId } from './reservation-id';
-import { ReservationStatus } from './reservation-status';
-import { ReservationDueAt } from './reservation-due-at';
+import { createReservationStatus, ReservationStatus } from './reservation-status';
+import { createReservationDueAt, ReservationDueAt } from './reservation-due-at';
+import { createLateFee, LateFee } from './late-fee';
 
 export const reservationCost = config.get<Money>('reservationCost');
 export const borrowLimit = config.get<number>('borrowLimit');
@@ -20,9 +21,17 @@ export type Reservation = Entity<{
   bookId: BookId;
   status: ReservationStatus;
   reservationFee: Money;
-  lateFee: Money;
+  lateFee: LateFee;
   referenceId: ReferenceId;
   reservedAt: Date;
+  borrowedAt: Date | null;
+  returnedAt: Date | null;
+  dueAt: ReservationDueAt | null;
+}>;
+
+export type ReservationUpdate = Readonly<{
+  status: ReservationStatus;
+  lateFee: LateFee;
   borrowedAt: Date | null;
   returnedAt: Date | null;
   dueAt: ReservationDueAt | null;
@@ -34,6 +43,7 @@ interface ReservationPrimitives {
   bookId: string;
   referenceId: string;
 }
+
 export function createReservation({ id, userId, bookId, referenceId }: ReservationPrimitives): Reservation {
   return {
     id: createReservationId(id),
@@ -47,6 +57,40 @@ export function createReservation({ id, userId, bookId, referenceId }: Reservati
     borrowedAt: null,
     dueAt: null,
     returnedAt: null,
+  };
+}
+
+interface ReservationUpdatePrimitives {
+  status: string;
+  lateFee: number;
+  borrowedAt: Date | null;
+  returnedAt: Date | null;
+  dueAt: string;
+}
+
+export function createReservationUpdate(primitives: ReservationUpdatePrimitives): ReservationUpdate {
+  return {
+    status: createReservationStatus(primitives.status),
+    lateFee: createLateFee(primitives.lateFee),
+    borrowedAt: primitives.borrowedAt || null,
+    returnedAt: primitives.returnedAt || null,
+    dueAt: primitives.dueAt ? createReservationDueAt(primitives.dueAt) : null,
+  };
+}
+
+export function update(reservation: Reservation, reservationUpdate: ReservationUpdate): Reservation {
+  return {
+    id: reservation.id,
+    userId: reservation.userId,
+    bookId: reservation.bookId,
+    referenceId: reservation.referenceId,
+    reservationFee: reservation.reservationFee,
+    reservedAt: reservation.reservedAt,
+    lateFee: reservationUpdate.lateFee,
+    status: reservationUpdate.status,
+    borrowedAt: reservationUpdate.borrowedAt,
+    returnedAt: reservationUpdate.returnedAt,
+    dueAt: reservationUpdate.dueAt,
   };
 }
 

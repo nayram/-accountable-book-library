@@ -10,6 +10,7 @@ export interface FindReservationsRequest {
   userId: string | null;
   referenceId: string | null;
   cursor: string | null;
+  status: string | null;
   limit: number;
 }
 
@@ -21,10 +22,10 @@ export function findReservationsBuilder({
   reservationRepository: ReservationRepository;
 }): FindReservationsUseCase {
   return async function findReservations(req: FindReservationsRequest) {
-    const { cursor, limit, userId, referenceId } = req;
+    const { cursor, limit, userId, status, referenceId } = req;
     return reservationRepository.find(
       createPagination({ limit, cursor, sortBy: 'reservedAt' }),
-      createSearchParams({ referenceId, userId }),
+      createSearchParams({ referenceId, userId, status }),
     );
   };
 }

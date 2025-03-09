@@ -4,6 +4,7 @@ import { FieldValidationError } from '@modules/shared/core/domain/field-validati
 import { cursorFixtures } from '@tests/utils/fixtures/shared/cursor-fixtures';
 import { userIdFixtures } from '@tests/utils/fixtures/users/user-id-fixtures';
 import { referenceIdFixtures } from '@tests/utils/fixtures/references/reference-id-fixtures';
+import { reservationStatusFixtures } from '@tests/utils/fixtures/reservations/reservation-status-fixtures';
 
 import { ReservationRepository } from '../domain/reservation-repository';
 
@@ -15,6 +16,7 @@ describe('find reservations', () => {
 
   const userId = userIdFixtures.create();
   const referenceId = referenceIdFixtures.create();
+  const status = reservationStatusFixtures.create();
   const cursor = cursorFixtures.create();
   const limit = 5;
 
@@ -31,6 +33,7 @@ describe('find reservations', () => {
           limit,
           userId: userIdFixtures.invalid(),
           referenceId,
+          status,
         }),
       ).rejects.toThrow(FieldValidationError);
     });
@@ -42,6 +45,19 @@ describe('find reservations', () => {
           limit,
           referenceId: referenceIdFixtures.invalid(),
           userId,
+          status,
+        }),
+      ).rejects.toThrow(FieldValidationError);
+    });
+
+    it('provided invalid reservation status value', () => {
+      expect(
+        findReservations({
+          cursor,
+          limit,
+          referenceId,
+          userId,
+          status: reservationStatusFixtures.invalid(),
         }),
       ).rejects.toThrow(FieldValidationError);
     });
@@ -53,6 +69,7 @@ describe('find reservations', () => {
           limit,
           referenceId,
           userId,
+          status,
         }),
       ).rejects.toThrow(FieldValidationError);
     });
@@ -60,8 +77,8 @@ describe('find reservations', () => {
 
   it('should successfully return book reservation history', async () => {
     const pagination = { cursor, limit, sortOrder: 'desc', sortBy: 'reservedAt' };
-    const searchParams = { referenceId, userId };
-    await findReservations({ cursor, limit, userId, referenceId });
+    const searchParams = { referenceId, userId, status };
+    await findReservations({ cursor, limit, userId, referenceId, status });
     expect(reservationRepository.find).toHaveBeenCalledWith(pagination, searchParams);
   });
 });

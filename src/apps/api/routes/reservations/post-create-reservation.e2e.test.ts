@@ -3,10 +3,7 @@ import { StatusCodes } from 'http-status-codes';
 import { faker } from '@faker-js/faker/locale/en';
 
 import app from '@api/app';
-import { referenceIdFixtures } from '@tests/utils/fixtures/references/reference-id-fixtures';
-import { referenceFixtures } from '@tests/utils/fixtures/references/reference-fixtures';
 import { userFixtures } from '@tests/utils/fixtures/users/user-fixtures';
-import { Reference } from '@modules/shared/references/domain/reference';
 import { User } from '@modules/shared/users/domain/user/user';
 import { userIdFixtures } from '@tests/utils/fixtures/users/user-id-fixtures';
 import { walletFixtures } from '@tests/utils/fixtures/wallet/wallet-fixtures';
