@@ -6,11 +6,11 @@ import { FieldValidationError } from '@modules/shared/core/domain/field-validati
 import { GetBookByIdUseCase } from '@modules/books/application/get-book-by-Id';
 import { BookDoesNotExistsError } from '@modules/books/domain/book-does-not-exist-error';
 
-export function getBookStatusControllerBuilder({ getBookById }: { getBookById: GetBookByIdUseCase }) {
-  return async function getBookStatusController(req: Request, res: Response, next: NextFunction) {
+export function getBookControllerBuilder({ getBookById }: { getBookById: GetBookByIdUseCase }) {
+  return async function getBookController(req: Request, res: Response, next: NextFunction) {
     try {
-      const { status } = await getBookById({ id: req.params.id });
-      res.status(StatusCodes.OK).send({ status });
+      const book = await getBookById({ id: req.params.id });
+      res.status(StatusCodes.OK).send(book);
     } catch (error) {
       if (error instanceof FieldValidationError) {
         next(BadRequest(error.message));

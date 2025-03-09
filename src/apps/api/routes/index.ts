@@ -14,7 +14,7 @@ import { postCreateReservationRequestSchema } from './reservations/post-create-r
 import { getReservationsController, postBorrowBookController, postCreateReservationController } from './reservations';
 import { getReservationsRequestSchema } from './reservations/get-reservations-request';
 import { postCreateBookRequestSchema } from './books/post-create-book-request';
-import { getBookStatusController, postCreateBookController } from './books';
+import { getBookController, postCreateBookController } from './books';
 import { postBorrowBookRequestSchema } from './reservations/post-borrow-book-request';
 
 const routes = Router();
@@ -29,6 +29,6 @@ routes.post('/reservations/:id/borrow', SchemaValidator.body(postBorrowBookReque
 routes.get('/reservations', SchemaValidator.query(getReservationsRequestSchema), getReservationsController);
 
 routes.post('/books', SchemaValidator.body(postCreateBookRequestSchema), postCreateBookController);
-routes.get('/books/:id/status', getBookStatusController);
+routes.get('/books/:id', getBookController);
 
 export default routes;

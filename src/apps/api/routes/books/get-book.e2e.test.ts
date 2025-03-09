@@ -9,7 +9,7 @@ import { referenceFixtures } from '@tests/utils/fixtures/references/reference-fi
 
 describe('GET /books/:id/status', () => {
   const request = supertest.agent(app);
-  const path = '/api/books/:id/status';
+  const path = '/api/books/:id';
   let response: supertest.Response;
 
   describe('when book exists', () => {
@@ -26,7 +26,12 @@ describe('GET /books/:id/status', () => {
     });
 
     it('should return valid reference', () => {
-      expect(response.body).toEqual({ status: book.status });
+      expect(response.body).toHaveProperty('id', book.id);
+      expect(response.body).toHaveProperty('barcode', book.barcode);
+      expect(response.body).toHaveProperty('referenceId', book.referenceId);
+      expect(response.body).toHaveProperty('status', book.status);
+      expect(response.body).toHaveProperty('createdAt', book.createdAt.toISOString());
+      expect(response.body).toHaveProperty('updatedAt', book.updatedAt.toISOString());
     });
   });
 
