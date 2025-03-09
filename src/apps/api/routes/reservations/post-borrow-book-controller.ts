@@ -1,5 +1,6 @@
 import { NextFunction, Response } from 'express';
 import { StatusCodes } from 'http-status-codes';
+
 import { BadRequest, Conflict, NotFound } from '@api/errors/http-error';
 import { FieldValidationError } from '@modules/shared/core/domain/field-validation-error';
 import { ReservationFailedError } from '@modules/reservations/domain/reservation-failed-error';
@@ -13,7 +14,9 @@ export function postBorrowBookControllerBuilder({ borrowBook }: { borrowBook: Bo
     try {
       const { body } = req;
 
-      await borrowBook({ reservationId: req.params.id, dueAt: body.dueAt, userId: req.headers['Authorization'] });
+      const userId = req.headers['authorization'];
+
+      await borrowBook({ reservationId: req.params.id, dueAt: body.dueAt, userId });
 
       res.sendStatus(StatusCodes.NO_CONTENT);
     } catch (error) {

@@ -2,6 +2,7 @@ import { UseCase } from '@modules/shared/core/application/use-case';
 import { updateStatusToBorrowed as updateBookStatusToBorrowed } from '@modules/shared/books/domain/book/book';
 import { GetBookByIdUseCase } from '@modules/books/application/get-book-by-Id';
 import { BookStatus } from '@modules/shared/books/domain/book/book-status';
+import { createUserId } from '@modules/shared/users/domain/user/user-id';
 
 import { createReservationUpdate, Reservation, update } from '../domain/reservation/reservation';
 import { ReservationRepository } from '../domain/reservation-repository';
@@ -9,7 +10,6 @@ import { createReservationId } from '../domain/reservation/reservation-id';
 import { ReservationStatus } from '../domain/reservation/reservation-status';
 import { ReservationFailedError } from '../domain/reservation-failed-error';
 import { ReservationTransactionsRepository } from '../domain/reservation-transactions-repository';
-import { createUserId } from '@modules/shared/users/domain/user/user-id';
 
 export interface BorrowBookRequest {
   reservationId: string;
@@ -32,7 +32,7 @@ export function borrowBookBuilder({
     const reservation = await reservationRepository.findById(createReservationId(req.reservationId));
 
     if (reservation.userId != createUserId(req.userId)) {
-      throw  ReservationFailedError.withUserId()
+      throw ReservationFailedError.withUserId();
     }
 
     const book = await getBookById({ id: reservation.bookId });

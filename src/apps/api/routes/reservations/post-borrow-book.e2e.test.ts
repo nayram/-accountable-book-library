@@ -1,8 +1,10 @@
 import { describe } from 'node:test';
 
+import supertest from 'supertest';
+import { StatusCodes } from 'http-status-codes';
+
 import app from '@api/app';
 import { dropAllCollections } from '@tests/utils/mocks/db';
-import supertest from 'supertest';
 import { User } from '@modules/shared/users/domain/user/user';
 import { reservationDueAtFixtures } from '@tests/utils/fixtures/reservations/reservation-due-at-fixtures';
 import { Reservation } from '@modules/reservations/domain/reservation/reservation';
@@ -13,7 +15,6 @@ import { BookStatus } from '@modules/shared/books/domain/book/book-status';
 import { reservationFixtures } from '@tests/utils/fixtures/reservations/reservation-fixtures';
 import { ReservationStatus } from '@modules/reservations/domain/reservation/reservation-status';
 import { reservationIdFixtures } from '@tests/utils/fixtures/reservations/reservation-id-fixtures';
-import { StatusCodes } from 'http-status-codes';
 import { userIdFixtures } from '@tests/utils/fixtures/users/user-id-fixtures';
 
 import { PostBorrowBookRequest } from './post-borrow-book-request';
