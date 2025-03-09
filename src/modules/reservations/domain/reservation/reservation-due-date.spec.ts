@@ -1,7 +1,7 @@
 import { FieldValidationError } from '@modules/shared/core/domain/field-validation-error';
+import { convertISOToDateString } from '@modules/shared/core/domain/value-objects/iso-date';
 
 import { createReservationDueAt } from './reservation-due-at';
-import { convertISOToDateString } from '@modules/shared/core/domain/value-objects/iso-date';
 
 describe('createDueAt', () => {
   it('should throw a FieldValidationError if the provided value is not a valid date', () => {
@@ -30,6 +30,6 @@ describe('createDueAt', () => {
 
     const result = createReservationDueAt(validDate);
 
-    expect(convertISOToDateString(result)).toBe(validDate);
+    expect(result).toBe(validDate);
   });
 });

@@ -9,4 +9,7 @@ export const reservationIdFixtures = {
   invalid() {
     return uuidFixtures.invalid();
   },
+  urlInvalid() {
+    return uuidFixtures.urlInvalid();
+  },
 };

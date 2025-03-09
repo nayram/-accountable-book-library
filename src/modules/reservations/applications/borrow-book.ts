@@ -8,28 +8,37 @@ import { ReservationRepository } from '../domain/reservation-repository';
 import { createReservationId } from '../domain/reservation/reservation-id';
 import { ReservationStatus } from '../domain/reservation/reservation-status';
 import { ReservationFailedError } from '../domain/reservation-failed-error';
+import { ReservationTransactionsRepository } from '../domain/reservation-transactions-repository';
+import { createUserId } from '@modules/shared/users/domain/user/user-id';
 
 export interface BorrowBookRequest {
   reservationId: string;
   dueAt: string;
+  userId: string;
 }
 
 export type BorrowBookUseCase = UseCase<BorrowBookRequest, Reservation>;
 
 export function borrowBookBuilder({
   reservationRepository,
+  reservationTransactionsRepository,
   getBookById,
 }: {
   reservationRepository: ReservationRepository;
+  reservationTransactionsRepository: ReservationTransactionsRepository;
   getBookById: GetBookByIdUseCase;
 }): BorrowBookUseCase {
   return async function borrowBook(req: BorrowBookRequest) {
     const reservation = await reservationRepository.findById(createReservationId(req.reservationId));
 
+    if (reservation.userId != createUserId(req.userId)) {
+      throw  ReservationFailedError.withUserId()
+    }
+
     const book = await getBookById({ id: reservation.bookId });
 
     if (reservation.status != ReservationStatus.Reserved && book.status != BookStatus.Reserved) {
-      throw ReservationFailedError.withBorrowBook();
+      throw ReservationFailedError.inValidStatus();
     }
 
     const updatedReservation = update(
@@ -44,6 +53,8 @@ export function borrowBookBuilder({
     );
 
     const updatedBook = updateBookStatusToBorrowed(book);
+
+    await reservationTransactionsRepository.save({ reservation: updatedReservation, book: updatedBook });
 
     return updatedReservation;
   };

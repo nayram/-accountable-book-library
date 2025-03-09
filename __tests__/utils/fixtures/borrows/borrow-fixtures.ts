@@ -1,5 +1,4 @@
 import { faker } from '@faker-js/faker/locale/en';
-
 import { Borrow } from '@modules/borrows/domain/borrow/borrow';
 
 import { userIdFixtures } from '../users/user-id-fixtures';

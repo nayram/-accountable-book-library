@@ -11,10 +11,11 @@ import {
 } from './references';
 import { getReferencesRequestSchema } from './references/get-references-request';
 import { postCreateReservationRequestSchema } from './reservations/post-create-reservation.request';
-import { getReservationsController, postCreateReservationController } from './reservations';
+import { getReservationsController, postBorrowBookController, postCreateReservationController } from './reservations';
 import { getReservationsRequestSchema } from './reservations/get-reservations-request';
 import { postCreateBookRequestSchema } from './books/post-create-book-request';
 import { getBookStatusController, postCreateBookController } from './books';
+import { postBorrowBookRequestSchema } from './reservations/post-borrow-book-request';
 
 const routes = Router();
 
@@ -24,6 +25,7 @@ routes.get('/references/:externalReferenceId', getReferenceByExternalReferenceId
 routes.delete('/references/:id', deleteReferenceByIdController);
 
 routes.post('/reservations', SchemaValidator.body(postCreateReservationRequestSchema), postCreateReservationController);
+routes.post('/reservations/:id/borrow', SchemaValidator.body(postBorrowBookRequestSchema), postBorrowBookController);
 routes.get('/reservations', SchemaValidator.query(getReservationsRequestSchema), getReservationsController);
 
 routes.post('/books', SchemaValidator.body(postCreateBookRequestSchema), postCreateBookController);

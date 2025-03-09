@@ -16,10 +16,10 @@ import { bookIdFixtures } from '@tests/utils/fixtures/books/book-id-fixtures';
 import { Book } from '@modules/shared/books/domain/book/book';
 import { ReservationStatus } from '@modules/reservations/domain/reservation/reservation-status';
 import { reservationFixtures } from '@tests/utils/fixtures/reservations/reservation-fixtures';
-
-import { PostCreateReservationRequest } from './post-create-reservation.request';
 import { walletModel } from '@modules/shared/wallets/infrastructure/wallet-model';
 import { Wallet } from '@modules/wallets/domain/wallet/wallet';
+
+import { PostCreateReservationRequest } from './post-create-reservation.request';
 
 describe('POST /reservations', () => {
   const request = supertest.agent(app);

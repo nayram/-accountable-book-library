@@ -3,7 +3,7 @@ import mongoose from 'mongoose';
 import { ReservationModel } from '@modules/shared/reservations/infrastructure/reservation-model';
 import { BookModel } from '@modules/shared/books/infrastructure/book-model';
 import { WalletModel } from '@modules/shared/wallets/infrastructure/wallet-model';
-import { toDTO, toDTO as toReservationDTO } from '@modules/reservations/infrastructure/reservation-dto';
+import { toDTO as toReservationDTO } from '@modules/reservations/infrastructure/reservation-dto';
 import { RepositoryError } from '@modules/shared/core/domain/repository-error';
 
 import { ReservationTransactionsRepository } from '../domain/reservation-transactions-repository';
@@ -77,7 +77,7 @@ export function reservationTransactionsRepositoryBuilder({
                   status: reservation.status,
                   late_fee: reservation.lateFee,
                   returned_at: reservation.returnedAt,
-                  due_at: reservation.dueAt,
+                  due_at: reservation.dueAt ? new Date(reservation.dueAt) : null,
                 },
               },
               { session },

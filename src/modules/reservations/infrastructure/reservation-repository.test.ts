@@ -7,6 +7,7 @@ import { userIdFixtures } from '@tests/utils/fixtures/users/user-id-fixtures';
 import { reservationStatusFixtures } from '@tests/utils/fixtures/reservations/reservation-status-fixtures';
 import { reservationIdFixtures } from '@tests/utils/fixtures/reservations/reservation-id-fixtures';
 import { ReservationDoesNotExistError } from '@modules/shared/reservations/domain/reservation-does-not-exist';
+import { reservationDueAtFixtures } from '@tests/utils/fixtures/reservations/reservation-due-at-fixtures';
 
 import { SearchParams } from '../domain/search-params';
 import { reservationModel } from '../../shared/reservations/infrastructure/reservation-model';
@@ -264,7 +265,7 @@ describe('ReservationRepository', () => {
   describe('save', () => {
     it('should create a new reservation if it does not exist', async () => {
       const newReservation = reservationFixtures.create({
-        dueAt: faker.date.future(),
+        dueAt: reservationDueAtFixtures.create(),
         returnedAt: null,
         borrowedAt: faker.date.recent(),
       });
@@ -280,7 +281,7 @@ describe('ReservationRepository', () => {
       expect(result.reservationFee).toEqual(newReservation.reservationFee);
       expect(result.lateFee).toEqual(newReservation.lateFee);
       expect(result.status).toEqual(newReservation.status);
-      expect(result.dueAt?.toISOString()).toEqual(newReservation.dueAt?.toISOString());
+      expect(result.dueAt).toEqual(newReservation.dueAt);
       expect(result.borrowedAt?.toISOString()).toEqual(newReservation.borrowedAt?.toISOString());
       expect(result.reservedAt.toISOString()).toEqual(newReservation.reservedAt.toISOString());
       expect(result.returnedAt).toBeNull();
@@ -303,7 +304,7 @@ describe('ReservationRepository', () => {
         status: ReservationStatus.Borrowed,
         borrowedAt: faker.date.recent(),
         returnedAt: null,
-        dueAt: faker.date.future(),
+        dueAt: reservationDueAtFixtures.create(),
       });
 
       await reservationRepository.save(updatedReservation);
@@ -318,7 +319,7 @@ describe('ReservationRepository', () => {
       expect(result.reservationFee).toEqual(updatedReservation.reservationFee);
       expect(result.borrowedAt?.toISOString()).toEqual(updatedReservation.borrowedAt?.toISOString());
       expect(result.returnedAt).toBeNull();
-      expect(result.dueAt?.toISOString()).toEqual(updatedReservation.dueAt?.toISOString());
+      expect(result.dueAt).toEqual(updatedReservation.dueAt);
       expect(result.status).toEqual(updatedReservation.status);
       expect(result.reservedAt.toISOString()).toEqual(updatedReservation.reservedAt.toISOString());
     });

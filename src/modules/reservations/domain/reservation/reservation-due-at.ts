@@ -1,7 +1,7 @@
 import { FieldValidationError } from '@modules/shared/core/domain/field-validation-error';
-import { createISODate } from '@modules/shared/core/domain/value-objects/iso-date';
+import { createISODate, ISODate } from '@modules/shared/core/domain/value-objects/iso-date';
 
-export type ReservationDueAt = Date;
+export type ReservationDueAt = ISODate;
 
 function isValidDueDate(dueDate: Date): boolean {
   const now = new Date();
@@ -12,8 +12,8 @@ function isValidDueDate(dueDate: Date): boolean {
 }
 
 export function createReservationDueAt(value: string): ReservationDueAt {
-  const res = new Date(createISODate(value, 'dueAt'));
-  if (!isValidDueDate(res)) {
+  const res = createISODate(value, 'dueAt');
+  if (!isValidDueDate(new Date(res))) {
     throw new FieldValidationError(`${value} should be 2 days or more`);
   }
 

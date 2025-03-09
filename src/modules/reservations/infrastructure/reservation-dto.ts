@@ -1,6 +1,7 @@
 import { Schema } from 'mongoose';
 
 import { ReservationDTO } from '@modules/shared/reservations/infrastructure/reservation-model';
+import { convertISOToDateString } from '@modules/shared/core/domain/value-objects/iso-date';
 
 import { Reservation } from '../domain/reservation/reservation';
 
@@ -15,7 +16,7 @@ export function toDTO(reservation: Reservation): ReservationDTO {
     late_fee: reservation.lateFee,
     returned_at: reservation.returnedAt,
     borrowed_at: reservation.borrowedAt,
-    due_at: reservation.dueAt,
+    due_at: reservation.dueAt ? new Date(reservation.dueAt) : null,
     reserved_at: reservation.reservedAt,
   };
 }
@@ -30,7 +31,7 @@ export function fromDTO(dto: ReservationDTO): Reservation {
     reservationFee: dto.reservation_fee,
     lateFee: dto.late_fee,
     returnedAt: dto.returned_at,
-    dueAt: dto.due_at,
+    dueAt: dto.due_at ? convertISOToDateString(dto.due_at) : null,
     borrowedAt: dto.borrowed_at,
     reservedAt: dto.reserved_at,
   };
