@@ -3,5 +3,5 @@ import { Book } from '@modules/shared/books/domain/book/book';
 import { Wallet } from '@modules/wallets/domain/wallet/wallet';
 
 export interface ReservationTransactionsRepository {
-  save({ reservation, book, wallet }: { reservation: Reservation; book: Book; wallet: Wallet }): Promise<void>;
+  save({ reservation, book, wallet }: { reservation: Reservation; book: Book; wallet?: Wallet }): Promise<void>;
 }

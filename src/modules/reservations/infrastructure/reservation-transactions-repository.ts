@@ -3,7 +3,7 @@ import mongoose from 'mongoose';
 import { ReservationModel } from '@modules/shared/reservations/infrastructure/reservation-model';
 import { BookModel } from '@modules/shared/books/infrastructure/book-model';
 import { WalletModel } from '@modules/shared/wallets/infrastructure/wallet-model';
-import { toDTO as toReservationDTO } from '@modules/reservations/infrastructure/reservation-dto';
+import { toDTO, toDTO as toReservationDTO } from '@modules/reservations/infrastructure/reservation-dto';
 import { RepositoryError } from '@modules/shared/core/domain/repository-error';
 
 import { ReservationTransactionsRepository } from '../domain/reservation-transactions-repository';
@@ -26,7 +26,6 @@ async function runTransactionWithRetry(
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       console.log('Transaction error on attempt', attempt + 1, error.message);
-      // Check if the error is transient
       if (error.errorLabels && error.errorLabels.includes('TransientTransactionError')) {
         attempt++;
         if (session.inTransaction()) {
@@ -35,7 +34,6 @@ async function runTransactionWithRetry(
         console.log(
           `TransientTransactionError encountered. Retrying transaction (attempt ${attempt}/${maxRetries})...`,
         );
-        // wait for a short delay before retrying
         await new Promise((resolve) => setTimeout(resolve, RETRY_DELAY_MS));
       } else {
         if (session.inTransaction()) {
@@ -62,7 +60,31 @@ export function reservationTransactionsRepositoryBuilder({
       const session = await mongoose.startSession();
       try {
         await runTransactionWithRetry(session, async () => {
-          await reservationModel.create([toReservationDTO(reservation)], { session });
+          const query = {
+            _id: reservation.id,
+            user_id: reservation.userId,
+            book_id: reservation.bookId,
+            reference_id: book.referenceId,
+          };
+          const existingReservation = await reservationModel.findOne(query);
+
+          if (existingReservation) {
+            await reservationModel.updateOne(
+              query,
+              {
+                $set: {
+                  borrowed_at: reservation.borrowedAt,
+                  status: reservation.status,
+                  late_fee: reservation.lateFee,
+                  returned_at: reservation.returnedAt,
+                  due_at: reservation.dueAt,
+                },
+              },
+              { session },
+            );
+          } else {
+            await reservationModel.create([toReservationDTO(reservation)], { session });
+          }
 
           await bookModel.updateOne(
             { _id: book.id },
@@ -77,18 +99,20 @@ export function reservationTransactionsRepositoryBuilder({
             },
           );
 
-          await walletModel.updateOne(
-            { _id: wallet.id },
-            {
-              $set: {
-                balance: wallet.balance,
-                updated_at: wallet.updatedAt,
+          if (wallet) {
+            await walletModel.updateOne(
+              { _id: wallet.id },
+              {
+                $set: {
+                  balance: wallet.balance,
+                  updated_at: wallet.updatedAt,
+                },
               },
-            },
-            {
-              session,
-            },
-          );
+              {
+                session,
+              },
+            );
+          }
         });
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } catch (error: any) {
