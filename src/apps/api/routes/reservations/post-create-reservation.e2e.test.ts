@@ -18,6 +18,8 @@ import { ReservationStatus } from '@modules/reservations/domain/reservation/rese
 import { reservationFixtures } from '@tests/utils/fixtures/reservations/reservation-fixtures';
 
 import { PostCreateReservationRequest } from './post-create-reservation.request';
+import { walletModel } from '@modules/shared/wallets/infrastructure/wallet-model';
+import { Wallet } from '@modules/wallets/domain/wallet/wallet';
 
 describe('POST /reservations', () => {
   const request = supertest.agent(app);
@@ -31,6 +33,7 @@ describe('POST /reservations', () => {
     let requestBody: PostCreateReservationRequest['body'];
     let response: supertest.Response;
     let book: Book;
+    let wallet: Wallet;
     let unAvailableBook: Book;
     let user: User;
     let userWithoutEnoughFunds: User;
@@ -53,7 +56,7 @@ describe('POST /reservations', () => {
 
       await walletFixtures.insert({ userId: userWithoutEnoughFunds.id, balance: 0 });
       await walletFixtures.insert({ userId: userWithExistingBorrowedReference.id });
-      await walletFixtures.insert({ userId: user.id });
+      wallet = await walletFixtures.insert({ userId: user.id });
 
       await reservationFixtures.insertMany({
         reservation: { userId: userAtBorrowLimit.id, status: ReservationStatus.Borrowed },
@@ -237,11 +240,19 @@ describe('POST /reservations', () => {
         expect(response.body).toHaveProperty('reservedAt', reservation?.reserved_at.toISOString());
       });
 
-      it('should reserve a book', async () => {
+      it('should update book status to reserved', async () => {
         const reservation = await reservationModel.findOne({ user_id: user.id, book_id: book.id });
         const result = await bookModel.findById(reservation?.book_id);
         expect(result).not.toBeNull();
         expect(result?.status).toBe(BookStatus.Reserved);
+      });
+
+      it('should credit user wallet', async () => {
+        const reservation = await reservationModel.findOne({ user_id: user.id, book_id: book.id });
+        const result = await walletModel.findOne({ user_id: reservation?.user_id });
+
+        expect(result).not.toBeNull();
+        expect(result?.balance).toEqual(wallet.balance - (reservation?.reservation_fee || 0));
       });
     });
   });
