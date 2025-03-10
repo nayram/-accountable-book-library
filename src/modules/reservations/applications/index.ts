@@ -8,6 +8,7 @@ import { reservationTransactionsRepository, reservationRepository } from '../inf
 import { createReservationBuilder } from './create-reservation';
 import { findReservationsBuilder } from './find-reservations';
 import { borrowBookBuilder } from './borrow-book';
+import { returnBookBuilder } from './return-book';
 
 export const createReservation = createReservationBuilder({
   walletRepository,
@@ -24,5 +25,12 @@ export const borrowBook = borrowBookBuilder({
   reservationRepository,
   reservationTransactionsRepository,
   userRepository,
+  getBookById,
+});
+
+export const returnBook = returnBookBuilder({
+  reservationRepository,
+  reservationTransactionsRepository,
+  walletRepository,
   getBookById,
 });

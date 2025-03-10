@@ -59,7 +59,7 @@ describe('return book', () => {
     lateFee: 0,
   });
 
-  const reservationWithPosibleLateFees = reservationFixtures.create({
+  const reservationWithPossibleLateFees = reservationFixtures.create({
     userId,
     bookId: borrowedBook2.id,
     referenceId,
@@ -100,8 +100,8 @@ describe('return book', () => {
       })
       .calledWith(reservation.id)
       .mockResolvedValue(reservation)
-      .calledWith(reservationWithPosibleLateFees.id)
-      .mockResolvedValue(reservationWithPosibleLateFees)
+      .calledWith(reservationWithPossibleLateFees.id)
+      .mockResolvedValue(reservationWithPossibleLateFees)
       .calledWith(reservationWithReservedState.id)
       .mockResolvedValue(reservationWithReservedState);
 
@@ -180,16 +180,16 @@ describe('return book', () => {
 
   it('should return book successfully with late fees', async () => {
     const returnedAt = convertISOToDateString(systemDateTime);
-    const dueAt = reservationWithPosibleLateFees.dueAt || '';
+    const dueAt = reservationWithPossibleLateFees.dueAt || '';
     await returnBook({
-      reservationId: reservationWithPosibleLateFees.id,
+      reservationId: reservationWithPossibleLateFees.id,
       returnedAt,
     });
     const daysLate = Math.ceil((new Date(returnedAt).getTime() - new Date(dueAt).getTime()) / (1000 * 3600 * 24));
     const lateFee = lateReturnPenalty * daysLate;
 
     expect(reservationTransactionsRepository.save).toHaveBeenCalledWith({
-      reservation: { ...reservationWithPosibleLateFees, returnedAt, status: ReservationStatus.Returned, lateFee },
+      reservation: { ...reservationWithPossibleLateFees, returnedAt, status: ReservationStatus.Returned, lateFee },
       book: { ...borrowedBook2, status: BookStatus.Available, updatedAt: systemDateTime },
       wallet: { ...wallet, balance: wallet.balance - lateFee, updatedAt: systemDateTime },
     });

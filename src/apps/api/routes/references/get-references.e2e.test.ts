@@ -6,6 +6,7 @@ import { authorFixtures } from '@tests/utils/fixtures/references/author-fixtures
 import { titleFixtures } from '@tests/utils/fixtures/references/title-fixtures';
 import { referenceFixtures } from '@tests/utils/fixtures/references/reference-fixtures';
 import { publicationYearFixtures } from '@tests/utils/fixtures/references/publication-year-fixtures';
+import { dropAllCollections } from '@tests/utils/mocks/db';
 
 describe('GET /references/search', () => {
   const request = supertest.agent(app);
@@ -19,12 +20,16 @@ describe('GET /references/search', () => {
   const limit = 2;
 
   describe('when valid request is made', () => {
-    beforeAll(async () => {
+    beforeEach(async () => {
       await Promise.all([
         await referenceFixtures.insertMany({ reference: { author }, length: numberOfreferences }),
         await referenceFixtures.insertMany({ reference: { title }, length: numberOfreferences }),
         await referenceFixtures.insertMany({ reference: { publicationYear }, length: numberOfreferences }),
       ]);
+    });
+
+    afterEach(async () => {
+      await dropAllCollections();
     });
 
     describe('author', () => {
