@@ -2,6 +2,7 @@ import config from 'config';
 import { MockProxy, mock, mockFn } from 'jest-mock-extended';
 import { when } from 'jest-when';
 import { faker } from '@faker-js/faker/locale/en';
+
 import { ReservationDoesNotExistError } from '@modules/shared/reservations/domain/reservation-does-not-exist';
 import { BookId } from '@modules/shared/books/domain/book/book-id';
 import { reservationIdFixtures } from '@tests/utils/fixtures/reservations/reservation-id-fixtures';

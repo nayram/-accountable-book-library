@@ -1,6 +1,7 @@
 import { MockProxy, mock, mockFn } from 'jest-mock-extended';
 import { when } from 'jest-when';
 import { faker } from '@faker-js/faker/locale/en';
+
 import { ReservationDoesNotExistError } from '@modules/shared/reservations/domain/reservation-does-not-exist';
 import { BookId } from '@modules/shared/books/domain/book/book-id';
 import { reservationIdFixtures } from '@tests/utils/fixtures/reservations/reservation-id-fixtures';
@@ -13,6 +14,8 @@ import { GetBookByIdUseCase } from '@modules/books/application/get-book-by-Id';
 import { reservationFixtures } from '@tests/utils/fixtures/reservations/reservation-fixtures';
 import { BookDoesNotExistsError } from '@modules/books/domain/book-does-not-exist-error';
 import { FieldValidationError } from '@modules/shared/core/domain/field-validation-error';
+import { UserRepository } from '@modules/shared/users/domain/user-repository';
+import { UserDoesNotExistsError } from '@modules/shared/users/domain/user-does-not-exists-error';
 
 import { ReservationStatus } from '../domain/reservation/reservation-status';
 import { ReservationTransactionsRepository } from '../domain/reservation-transactions-repository';
@@ -20,8 +23,6 @@ import { ReservationRepository } from '../domain/reservation-repository';
 import { ReservationFailedError } from '../domain/reservation-failed-error';
 
 import { borrowBookBuilder, BorrowBookUseCase } from './borrow-book';
-import { UserRepository } from '@modules/shared/users/domain/user-repository';
-import { UserDoesNotExistsError } from '@modules/shared/users/domain/user-does-not-exists-error';
 
 describe('borrow book', () => {
   let borrowBook: BorrowBookUseCase;
