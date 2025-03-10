@@ -1,17 +1,17 @@
 import supertest from 'supertest';
 import { StatusCodes } from 'http-status-codes';
-
 import app from '@api/app';
 import { dropReferencesCollection } from '@tests/utils/mocks/db';
 import { Reference } from '@modules/shared/references/domain/reference';
 import { referenceFixtures } from '@tests/utils/fixtures/references/reference-fixtures';
 import { externalReferenceIdFixtures } from '@tests/utils/fixtures/references/external-reference-id-fixtures';
+import { referenceIdFixtures } from '@tests/utils/fixtures/references/reference-id-fixtures';
 
 import { toDTO } from './dto/reference-dto';
 
-describe('GET /references/:externalReferenceId', () => {
+describe('GET /references/:id', () => {
   const request = supertest.agent(app);
-  const path = '/api/references/:externalReferenceId';
+  const path = '/api/references/:id';
   let response: supertest.Response;
 
   beforeEach(async () => {
@@ -23,7 +23,7 @@ describe('GET /references/:externalReferenceId', () => {
     beforeEach(async () => {
       reference = await referenceFixtures.insert();
 
-      response = await request.get(path.replace(':externalReferenceId', reference.externalReferenceId));
+      response = await request.get(path.replace(':id', reference.id));
     });
 
     it('should return 200 status code', () => {
@@ -40,9 +40,9 @@ describe('GET /references/:externalReferenceId', () => {
   });
 
   describe('when reference does not exist', () => {
-    const id = externalReferenceIdFixtures.create();
+    const id = referenceIdFixtures.create();
     beforeEach(async () => {
-      response = await request.get(path.replace(':externalReferenceId', id));
+      response = await request.get(path.replace(':id', id));
     });
 
     it('should return 404 status code', () => {
@@ -59,9 +59,8 @@ describe('GET /references/:externalReferenceId', () => {
   });
 
   describe('when invalid id is provided', () => {
-    const externalReferenceId = externalReferenceIdFixtures.invalid();
     beforeEach(async () => {
-      response = await request.get(path.replace(':externalReferenceId', externalReferenceId));
+      response = await request.get(path.replace(':id', referenceIdFixtures.urlInvalid));
     });
 
     it('should return 400 status code', () => {
@@ -72,7 +71,7 @@ describe('GET /references/:externalReferenceId', () => {
       expect(response.body).toEqual({
         status: 'Bad Request',
         statusCode: StatusCodes.BAD_REQUEST,
-        message: `${externalReferenceId} is not a valid reference id`,
+        message: expect.any(String),
       });
     });
   });

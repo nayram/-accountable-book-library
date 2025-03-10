@@ -71,18 +71,16 @@ describe('ReferenceRepository', () => {
     });
   });
 
-  describe('findByExteranlReferenceId', () => {
-    it('should throw ReferenceDoesNotExistsError if reference does not exist', async () => {
-      const externalReferenceId = externalReferenceIdFixtures.create();
-      expect(referenceRepository.findByExteranlReferenceId(externalReferenceId)).rejects.toThrow(
-        ReferenceDoesNotExistsError,
-      );
+  describe('findById', () => {
+    it('should throw ReferenceDoesNotExistsError if id does not exist', async () => {
+      const id = referenceIdFixtures.create();
+      expect(referenceRepository.findById(id)).rejects.toThrow(ReferenceDoesNotExistsError);
     });
 
     it('should return reference if it exists', async () => {
       const reference = referenceFixtures.create();
       await referenceModel.create(toDTO(reference));
-      expect(referenceRepository.findByExteranlReferenceId(reference.externalReferenceId)).resolves.toEqual(reference);
+      expect(referenceRepository.findById(reference.id)).resolves.toEqual(reference);
     });
   });
 

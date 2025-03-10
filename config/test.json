@@ -8,5 +8,7 @@
     "name": "test-set",
     "ip": "127.0.0.1",
     "port": "27017"
-  }
+  },
+  "apiKey": "abce",
+  "emailEnv": "test"
 }

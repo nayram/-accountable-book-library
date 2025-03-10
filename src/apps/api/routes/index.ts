@@ -5,7 +5,7 @@ import { SchemaValidator } from '../validations/schema-validators';
 import { postCreateReferenceRequestSchema } from './references/post-create-reference-request';
 import {
   deleteReferenceByIdController,
-  getReferenceByExternalReferenceIdController,
+  getReferenceByIdController,
   getReferencesController,
   postCreateReferenceController,
 } from './references';
@@ -27,7 +27,7 @@ const routes = Router();
 
 routes.post('/references', SchemaValidator.body(postCreateReferenceRequestSchema), postCreateReferenceController);
 routes.get('/references/search', SchemaValidator.query(getReferencesRequestSchema), getReferencesController);
-routes.get('/references/:externalReferenceId', getReferenceByExternalReferenceIdController);
+routes.get('/references/:id', getReferenceByIdController);
 routes.delete('/references/:id', deleteReferenceByIdController);
 
 routes.post('/reservations', SchemaValidator.body(postCreateReservationRequestSchema), postCreateReservationController);

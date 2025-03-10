@@ -4,6 +4,7 @@ export enum BookStatus {
   Available = 'available',
   Reserved = 'reserved',
   Borrowed = 'borrowed',
+  Purchased = 'purchased',
 }
 
 export function createBookStatus(value: string): BookStatus {

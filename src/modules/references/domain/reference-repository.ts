@@ -9,7 +9,7 @@ import { SearchParams } from './search-params';
 export interface ReferenceRepository {
   save(reference: Reference): Promise<void>;
   exits(externalReferenceId: ExternalReferenceId): Promise<boolean>;
-  findByExteranlReferenceId(externalReferenceId: ExternalReferenceId): Promise<Reference>;
+  findById(id: ReferenceId): Promise<Reference>;
   softDeleteById(id: ReferenceId): Promise<void>;
   find(pagination: Pagination, searchParams: SearchParams): Promise<PaginatedResults<Reference>>;
 }

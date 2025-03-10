@@ -2,22 +2,21 @@ import { NextFunction, Request, Response } from 'express';
 import { StatusCodes } from 'http-status-codes';
 
 import { BadRequest, NotFound } from '@api/errors/http-error';
-// eslint-disable-next-line max-len
-import { FindReferenceByExternalReferenceIdUseCase } from '@modules/references/application/find-reference-by-external-reference-id';
+import { FindReferenceByIdUseCase } from '@modules/references/application/find-reference-by-id';
 import { FieldValidationError } from '@modules/shared/core/domain/field-validation-error';
 import { ReferenceDoesNotExistsError } from '@modules/references/domain/reference-does-not-exists-error';
 
 import { toDTO } from './dto/reference-dto';
 
-export function getReferenceByExternalReferenceIdControllerBuilder({
-  findReferenceByExternalReferenceId,
+export function getReferenceByIdControllerBuilder({
+  findReferenceById,
 }: {
-  findReferenceByExternalReferenceId: FindReferenceByExternalReferenceIdUseCase;
+  findReferenceById: FindReferenceByIdUseCase;
 }) {
-  return async function getReferenceByExternalReferenceIdController(req: Request, res: Response, next: NextFunction) {
+  return async function getReferenceByIdController(req: Request, res: Response, next: NextFunction) {
     try {
-      const reference = await findReferenceByExternalReferenceId({
-        externalReferenceId: req.params.externalReferenceId,
+      const reference = await findReferenceById({
+        id: req.params.id,
       });
       res.status(StatusCodes.OK).send(toDTO(reference));
     } catch (error) {

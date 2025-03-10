@@ -12,7 +12,7 @@ export const referenceIdFixtures = {
     const invalidValues = ['1234567', 'random-value', 'abd-adb-basdf'];
     return faker.helpers.arrayElement(invalidValues);
   },
-  invalidPathId() {
+  urlInvalid() {
     return uuidFixtures.urlInvalid();
   },
 };

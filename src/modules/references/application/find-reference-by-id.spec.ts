@@ -4,18 +4,15 @@ import { when } from 'jest-when';
 
 import { FieldValidationError } from '@modules/shared/core/domain/field-validation-error';
 import { referenceFixtures } from '@tests/utils/fixtures/references/reference-fixtures';
-import { externalReferenceIdFixtures } from '@tests/utils/fixtures/references/external-reference-id-fixtures';
+import { referenceIdFixtures } from '@tests/utils/fixtures/references/reference-id-fixtures';
 
 import { ReferenceRepository } from '../domain/reference-repository';
 import { ReferenceDoesNotExistsError } from '../domain/reference-does-not-exists-error';
 
-import {
-  FindReferenceByExternalReferenceIdUseCase,
-  findReferenceByExternalReferenceIdBuilder,
-} from './find-reference-by-external-reference-id';
+import { FindReferenceByIdUseCase, findReferenceByIdBuilder } from './find-reference-by-id';
 
 describe('find reference by id', () => {
-  let findReferenceByExternalReferenceId: FindReferenceByExternalReferenceIdUseCase;
+  let findReferenceById: FindReferenceByIdUseCase;
 
   const systemDateTime = faker.date.recent();
 
@@ -31,14 +28,14 @@ describe('find reference by id', () => {
 
   beforeEach(() => {
     const referenceRepository = mock<ReferenceRepository>();
-    when(referenceRepository.findByExteranlReferenceId)
+    when(referenceRepository.findById)
       .mockImplementation((id) => {
         throw new ReferenceDoesNotExistsError(id);
       })
-      .calledWith(reference.externalReferenceId)
+      .calledWith(reference.id)
       .mockResolvedValue(reference);
 
-    findReferenceByExternalReferenceId = findReferenceByExternalReferenceIdBuilder({ referenceRepository });
+    findReferenceById = findReferenceByIdBuilder({ referenceRepository });
   });
 
   afterAll(() => {
@@ -46,20 +43,14 @@ describe('find reference by id', () => {
   });
 
   it('should throw FieldValidationError when provided id is invalid', () => {
-    expect(
-      findReferenceByExternalReferenceId({ externalReferenceId: externalReferenceIdFixtures.invalid() }),
-    ).rejects.toThrow(FieldValidationError);
+    expect(findReferenceById({ id: referenceIdFixtures.invalid() })).rejects.toThrow(FieldValidationError);
   });
 
-  it('should throw ReferenceDoesNotExistsError when the provided reference id has no corresponding reference', () => {
-    expect(
-      findReferenceByExternalReferenceId({ externalReferenceId: externalReferenceIdFixtures.create() }),
-    ).rejects.toThrow(ReferenceDoesNotExistsError);
+  it('should throw ReferenceDoesNotExistsError when the provided id has no corresponding reference', () => {
+    expect(findReferenceById({ id: referenceIdFixtures.create() })).rejects.toThrow(ReferenceDoesNotExistsError);
   });
 
   it('should return reference', () => {
-    expect(findReferenceByExternalReferenceId({ externalReferenceId: reference.externalReferenceId })).resolves.toEqual(
-      reference,
-    );
+    expect(findReferenceById({ id: reference.id })).resolves.toEqual(reference);
   });
 });

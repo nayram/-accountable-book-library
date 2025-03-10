@@ -34,10 +34,10 @@ export function referenceRepositoryBuilder({
       const result = await referenceModel.findOne({ external_reference_id: exterenalReferenceId });
       return result != null;
     },
-    async findByExteranlReferenceId(externalReferenceId) {
-      const result = await referenceModel.findOne({ external_reference_id: externalReferenceId });
+    async findById(id) {
+      const result = await referenceModel.findById(id);
       if (!result) {
-        throw new ReferenceDoesNotExistsError(externalReferenceId);
+        throw new ReferenceDoesNotExistsError(id);
       }
       return fromDTO(result);
     },

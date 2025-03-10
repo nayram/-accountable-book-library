@@ -11,5 +11,7 @@
   "reservationCost": 3,
   "borrowLimit": 3,
   "lateFee": 0.2,
-  "reservationFee": 3
+  "reservationFee": 3,
+  "apiKey": "abcd",
+  "emailEnv": "test"
 }

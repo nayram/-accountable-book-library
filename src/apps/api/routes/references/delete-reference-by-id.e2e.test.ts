@@ -44,7 +44,7 @@ describe('DELETE /references/:id', () => {
 
   describe('when invalid id is provided', () => {
     beforeEach(async () => {
-      response = await request.delete(path.replace(':id', referenceIdFixtures.invalidPathId()));
+      response = await request.delete(path.replace(':id', referenceIdFixtures.urlInvalid()));
     });
 
     it('should return 400 status code', () => {

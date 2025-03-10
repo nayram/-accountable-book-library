@@ -1,5 +1,7 @@
 import { FieldValidationError } from '../field-validation-error';
 
+export type Email = string;
+
 export function createEmail(value: string, fieldName: string) {
   if (!isValidEmail(value.trim())) {
     throw new FieldValidationError(`${fieldName} should be a valid email address`);
