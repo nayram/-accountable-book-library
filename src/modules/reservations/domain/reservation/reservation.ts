@@ -11,9 +11,11 @@ import { createReservationId, ReservationId } from './reservation-id';
 import { createReservationStatus, ReservationStatus } from './reservation-status';
 import { createReservationDueAt, ReservationDueAt } from './reservation-due-at';
 import { createLateFee, LateFee } from './late-fee';
+import { createReservationReturnAt, ReservationReturnAt } from './reservation-return-at';
 
 export const reservationCost = config.get<Money>('reservationCost');
 export const borrowLimit = config.get<number>('borrowLimit');
+export const lateReturnPenalty = config.get<Money>('lateFee');
 
 export type Reservation = Entity<{
   id: ReservationId;
@@ -25,7 +27,7 @@ export type Reservation = Entity<{
   referenceId: ReferenceId;
   reservedAt: Date;
   borrowedAt: Date | null;
-  returnedAt: Date | null;
+  returnedAt: ReservationReturnAt | null;
   dueAt: ReservationDueAt | null;
 }>;
 
@@ -33,7 +35,7 @@ export type ReservationUpdate = Readonly<{
   status: ReservationStatus;
   lateFee: LateFee;
   borrowedAt: Date | null;
-  returnedAt: Date | null;
+  returnedAt: ReservationReturnAt | null;
   dueAt: ReservationDueAt | null;
 }>;
 
@@ -64,8 +66,8 @@ interface ReservationUpdatePrimitives {
   status: string;
   lateFee: number;
   borrowedAt: Date | null;
-  returnedAt: Date | null;
-  dueAt: string;
+  returnedAt: string | null;
+  dueAt: string | null;
 }
 
 export function createReservationUpdate(primitives: ReservationUpdatePrimitives): ReservationUpdate {
@@ -73,7 +75,7 @@ export function createReservationUpdate(primitives: ReservationUpdatePrimitives)
     status: createReservationStatus(primitives.status),
     lateFee: createLateFee(primitives.lateFee),
     borrowedAt: primitives.borrowedAt || null,
-    returnedAt: primitives.returnedAt || null,
+    returnedAt: primitives.returnedAt ? createReservationReturnAt(primitives.returnedAt) : null,
     dueAt: primitives.dueAt ? createReservationDueAt(primitives.dueAt) : null,
   };
 }
@@ -115,4 +117,21 @@ export function isValidReservation(
   }
 
   return { isValid: true };
+}
+
+export function calculateLateFees(reservation: Reservation): Reservation {
+  let penalty = 0;
+  if (reservation.status === ReservationStatus.Returned && reservation.dueAt && reservation.returnedAt) {
+    const dueDate = new Date(reservation.dueAt);
+    const returnDate = new Date(reservation.returnedAt);
+    if (returnDate.getTime() > dueDate.getTime()) {
+      const daysLate = Math.ceil((returnDate.getTime() - dueDate.getTime()) / (1000 * 3600 * 24));
+      penalty = lateReturnPenalty * daysLate;
+    }
+  }
+
+  return {
+    ...reservation,
+    lateFee: penalty,
+  };
 }

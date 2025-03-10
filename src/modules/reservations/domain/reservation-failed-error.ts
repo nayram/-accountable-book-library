@@ -12,7 +12,7 @@ export class ReservationFailedError extends Error {
   static withBorrowBook() {
     return new ReservationFailedError('Failed to complete borrow action');
   }
-  static inValidStatus() {
+  static withInValidStatus() {
     return new ReservationFailedError('Invalid reservation status');
   }
 

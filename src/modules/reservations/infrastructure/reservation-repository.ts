@@ -98,9 +98,9 @@ export function reservationRepositoryBuilder({ model }: { model: ReservationMode
           },
           {
             $set: {
-              due_at: reservation.dueAt,
               status: reservation.status,
-              returned_at: reservation.returnedAt,
+              returned_at: reservation.returnedAt ? new Date(reservation.returnedAt) : null,
+              due_at: reservation.dueAt ? new Date(reservation.dueAt) : null,
               late_fee: reservation.lateFee,
               reservation_fee: reservation.reservationFee,
               borrowed_at: reservation.borrowedAt,

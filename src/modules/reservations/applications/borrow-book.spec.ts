@@ -186,6 +186,7 @@ describe('borrow book', () => {
     expect(reservationTransactionsRepository.save).toHaveBeenCalledWith({
       reservation: { ...reservation, dueAt, status: ReservationStatus.Borrowed, borrowedAt: systemDateTime },
       book: { ...reservedBook, status: BookStatus.Borrowed, updatedAt: systemDateTime },
+      wallet: null,
     });
   });
 });

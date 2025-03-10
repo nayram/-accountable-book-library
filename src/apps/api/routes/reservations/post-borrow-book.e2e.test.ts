@@ -13,7 +13,6 @@ import { BookStatus } from '@modules/shared/books/domain/book/book-status';
 import { reservationFixtures } from '@tests/utils/fixtures/reservations/reservation-fixtures';
 import { ReservationStatus } from '@modules/reservations/domain/reservation/reservation-status';
 import { reservationIdFixtures } from '@tests/utils/fixtures/reservations/reservation-id-fixtures';
-import { userIdFixtures } from '@tests/utils/fixtures/users/user-id-fixtures';
 
 import { PostBorrowBookRequest } from './post-borrow-book-request';
 

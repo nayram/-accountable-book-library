@@ -70,7 +70,7 @@ export function reservationTransactionsRepositoryBuilder({
                   borrowed_at: reservation.borrowedAt,
                   status: reservation.status,
                   late_fee: reservation.lateFee,
-                  returned_at: reservation.returnedAt,
+                  returned_at: reservation.returnedAt ? new Date(reservation.returnedAt) : null,
                   due_at: reservation.dueAt ? new Date(reservation.dueAt) : null,
                 },
               },

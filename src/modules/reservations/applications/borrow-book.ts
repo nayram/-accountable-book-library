@@ -42,7 +42,7 @@ export function borrowBookBuilder({
     const book = await getBookById({ id: reservation.bookId });
 
     if (reservation.status != ReservationStatus.Reserved && book.status != BookStatus.Reserved) {
-      throw ReservationFailedError.inValidStatus();
+      throw ReservationFailedError.withInValidStatus();
     }
 
     const updatedReservation = update(
@@ -58,7 +58,7 @@ export function borrowBookBuilder({
 
     const updatedBook = updateBookStatusToBorrowed(book);
 
-    await reservationTransactionsRepository.save({ reservation: updatedReservation, book: updatedBook });
+    await reservationTransactionsRepository.save({ reservation: updatedReservation, book: updatedBook, wallet: null });
 
     return updatedReservation;
   };

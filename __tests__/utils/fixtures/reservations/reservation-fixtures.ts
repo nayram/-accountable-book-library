@@ -60,6 +60,6 @@ function createReservation(): Reservation {
     lateFee: faker.helpers.arrayElement([0, lateFee]),
     reservationFee,
     dueAt,
-    returnedAt: dueAtDate,
+    returnedAt: dueAt,
   };
 }

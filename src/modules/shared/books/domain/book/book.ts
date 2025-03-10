@@ -57,3 +57,11 @@ export function updateStatusToBorrowed(book: Book): Book {
     updatedAt: new Date(),
   };
 }
+
+export function updateStatusToAvailable(book: Book): Book {
+  return {
+    ...book,
+    status: BookStatus.Available,
+    updatedAt: new Date(),
+  };
+}
