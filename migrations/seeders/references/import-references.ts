@@ -123,9 +123,7 @@ async function saveBatch(batch: ReferenceDTO[]): Promise<void> {
 
 async function main(): Promise<void> {
   try {
-    console.log('isConnectd --- ', isConnected());
     if (!isConnected()) {
-      console.log('do not start if started')
       await db.connect();
       await db.dropCollection('references');
     }

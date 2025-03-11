@@ -20,5 +20,5 @@
     }
   },
   "include": ["src/**/*", "__tests__/**/*", "migrations/**/*"],
-  "exclude": ["node_modules"]
+  "exclude": ["node_modules", "docker"]
 }

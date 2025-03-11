@@ -1,8 +1,4 @@
 {
-  "db": {
-    "url": "",
-    "name": "bookstore-test"
-  },
   "mongoMemoryServerConfig": {
     "active": true,
     "name": "test-set",

@@ -11,7 +11,9 @@
     "format": "prettier --write .",
     "test": "jest --runInBand",
     "test:watch": "jest --watch --detectOpenHandles --runInBand",
-    "seed:import-references": "ts-node -r tsconfig-paths/register migrations/seeders/catalogs/import-references.ts",
+    "seed:import-references": "ts-node -r tsconfig-paths/register migrations/seeders/references/import-references.ts",
+    "seed:import-users": "ts-node -r tsconfig-paths/register migrations/seeders/users/import-users.ts",
+    "seed:import-books": "ts-node -r tsconfig-paths/register migrations/seeders/books/import-books.ts",
     "workers:fetch-late-return-reservations": "ts-node -r tsconfig-paths/register src/apps/workers/fetch-late-return-reservations.ts",
     "workers:fetch-up-coming-due-reservations": "ts-node -r tsconfig-paths/register src/apps/workers/fetch-up-coming-due-reservations.ts"
   },

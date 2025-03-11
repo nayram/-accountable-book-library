@@ -1,6 +1,5 @@
 {
   "db": {
-    "url": "DB_URL",
-    "name": "DB_NAME"
+    "url": "DB_URL"
   }
 }

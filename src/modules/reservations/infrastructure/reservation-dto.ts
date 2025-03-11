@@ -14,10 +14,10 @@ export function toDTO(reservation: Reservation): ReservationDTO {
     status: reservation.status,
     reservation_fee: reservation.reservationFee,
     late_fee: reservation.lateFee,
-    returned_at: reservation.returnedAt ? new Date(reservation.returnedAt) : null,
-    borrowed_at: reservation.borrowedAt,
-    due_at: reservation.dueAt ? new Date(reservation.dueAt) : null,
-    reserved_at: reservation.reservedAt,
+    returned_at: reservation.returnedAt ? new Schema.Types.Date(reservation.returnedAt) : null,
+    borrowed_at: reservation.borrowedAt as unknown as Schema.Types.Date,
+    due_at: reservation.dueAt ? new Schema.Types.Date(reservation.dueAt) : null,
+    reserved_at: reservation.reservedAt as unknown as Schema.Types.Date,
   };
 }
 
@@ -30,9 +30,9 @@ export function fromDTO(dto: ReservationDTO): Reservation {
     status: dto.status,
     reservationFee: dto.reservation_fee,
     lateFee: dto.late_fee,
-    returnedAt: dto.returned_at ? convertISOToDateString(dto.returned_at) : null,
-    dueAt: dto.due_at ? convertISOToDateString(dto.due_at) : null,
-    borrowedAt: dto.borrowed_at,
-    reservedAt: dto.reserved_at,
+    returnedAt: dto.returned_at ? convertISOToDateString(dto.returned_at as unknown as Date) : null,
+    dueAt: dto.due_at ? convertISOToDateString(dto.due_at as unknown as Date) : null,
+    borrowedAt: dto.borrowed_at as unknown as Date,
+    reservedAt: dto.reserved_at as unknown as Date,
   };
 }

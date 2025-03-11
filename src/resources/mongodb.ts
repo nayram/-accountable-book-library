@@ -9,6 +9,6 @@ type connection = {
 
 const dbConnection = config.get<connection>('db');
 
-const connectMongoDb = () => getDBConnector(`${dbConnection.url}/${dbConnection.name}`);
+const connectMongoDb = () => getDBConnector(dbConnection.url);
 
 export { connectMongoDb, isConnected };

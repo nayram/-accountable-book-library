@@ -10,10 +10,10 @@ export function reservationRepositoryBuilder({ model }: { model: ReservationMode
       const now = new Date();
       const upcomingDueStart = new Date(now);
       upcomingDueStart.setHours(0, 0, 0, 0);
-      upcomingDueStart.setDate(upcomingDueStart.getDate() + 2);
 
       const upcomingDueEnd = new Date(upcomingDueStart);
-      upcomingDueEnd.setDate(upcomingDueEnd.getDate() + 1);
+      upcomingDueEnd.setDate(upcomingDueEnd.getDate() + 2);
+      upcomingDueEnd.setHours(23, 59, 59, 999);
 
       const query = {
         status: ReservationStatus.Borrowed,
@@ -22,7 +22,6 @@ export function reservationRepositoryBuilder({ model }: { model: ReservationMode
           $lt: upcomingDueEnd,
         },
       };
-
       const cursor = model.find(query).cursor();
       for await (const reservation of cursor) {
         yield fromDTO(reservation);

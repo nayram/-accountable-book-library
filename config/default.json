@@ -1,13 +1,8 @@
 {
   "db": {
-    "url": "mongodb://localhost:27017",
-    "name": "bookstore"
+    "url": "mongodb://localhost:27017/bookstore?replicaSet=rs0"
   },
   "port": 3000,
-  "mongoMemoryServerConfig": {
-    "active": true,
-    "name": "local-set"
-  },
   "reservationCost": 3,
   "borrowLimit": 3,
   "lateFee": 0.2,

@@ -53,6 +53,7 @@ const mongooseConnector = (dbUrl: string): MongooseConnector => {
         await mongoServer.start();
         url = mongoServer.getUri(db.name);
       }
+      console.log(url);
       await mongoose.connect(url);
     },
     disconnect: async () => {
@@ -68,6 +69,9 @@ const mongooseConnector = (dbUrl: string): MongooseConnector => {
     },
     dropCollection: async (collectionName: string) => {
       return new Promise((resolve, reject) => {
+        if (!mongoose.connection.collections[collectionName]) {
+          return resolve(collectionName);
+        }
         mongoose.connection.collections[collectionName]
           .drop()
           .then(() => resolve(collectionName))

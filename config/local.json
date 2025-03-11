@@ -1,11 +1,8 @@
 {
-  "db": {
-    "url": "",
-    "name": "bookstore"
-  },
   "port": 3000,
+  "sendGridApiKey": "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",
   "mongoMemoryServerConfig": {
-    "active": true,
+    "active": false,
     "name": "local-set"
   }
 }
