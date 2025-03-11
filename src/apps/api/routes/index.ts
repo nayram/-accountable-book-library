@@ -12,6 +12,7 @@ import {
 import { getReferencesRequestSchema } from './references/get-references-request';
 import { postCreateReservationRequestSchema } from './reservations/post-create-reservation.request';
 import {
+  getReservationController,
   getReservationsController,
   postBorrowBookController,
   postCreateReservationController,
@@ -35,8 +36,10 @@ routes.post('/reservations', SchemaValidator.body(postCreateReservationRequestSc
 routes.post('/reservations/:id/borrow', SchemaValidator.body(postBorrowBookRequestSchema), postBorrowBookController);
 routes.post('/reservations/:id/return', SchemaValidator.body(postReturnBookRequestSchema), postReturnBookController);
 routes.get('/reservations', SchemaValidator.query(getReservationsRequestSchema), getReservationsController);
+routes.get('/reservations/:id', getReservationController);
 
 routes.post('/books', SchemaValidator.body(postCreateBookRequestSchema), postCreateBookController);
 routes.get('/books/:id', getBookController);
+
 
 export default routes;

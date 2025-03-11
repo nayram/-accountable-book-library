@@ -11,6 +11,7 @@ import { findReservationsBuilder } from './find-reservations';
 import { borrowBookBuilder } from './borrow-book';
 import { returnBookBuilder } from './return-book';
 import { calculateLateFeesBuilder } from './calculate-late-fees';
+import { findReservationByIdBuilder } from './find-reservation-by-id';
 
 export const createReservation = createReservationBuilder({
   walletRepository,
@@ -44,3 +45,5 @@ export const calculateLateFees = calculateLateFeesBuilder({
   findReferenceById,
   getBookById,
 });
+
+export const findReservationById = findReservationByIdBuilder({ reservationRepository });
