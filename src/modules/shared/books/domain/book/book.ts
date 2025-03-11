@@ -65,3 +65,11 @@ export function updateStatusToAvailable(book: Book): Book {
     updatedAt: new Date(),
   };
 }
+
+export function updateStatusToPurchased(book: Book): Book {
+  return {
+    ...book,
+    status: BookStatus.Purchased,
+    updatedAt: new Date(),
+  };
+}

@@ -41,7 +41,7 @@ export function borrowBookBuilder({
 
     const book = await getBookById({ id: reservation.bookId });
 
-    if (reservation.status != ReservationStatus.Reserved && book.status != BookStatus.Reserved) {
+    if (reservation.status != ReservationStatus.Reserved || book.status != BookStatus.Reserved) {
       throw ReservationFailedError.withInValidStatus();
     }
 

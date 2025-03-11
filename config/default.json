@@ -12,6 +12,8 @@
   "borrowLimit": 3,
   "lateFee": 0.2,
   "reservationFee": 3,
-  "apiKey": "abcd",
-  "emailEnv": "test"
+  "sendGridApiKey": "abcd",
+  "emailEnv": "test",
+  "useEvents": true,
+  "noReplyEmailAddress": "no-reply@example.com"
 }

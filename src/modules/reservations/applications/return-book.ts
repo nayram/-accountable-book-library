@@ -37,21 +37,23 @@ export function returnBookBuilder({
 
     const wallet = await walletRepository.findByUserId(reservation.userId);
 
-    if (reservation.status != ReservationStatus.Borrowed && book.status != BookStatus.Borrowed) {
+    if (reservation.status != ReservationStatus.Borrowed || book.status != BookStatus.Borrowed) {
       throw ReservationFailedError.withInValidStatus();
     }
 
-    const updatedReservation = calculateLateFees(
-      update(
-        reservation,
-        createReservationUpdate({
-          dueAt: reservation.dueAt,
-          status: ReservationStatus.Returned,
-          lateFee: reservation.lateFee,
-          borrowedAt: reservation.borrowedAt,
-          returnedAt: req.returnedAt,
-        }),
-      ),
+    const penalty = reservation.dueAt
+      ? calculateLateFees(new Date(reservation.dueAt), new Date(req.returnedAt))
+      : reservation.lateFee;
+
+    const updatedReservation = update(
+      reservation,
+      createReservationUpdate({
+        dueAt: reservation.dueAt,
+        status: ReservationStatus.Returned,
+        lateFee: penalty,
+        borrowedAt: reservation.borrowedAt,
+        returnedAt: req.returnedAt,
+      }),
     );
 
     const updatedBook = updateStatusToAvailable(book);

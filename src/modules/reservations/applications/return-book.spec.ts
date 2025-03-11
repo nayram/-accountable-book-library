@@ -2,10 +2,13 @@ import config from 'config';
 import { MockProxy, mock, mockFn } from 'jest-mock-extended';
 import { when } from 'jest-when';
 import { faker } from '@faker-js/faker/locale/en';
-
 import { ReservationDoesNotExistError } from '@modules/shared/reservations/domain/reservation-does-not-exist';
 import { BookId } from '@modules/shared/books/domain/book/book-id';
 import { reservationIdFixtures } from '@tests/utils/fixtures/reservations/reservation-id-fixtures';
+import { reservationReturnedAtFixtures } from '@tests/utils/fixtures/reservations/reservation-returned-at-fixtures';
+import { convertISOToDateString } from '@modules/shared/core/domain/value-objects/iso-date';
+import { Money } from '@modules/shared/core/domain/value-objects/money';
+
 import { userIdFixtures } from '@tests/utils/fixtures/users/user-id-fixtures';
 import { bookFixtures } from '@tests/utils/fixtures/books/book-fixtures';
 import { BookStatus } from '@modules/shared/books/domain/book/book-status';
@@ -15,10 +18,7 @@ import { reservationFixtures } from '@tests/utils/fixtures/reservations/reservat
 import { BookDoesNotExistsError } from '@modules/books/domain/book-does-not-exist-error';
 import { FieldValidationError } from '@modules/shared/core/domain/field-validation-error';
 import { WalletRepository } from '@modules/shared/wallets/domain/wallet-repository';
-import { reservationReturnedAtFixtures } from '@tests/utils/fixtures/reservations/reservation-returned-at-fixtures';
-import { convertISOToDateString } from '@modules/shared/core/domain/value-objects/iso-date';
 import { walletFixtures } from '@tests/utils/fixtures/wallet/wallet-fixtures';
-import { Money } from '@modules/shared/core/domain/value-objects/money';
 
 import { ReservationStatus } from '../domain/reservation/reservation-status';
 import { ReservationTransactionsRepository } from '../domain/reservation-transactions-repository';
@@ -26,6 +26,7 @@ import { ReservationRepository } from '../domain/reservation-repository';
 import { ReservationFailedError } from '../domain/reservation-failed-error';
 
 import { returnBookBuilder, ReturnBookUseCase } from './return-book';
+import { calculateLateFees } from '../domain/reservation/reservation';
 
 export const lateReturnPenalty = config.get<Money>('lateFee');
 
@@ -45,8 +46,9 @@ describe('return book', () => {
   const borrowedBook2 = bookFixtures.create({ status: BookStatus.Borrowed, referenceId });
 
   const dueDate = convertISOToDateString(systemDateTime);
-  const borrowedDate = faker.date.recent({ days: 7, refDate: systemDateTime });
-  const reservedDate = faker.date.recent({ days: 7, refDate: borrowedDate });
+
+  const borrowedDate = faker.date.past();
+  const reservedDate = faker.date.past();
 
   const reservation = reservationFixtures.create({
     userId,
@@ -66,7 +68,7 @@ describe('return book', () => {
     status: ReservationStatus.Borrowed,
     borrowedAt: borrowedDate,
     reservedAt: reservedDate,
-    dueAt: convertISOToDateString(faker.date.recent({ days: 5, refDate: systemDateTime })),
+    dueAt: convertISOToDateString(faker.date.past()),
     lateFee: 0,
   });
 
@@ -185,13 +187,18 @@ describe('return book', () => {
       reservationId: reservationWithPossibleLateFees.id,
       returnedAt,
     });
-    const daysLate = Math.ceil((new Date(returnedAt).getTime() - new Date(dueAt).getTime()) / (1000 * 3600 * 24));
-    const lateFee = lateReturnPenalty * daysLate;
+
+    const penalty = calculateLateFees(new Date(dueAt), new Date(returnedAt));
 
     expect(reservationTransactionsRepository.save).toHaveBeenCalledWith({
-      reservation: { ...reservationWithPossibleLateFees, returnedAt, status: ReservationStatus.Returned, lateFee },
+      reservation: {
+        ...reservationWithPossibleLateFees,
+        returnedAt,
+        status: ReservationStatus.Returned,
+        lateFee: penalty,
+      },
       book: { ...borrowedBook2, status: BookStatus.Available, updatedAt: systemDateTime },
-      wallet: { ...wallet, balance: wallet.balance - lateFee, updatedAt: systemDateTime },
+      wallet: { ...wallet, balance: wallet.balance - penalty, updatedAt: systemDateTime },
     });
   });
 });

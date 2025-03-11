@@ -12,4 +12,5 @@ export interface ReferenceRepository {
   findById(id: ReferenceId): Promise<Reference>;
   softDeleteById(id: ReferenceId): Promise<void>;
   find(pagination: Pagination, searchParams: SearchParams): Promise<PaginatedResults<Reference>>;
+  
 }

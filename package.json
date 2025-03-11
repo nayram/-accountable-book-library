@@ -11,7 +11,9 @@
     "format": "prettier --write .",
     "test": "jest --runInBand",
     "test:watch": "jest --watch --detectOpenHandles --runInBand",
-    "seed:import-catalog": "ts-node -r tsconfig-paths/register migrations/seeders/catalogs/import-catalogs.ts"
+    "seed:import-catalog": "ts-node -r tsconfig-paths/register migrations/seeders/catalogs/import-catalogs.ts",
+    "workers:fetch-late-return-reservations": "ts-node -r tsconfig-paths/register src/apps/workers/fetch-late-return-reservations.ts",
+    "workers:fetch-up-coming-due-reservations": "ts-node -r tsconfig-paths/register src/apps/workers/fetch-up-coming-due-reservations.ts"
   },
   "devDependencies": {
     "@eslint/js": "^9.21.0",

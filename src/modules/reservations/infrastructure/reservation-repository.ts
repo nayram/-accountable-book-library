@@ -2,7 +2,7 @@ import { mapSortByFieldToModelField } from '@modules/shared/core/infrastructure/
 import { RepositoryError } from '@modules/shared/core/domain/repository-error';
 
 import { ReservationRepository } from '../domain/reservation-repository';
-import { ReservationModel } from '../../shared/reservations/infrastructure/reservation-model';
+import { reservationModel, ReservationModel } from '../../shared/reservations/infrastructure/reservation-model';
 import { ReservationDoesNotExistError } from '../../shared/reservations/domain/reservation-does-not-exist';
 
 import { fromDTO, toDTO } from './reservation-dto';

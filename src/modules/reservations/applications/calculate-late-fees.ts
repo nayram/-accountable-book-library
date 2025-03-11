@@ -3,56 +3,62 @@ import { BookStatus } from '@modules/shared/books/domain/book/book-status';
 import { credit } from '@modules/wallets/domain/wallet/wallet';
 import { WalletRepository } from '@modules/shared/wallets/domain/wallet-repository';
 import { UseCase } from '@modules/shared/core/application/use-case';
-import { ReferenceRepository } from '@modules/shared/references/domain/reference-repository';
+import { FindReferenceByIdUseCase } from '@modules/references/application/find-reference-by-id';
+import { updateStatusToPurchased } from '@modules/shared/books/domain/book/book';
 
-import { calculateLateFees } from '../domain/reservation/reservation';
+import { calculateLateFees as calculate, closeReservation } from '../domain/reservation/reservation';
 import { ReservationRepository } from '../domain/reservation-repository';
 import { createReservationId } from '../domain/reservation/reservation-id';
 import { ReservationStatus } from '../domain/reservation/reservation-status';
 import { ReservationFailedError } from '../domain/reservation-failed-error';
 import { ReservationTransactionsRepository } from '../domain/reservation-transactions-repository';
 
-export interface CalculateLateReturnsRequest {
+export interface CalculateLateFeesRequest {
   reservationId: string;
 }
 
-export type CalculateLatReturnsUseCase = UseCase<CalculateLateReturnsRequest, void>;
+export type CalculateLateFeesUseCase = UseCase<CalculateLateFeesRequest, void>;
 
-export function calculateLateReturnBuilder({
+export function calculateLateFeesBuilder({
   reservationRepository,
   reservationTransactionsRepository,
-  referenceRepository,
+  findReferenceById,
   walletRepository,
   getBookById,
 }: {
   reservationRepository: ReservationRepository;
   reservationTransactionsRepository: ReservationTransactionsRepository;
   walletRepository: WalletRepository;
-  referenceRepository: ReferenceRepository;
+  findReferenceById: FindReferenceByIdUseCase;
   getBookById: GetBookByIdUseCase;
-}): CalculateLatReturnsUseCase {
-  return async function calculateLateReturn(req: CalculateLateReturnsRequest) {
+}): CalculateLateFeesUseCase {
+  return async function calculateLateFees(req: CalculateLateFeesRequest) {
     const reservation = await reservationRepository.findById(createReservationId(req.reservationId));
 
     const book = await getBookById({ id: reservation.bookId });
 
-    const reference = referenceRepository.
+    const reference = await findReferenceById({ id: reservation.referenceId });
 
     const wallet = await walletRepository.findByUserId(reservation.userId);
 
-    if (reservation.status != ReservationStatus.Borrowed && book.status != BookStatus.Borrowed) {
+    if (reservation.status != ReservationStatus.Borrowed || book.status != BookStatus.Borrowed) {
       throw ReservationFailedError.withInValidStatus();
     }
 
-    const updatedReservation = calculateLateFees(reservation);
+    const lateFee = reservation.dueAt ? calculate(new Date(reservation.dueAt), new Date()) : reservation.lateFee;
 
-    if (updatedReservation.lateFee >= book.p)
+    const shouldCloseReservation = lateFee >= reference.price;
+
+    if (shouldCloseReservation) {
+      const updateReservation = closeReservation({ ...reservation, lateFee });
+      const updatedBook = updateStatusToPurchased(book);
       await reservationTransactionsRepository.save({
-        reservation: updatedReservation,
+        reservation: updateReservation,
         book: updatedBook,
-        wallet: updatedReservation.lateFee > 0 ? credit({ wallet, amount: updatedReservation.lateFee }) : null,
+        wallet: credit({ wallet, amount: updateReservation.lateFee }),
       });
-
-    return updatedReservation;
+    } else {
+      await reservationRepository.save({ ...reservation, lateFee });
+    }
   };
 }

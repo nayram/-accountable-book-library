@@ -10,5 +10,6 @@
     "port": "27017"
   },
   "apiKey": "abce",
-  "emailEnv": "test"
+  "emailEnv": "test",
+  "useEvents": false
 }

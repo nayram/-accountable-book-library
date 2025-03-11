@@ -110,7 +110,6 @@ export function reservationTransactionsRepositoryBuilder({
         });
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } catch (error: any) {
-        console.error('Transaction failed:', error);
         throw new RepositoryError(error.message);
       } finally {
         await session.endSession();

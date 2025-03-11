@@ -47,8 +47,8 @@ describe('POST /reservations/:id/return', () => {
       const borrowedBook2 = await bookFixtures.insert({ referenceId: reference.id, status: BookStatus.Borrowed });
 
       const dueDate = convertISOToDateString(date);
-      const borrowedDate = faker.date.recent({ days: 7, refDate: date });
-      const reservedDate = faker.date.recent({ days: 7, refDate: borrowedDate });
+      const borrowedDate = faker.date.past();
+      const reservedDate = faker.date.past();
 
       reservation = await reservationFixtures.insert({
         userId: user.id,
@@ -84,7 +84,7 @@ describe('POST /reservations/:id/return', () => {
         status: ReservationStatus.Borrowed,
         borrowedAt: borrowedDate,
         reservedAt: reservedDate,
-        dueAt: convertISOToDateString(faker.date.recent({ days: 5, refDate: date })),
+        dueAt: convertISOToDateString(faker.date.past()),
         lateFee: 0,
       });
     });

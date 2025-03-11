@@ -119,19 +119,20 @@ export function isValidReservation(
   return { isValid: true };
 }
 
-export function calculateLateFees(reservation: Reservation): Reservation {
+export function calculateLateFees(dueDate: Date, refDate: Date) {
   let penalty = 0;
-  if (reservation.status === ReservationStatus.Returned && reservation.dueAt && reservation.returnedAt) {
-    const dueDate = new Date(reservation.dueAt);
-    const returnDate = new Date(reservation.returnedAt);
-    if (returnDate.getTime() > dueDate.getTime()) {
-      const daysLate = Math.ceil((returnDate.getTime() - dueDate.getTime()) / (1000 * 3600 * 24));
-      penalty = lateReturnPenalty * daysLate;
-    }
+  const daysLate = Math.ceil((refDate.getTime() - dueDate.getTime()) / (1000 * 3600 * 24));
+
+  if (daysLate > 7) {
+    penalty = lateReturnPenalty * (daysLate - 7);
   }
 
+  return penalty;
+}
+
+export function closeReservation(reservation: Reservation): Reservation {
   return {
     ...reservation,
-    lateFee: penalty,
+    status: ReservationStatus.Closed,
   };
 }

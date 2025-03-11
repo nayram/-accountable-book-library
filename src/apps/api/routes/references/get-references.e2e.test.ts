@@ -2,8 +2,6 @@ import supertest from 'supertest';
 import { StatusCodes } from 'http-status-codes';
 
 import app from '@api/app';
-import { authorFixtures } from '@tests/utils/fixtures/references/author-fixtures';
-import { titleFixtures } from '@tests/utils/fixtures/references/title-fixtures';
 import { referenceFixtures } from '@tests/utils/fixtures/references/reference-fixtures';
 import { publicationYearFixtures } from '@tests/utils/fixtures/references/publication-year-fixtures';
 import { dropAllCollections } from '@tests/utils/mocks/db';
@@ -13,8 +11,8 @@ describe('GET /references/search', () => {
   let response: supertest.Response;
   const path = '/api/references/search';
 
-  const author = authorFixtures.create();
-  const title = titleFixtures.create();
+  const author = 'Abraham Verghese';
+  const title = 'Cutting for stone';
   const publicationYear = 1900;
   const numberOfreferences = 5;
   const limit = 2;
