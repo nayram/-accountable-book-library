@@ -1,6 +1,5 @@
 import * as fs from 'fs';
 import * as path from 'path';
-
 import { Schema } from 'mongoose';
 import { parse } from 'csv-parse';
 
@@ -124,7 +123,9 @@ async function saveBatch(batch: ReferenceDTO[]): Promise<void> {
 
 async function main(): Promise<void> {
   try {
+    console.log('isConnectd --- ', isConnected());
     if (!isConnected()) {
+      console.log('do not start if started')
       await db.connect();
       await db.dropCollection('references');
     }

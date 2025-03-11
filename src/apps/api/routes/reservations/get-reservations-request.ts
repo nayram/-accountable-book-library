@@ -14,6 +14,7 @@ interface GetReservationsRequestSchema extends ValidatedRequestSchema {
     limit: number;
     userId: string | null;
     referenceId: string | null;
+    status: string | null;
   };
 }
 
