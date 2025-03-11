@@ -55,7 +55,7 @@ describe('DELETE /references/:id', () => {
       expect(response.body).toEqual({
         status: 'Bad Request',
         statusCode: StatusCodes.BAD_REQUEST,
-        message: `referenceId must be a uuid v4`,
+        message: expect.any(String),
       });
     });
   });

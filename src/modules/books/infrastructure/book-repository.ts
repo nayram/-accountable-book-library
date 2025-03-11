@@ -47,5 +47,10 @@ export function bookRepositoryBuilder({ model }: { model: BookModel }): BookRepo
       }
       return fromDTO(book);
     },
+
+    async find({ referenceId }) {
+      const books = await model.find({ reference_id: referenceId });
+      return books.map(fromDTO);
+    },
   };
 }

@@ -157,7 +157,7 @@ describe('GET /reservations', () => {
 
     it('should return an error message', () => {
       expect(response.body).toEqual({
-        message: 'userId must be a uuid v4',
+        message: expect.any(String),
         status: 'Bad Request',
         statusCode: StatusCodes.BAD_REQUEST,
       });

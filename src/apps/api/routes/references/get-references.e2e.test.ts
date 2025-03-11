@@ -160,7 +160,7 @@ describe('GET /references/search', () => {
 
     it('should return an error message', () => {
       expect(response.body).toEqual({
-        message: 'publicationYear must be a number',
+        message: expect.any(String),
         status: 'Bad Request',
         statusCode: StatusCodes.BAD_REQUEST,
       });

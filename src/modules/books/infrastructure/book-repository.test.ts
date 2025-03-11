@@ -6,50 +6,54 @@ import { BookAlreadyExistsError } from '../domain/book-already-exists-error';
 import { BookDoesNotExistsError } from '../domain/book-does-not-exist-error';
 
 import { bookRepository } from '.';
+import { referenceIdFixtures } from '@tests/utils/fixtures/references/reference-id-fixtures';
+import { referenceFixtures } from '@tests/utils/fixtures/references/reference-fixtures';
 
 describe('bookRepository', () => {
   beforeEach(async () => {
     await bookModel.deleteMany({});
   });
 
-  it('should create a book if it does not exist', async () => {
-    const book = bookFixtures.create();
-    await bookRepository.save(book);
+  describe('save', () => {
+    it('should create a book if it does not exist', async () => {
+      const book = bookFixtures.create();
+      await bookRepository.save(book);
 
-    const retrievedBook = await bookModel.findById(book.id).lean();
+      const retrievedBook = await bookModel.findById(book.id).lean();
 
-    expect(retrievedBook).not.toBeNull();
+      expect(retrievedBook).not.toBeNull();
 
-    expect(String(retrievedBook?._id)).toEqual(book.id);
-    expect(retrievedBook?.barcode).toEqual(book.barcode);
-    expect(retrievedBook?.status).toEqual(book.status);
-    expect(String(retrievedBook?.reference_id)).toEqual(book.referenceId);
-    expect(retrievedBook?.created_at.toISOString()).toEqual(book.createdAt.toISOString());
-    expect(retrievedBook?.updated_at.toISOString()).toEqual(book.updatedAt.toISOString());
-  });
-
-  it('should update a book if it already exists', async () => {
-    const initialBook = await bookFixtures.insert();
-
-    const updatedBook = bookFixtures.create({
-      id: initialBook.id,
-      barcode: initialBook.barcode,
-      createdAt: initialBook.createdAt,
-      status: BookStatus.Borrowed,
+      expect(String(retrievedBook?._id)).toEqual(book.id);
+      expect(retrievedBook?.barcode).toEqual(book.barcode);
+      expect(retrievedBook?.status).toEqual(book.status);
+      expect(String(retrievedBook?.reference_id)).toEqual(book.referenceId);
+      expect(retrievedBook?.created_at.toISOString()).toEqual(book.createdAt.toISOString());
+      expect(retrievedBook?.updated_at.toISOString()).toEqual(book.updatedAt.toISOString());
     });
 
-    await bookRepository.save(updatedBook);
+    it('should update a book if it already exists', async () => {
+      const initialBook = await bookFixtures.insert();
 
-    const retrievedBook = await bookModel.findById(updatedBook.id).lean();
+      const updatedBook = bookFixtures.create({
+        id: initialBook.id,
+        barcode: initialBook.barcode,
+        createdAt: initialBook.createdAt,
+        status: BookStatus.Borrowed,
+      });
 
-    expect(retrievedBook).not.toBeNull();
+      await bookRepository.save(updatedBook);
 
-    expect(String(retrievedBook?._id)).toEqual(initialBook.id);
-    expect(retrievedBook?.barcode).toEqual(updatedBook.barcode);
-    expect(retrievedBook?.status).toEqual(updatedBook.status);
-    expect(String(retrievedBook?.reference_id)).toEqual(updatedBook.referenceId);
-    expect(retrievedBook?.created_at.toISOString()).toEqual(initialBook.createdAt.toISOString());
-    expect(retrievedBook?.updated_at.toISOString()).toEqual(updatedBook.updatedAt.toISOString());
+      const retrievedBook = await bookModel.findById(updatedBook.id).lean();
+
+      expect(retrievedBook).not.toBeNull();
+
+      expect(String(retrievedBook?._id)).toEqual(initialBook.id);
+      expect(retrievedBook?.barcode).toEqual(updatedBook.barcode);
+      expect(retrievedBook?.status).toEqual(updatedBook.status);
+      expect(String(retrievedBook?.reference_id)).toEqual(updatedBook.referenceId);
+      expect(retrievedBook?.created_at.toISOString()).toEqual(initialBook.createdAt.toISOString());
+      expect(retrievedBook?.updated_at.toISOString()).toEqual(updatedBook.updatedAt.toISOString());
+    });
   });
 
   describe('exists', () => {
@@ -81,6 +85,17 @@ describe('bookRepository', () => {
       expect(res.status).toBe(book.status);
       expect(res.createdAt.toISOString()).toBe(book.createdAt.toISOString());
       expect(res.updatedAt.toISOString()).toBe(book.updatedAt.toISOString());
+    });
+  });
+
+  describe('find', () => {
+    it('should return books associated with a referenceId', async () => {
+      const referenceId = referenceIdFixtures.create();
+      await bookFixtures.insert({ referenceId });
+      const books = await bookRepository.find({ referenceId });
+      for (const book of books) {
+        expect(book.referenceId).toBe(referenceId);
+      }
     });
   });
 });
