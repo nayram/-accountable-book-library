@@ -1,10 +1,10 @@
 import supertest from 'supertest';
 import { StatusCodes } from 'http-status-codes';
+
 import app from '@api/app';
 import { dropReferencesCollection } from '@tests/utils/mocks/db';
 import { Reference } from '@modules/shared/references/domain/reference';
 import { referenceFixtures } from '@tests/utils/fixtures/references/reference-fixtures';
-import { externalReferenceIdFixtures } from '@tests/utils/fixtures/references/external-reference-id-fixtures';
 import { referenceIdFixtures } from '@tests/utils/fixtures/references/reference-id-fixtures';
 
 import { toDTO } from './dto/reference-dto';

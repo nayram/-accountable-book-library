@@ -1,4 +1,5 @@
 import config from 'config';
+
 import { Email } from '@modules/shared/core/domain/value-objects/email';
 
 const noReplyEmailAddres = config.get<string>('noReplyEmailAddress');
@@ -25,6 +26,7 @@ export function createDueDateReminder({
     from: noReplyEmailAddres,
     to: email,
     payload: {
+      // eslint-disable-next-line max-len
       message: `Hi ${name}, Your borrowed book, ${referenceTitle} is due in 2 days. Please return it on time to avoid any late fees`,
       subject: 'Reminder',
     },
@@ -44,6 +46,7 @@ export function createLateReturnReminder({
     from: noReplyEmailAddres,
     to: email,
     payload: {
+      // eslint-disable-next-line max-len
       message: `Hi ${name}, Your borrowed book, ${referenceTitle} is 7 days overdue. Please return it immediately to prevent further late charges`,
       subject: 'Reminder',
     },

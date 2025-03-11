@@ -6,7 +6,6 @@ import {
 } from '@modules/references/application';
 
 import { postCreateReferenceControllerBuilder } from './post-create-reference-controller';
-// eslint-disable-next-line max-len
 import { getReferenceByIdControllerBuilder } from './get-reference-by-id-controller';
 import { deleteReferenceByIdControllerBuilder } from './delete-reference-by-id-controller';
 import { getReferencesControllerBuilder } from './get-references-controller';

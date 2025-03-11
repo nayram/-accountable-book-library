@@ -1,5 +1,7 @@
 import supertest from 'supertest';
 import { StatusCodes } from 'http-status-codes';
+import { faker } from '@faker-js/faker/locale/en';
+
 import app from '@api/app';
 import { reservationDueAtFixtures } from '@tests/utils/fixtures/reservations/reservation-due-at-fixtures';
 import { Reservation } from '@modules/reservations/domain/reservation/reservation';
@@ -13,11 +15,10 @@ import { BookStatus } from '@modules/shared/books/domain/book/book-status';
 import { reservationFixtures } from '@tests/utils/fixtures/reservations/reservation-fixtures';
 import { ReservationStatus } from '@modules/reservations/domain/reservation/reservation-status';
 import { convertISOToDateString } from '@modules/shared/core/domain/value-objects/iso-date';
-import { faker } from '@faker-js/faker/locale/en';
 import { reservationModel } from '@modules/shared/reservations/infrastructure/reservation-model';
+import { walletFixtures } from '@tests/utils/fixtures/wallet/wallet-fixtures';
 
 import { PostReturnBookRequest } from './post-return-book-request';
-import { walletFixtures } from '@tests/utils/fixtures/wallet/wallet-fixtures';
 
 describe('POST /reservations/:id/return', () => {
   const request = supertest.agent(app);

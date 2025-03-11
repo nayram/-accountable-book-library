@@ -1,16 +1,15 @@
 import { when } from 'jest-when';
-
 import { faker } from '@faker-js/faker/locale/en';
+import { mock, mockFn, MockProxy } from 'jest-mock-extended';
+
 import { BookStatus } from '@modules/shared/books/domain/book/book-status';
 import { convertISOToDateString } from '@modules/shared/core/domain/value-objects/iso-date';
 import { bookFixtures } from '@tests/utils/fixtures/books/book-fixtures';
 import { reservationFixtures } from '@tests/utils/fixtures/reservations/reservation-fixtures';
 import { userIdFixtures } from '@tests/utils/fixtures/users/user-id-fixtures';
 import { walletFixtures } from '@tests/utils/fixtures/wallet/wallet-fixtures';
-import { mock, mockFn, MockProxy } from 'jest-mock-extended';
 import { GetBookByIdUseCase } from '@modules/books/application/get-book-by-Id';
 import { ReservationDoesNotExistError } from '@modules/shared/reservations/domain/reservation-does-not-exist';
-
 import { BookDoesNotExistsError } from '@modules/books/domain/book-does-not-exist-error';
 import { BookId } from '@modules/shared/books/domain/book/book-id';
 import { WalletRepository } from '@modules/shared/wallets/domain/wallet-repository';

@@ -1,5 +1,6 @@
 import supertest from 'supertest';
 import { StatusCodes } from 'http-status-codes';
+
 import app from '@api/app';
 import { reservationDueAtFixtures } from '@tests/utils/fixtures/reservations/reservation-due-at-fixtures';
 import { Reservation } from '@modules/reservations/domain/reservation/reservation';

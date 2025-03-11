@@ -1,7 +1,7 @@
 import { UserDoesNotExistsError } from '../domain/user-does-not-exists-error';
 import { UserRepository } from '../domain/user-repository';
-import { fromDTO } from './user-dto';
 
+import { fromDTO } from './user-dto';
 import { UserModel } from './users-model';
 
 export function userRepositoryBuilder({ model }: { model: UserModel }): UserRepository {

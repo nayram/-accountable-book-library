@@ -2,13 +2,13 @@ import config from 'config';
 import { MockProxy, mock, mockFn } from 'jest-mock-extended';
 import { when } from 'jest-when';
 import { faker } from '@faker-js/faker/locale/en';
+
 import { ReservationDoesNotExistError } from '@modules/shared/reservations/domain/reservation-does-not-exist';
 import { BookId } from '@modules/shared/books/domain/book/book-id';
 import { reservationIdFixtures } from '@tests/utils/fixtures/reservations/reservation-id-fixtures';
 import { reservationReturnedAtFixtures } from '@tests/utils/fixtures/reservations/reservation-returned-at-fixtures';
 import { convertISOToDateString } from '@modules/shared/core/domain/value-objects/iso-date';
 import { Money } from '@modules/shared/core/domain/value-objects/money';
-
 import { userIdFixtures } from '@tests/utils/fixtures/users/user-id-fixtures';
 import { bookFixtures } from '@tests/utils/fixtures/books/book-fixtures';
 import { BookStatus } from '@modules/shared/books/domain/book/book-status';
@@ -24,9 +24,9 @@ import { ReservationStatus } from '../domain/reservation/reservation-status';
 import { ReservationTransactionsRepository } from '../domain/reservation-transactions-repository';
 import { ReservationRepository } from '../domain/reservation-repository';
 import { ReservationFailedError } from '../domain/reservation-failed-error';
+import { calculateLateFees } from '../domain/reservation/reservation';
 
 import { returnBookBuilder, ReturnBookUseCase } from './return-book';
-import { calculateLateFees } from '../domain/reservation/reservation';
 
 export const lateReturnPenalty = config.get<Money>('lateFee');
 

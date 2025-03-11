@@ -2,7 +2,6 @@ import { referenceFixtures } from '@tests/utils/fixtures/references/reference-fi
 import { titleFixtures } from '@tests/utils/fixtures/references/title-fixtures';
 import { referenceIdFixtures } from '@tests/utils/fixtures/references/reference-id-fixtures';
 import { authorFixtures } from '@tests/utils/fixtures/references/author-fixtures';
-import { externalReferenceIdFixtures } from '@tests/utils/fixtures/references/external-reference-id-fixtures';
 import { publicationYearFixtures } from '@tests/utils/fixtures/references/publication-year-fixtures';
 import { Pagination } from '@modules/shared/core/domain/pagination';
 import { toDTO } from '@modules/shared/references/infrastructure/reference-dto';

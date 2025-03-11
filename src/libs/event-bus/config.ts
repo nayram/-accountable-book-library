@@ -1,4 +1,5 @@
 import config from 'config';
+
 import { DomainEventSubscriber } from '@modules/shared/core/domain/domain-events/domain-event-subscriber';
 import { EventBus } from '@modules/shared/core/domain/domain-events/event-bus';
 import { calculateLateFeesSubscriber } from 'src/apps/subscribers/reservations';
