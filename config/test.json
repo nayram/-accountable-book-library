@@ -2,9 +2,9 @@
   "mongoMemoryServerConfig": {
     "active": true,
     "name": "test-set",
-    "ip": "127.0.0.1",
-    "port": "27017"
+    "ip": "127.0.0.1"
   },
+  "sendGridApiKey": "12132",
   "apiKey": "abce",
   "emailEnv": "test",
   "useEvents": false

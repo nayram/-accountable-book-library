@@ -41,5 +41,4 @@ routes.get('/reservations/:id', getReservationController);
 routes.post('/books', SchemaValidator.body(postCreateBookRequestSchema), postCreateBookController);
 routes.get('/books/:id', getBookController);
 
-
 export default routes;

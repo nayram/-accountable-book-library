@@ -17,7 +17,15 @@ services:
     volumes:
       - 'mongo1_data:/data/db'
       - 'mongo1_config:/data/configdb'
+  redis:
+    image: redis:latest
+    container_name: redis
+    ports:
+      - '6379:6379'
+    volumes:
+      - redis-data:/data
 
 volumes:
   mongo1_data:
   mongo1_config:
+  redis-data:

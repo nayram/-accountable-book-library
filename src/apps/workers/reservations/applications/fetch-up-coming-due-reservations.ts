@@ -18,7 +18,7 @@ export function fetchUpcomingDueReservationsBuilder({
   eventBus: EventBus;
 }) {
   return async function fetchUpcomingDueReservations() {
-    console.log('fetching data that are up coming ')
+    console.log('fetching data that are up coming ');
     const reservationStream = reservationRepository.streamUpcomingDueDateReservations();
     for await (const reservation of reservationStream) {
       console.info(`processing reservation with id ${reservation.id}`);

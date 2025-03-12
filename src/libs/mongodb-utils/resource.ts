@@ -53,7 +53,7 @@ const mongooseConnector = (dbUrl: string): MongooseConnector => {
         await mongoServer.start();
         url = mongoServer.getUri(db.name);
       }
-      console.log(url);
+
       await mongoose.connect(url);
     },
     disconnect: async () => {

@@ -1,5 +1,6 @@
-import { UserDTO } from '@modules/shared/users/infrastructure/users-model';
 import { Schema } from 'mongoose';
+
+import { UserDTO } from '@modules/shared/users/infrastructure/users-model';
 
 const users: UserDTO[] = [
   {

@@ -1,13 +1,12 @@
 import { bookModel } from '@modules/shared/books/infrastructure/book-model';
 import { bookFixtures } from '@tests/utils/fixtures/books/book-fixtures';
 import { BookStatus } from '@modules/shared/books/domain/book/book-status';
+import { referenceIdFixtures } from '@tests/utils/fixtures/references/reference-id-fixtures';
 
 import { BookAlreadyExistsError } from '../domain/book-already-exists-error';
 import { BookDoesNotExistsError } from '../domain/book-does-not-exist-error';
 
 import { bookRepository } from '.';
-import { referenceIdFixtures } from '@tests/utils/fixtures/references/reference-id-fixtures';
-import { referenceFixtures } from '@tests/utils/fixtures/references/reference-fixtures';
 
 describe('bookRepository', () => {
   beforeEach(async () => {

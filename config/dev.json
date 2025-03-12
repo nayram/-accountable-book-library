@@ -3,6 +3,7 @@
   "sendGridApiKey": "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",
   "mongoMemoryServerConfig": {
     "active": false,
-    "name": "local-set"
+    "name": "local-set",
+    "ip": "127.0.0.1"
   }
 }

@@ -2,7 +2,6 @@ import { StatusCodes } from 'http-status-codes';
 import supertest from 'supertest';
 
 import app from '@api/app';
-import { Book } from '@modules/shared/books/domain/book/book';
 import { bookFixtures } from '@tests/utils/fixtures/books/book-fixtures';
 import { referenceFixtures } from '@tests/utils/fixtures/references/reference-fixtures';
 import { Reference } from '@modules/shared/references/domain/reference';

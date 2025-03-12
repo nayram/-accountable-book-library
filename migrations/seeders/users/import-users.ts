@@ -1,9 +1,9 @@
 import { userModel } from '@modules/shared/users/infrastructure/users-model';
 import { isConnected, connectMongoDb } from '@resources/mongodb';
-
-import users from './users-collection';
 import { walletModel } from '@modules/shared/wallets/infrastructure/wallet-model';
 import { uuidGenerator } from '@modules/shared/core/infrastructure';
+
+import users from './users-collection';
 
 const db = connectMongoDb();
 

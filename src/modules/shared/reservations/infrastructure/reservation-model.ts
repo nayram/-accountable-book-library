@@ -13,10 +13,10 @@ export interface ReservationDTO {
   late_fee: number;
   reservation_fee: number;
   status: ReservationStatus;
-  due_at: Schema.Types.Date | null;
-  returned_at: Schema.Types.Date | null;
-  borrowed_at: Schema.Types.Date | null;
-  reserved_at: Schema.Types.Date;
+  due_at: Date | null;
+  returned_at: Date | null;
+  borrowed_at: Date | null;
+  reserved_at: Date;
 }
 
 export const reservationSchema = new Schema<ReservationDTO>({
@@ -27,10 +27,10 @@ export const reservationSchema = new Schema<ReservationDTO>({
   status: { type: String, required: true, enum: ReservationStatus },
   late_fee: { type: Number, required: true },
   reservation_fee: { type: Number, required: true },
-  reserved_at: { type: Schema.Types.Date, required: true },
-  borrowed_at: { type: Schema.Types.Date, required: false },
-  due_at: { type: Schema.Types.Date, required: false },
-  returned_at: { type: Schema.Types.Date, required: false },
+  reserved_at: { type: Date, required: true },
+  borrowed_at: { type: Date, required: false },
+  due_at: { type: Date, required: false },
+  returned_at: { type: Date, required: false },
 });
 
 export const reservationModel = mongoose.model<ReservationDTO>('Reservation', reservationSchema);
