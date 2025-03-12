@@ -14,8 +14,9 @@
     "seed:import-references": "ts-node -r tsconfig-paths/register migrations/seeders/references/import-references.ts",
     "seed:import-users": "ts-node -r tsconfig-paths/register migrations/seeders/users/import-users.ts",
     "seed:import-books": "ts-node -r tsconfig-paths/register migrations/seeders/books/import-books.ts",
-    "workers:fetch-late-return-reservations": "ts-node -r tsconfig-paths/register src/apps/workers/fetch-late-return-reservations.ts",
-    "workers:fetch-up-coming-due-reservations": "ts-node -r tsconfig-paths/register src/apps/workers/fetch-up-coming-due-reservations.ts"
+    "workers:fetch-late-return-reservations": "ts-node -r tsconfig-paths/register src/apps/workers/fetch-late-return-reservations-worker/run.ts",
+    "workers:fetch-up-coming-due-reservations": "ts-node -r tsconfig-paths/register src/apps/workers/fetch-up-coming-due-reservatoins-worker/run.ts",
+    "workers:calculate-reservation-late-fees": "ts-node -r tsconfig-paths/register src/apps/workers/calculate-reservation-late-fees-worker/server.ts"
   },
   "devDependencies": {
     "@eslint/js": "^9.21.0",

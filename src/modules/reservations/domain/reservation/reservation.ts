@@ -127,7 +127,7 @@ export function calculateLateFees(dueDate: Date, refDate: Date) {
     penalty = lateReturnPenalty * (daysLate - 7);
   }
 
-  return penalty;
+  return Math.round(penalty * 100) / 100;
 }
 
 export function closeReservation(reservation: Reservation): Reservation {
