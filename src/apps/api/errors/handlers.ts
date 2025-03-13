@@ -23,7 +23,6 @@ export function errorStatusHandler(error: HttpError, _req: Request, res: Respons
 }
 
 export function printInternalErrorHandler(error: Error, req: Request, _res: Response, next: NextFunction): void {
-
   if (isHttpError(error) && hasStatusCode(error, StatusCodes.INTERNAL_SERVER_ERROR)) {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { authorization, ...headers } = req.headers;

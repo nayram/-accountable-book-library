@@ -3,7 +3,7 @@ import { faker } from '@faker-js/faker/locale/en';
 import { mock, mockFn, MockProxy } from 'jest-mock-extended';
 
 import { BookStatus } from '@modules/shared/books/domain/book/book-status';
-import { convertISOToDateString } from '@modules/shared/core/domain/value-objects/iso-date';
+import { convertDateToISODateString } from '@modules/shared/core/domain/value-objects/iso-date';
 import { bookFixtures } from '@tests/utils/fixtures/books/book-fixtures';
 import { reservationFixtures } from '@tests/utils/fixtures/reservations/reservation-fixtures';
 import { userIdFixtures } from '@tests/utils/fixtures/users/user-id-fixtures';
@@ -42,7 +42,7 @@ describe('calculate late fees', () => {
   const borrowedBook = bookFixtures.create({ status: BookStatus.Borrowed, referenceId: reference.id });
   const borrowedBook2 = bookFixtures.create({ status: BookStatus.Borrowed, referenceId: reference.id });
 
-  const dueDate = convertISOToDateString(systemDateTime);
+  const dueDate = convertDateToISODateString(systemDateTime);
   const borrowedDate = faker.date.recent({ days: 20 });
   const reservedDate = faker.date.recent({ days: 30 });
 
@@ -64,7 +64,7 @@ describe('calculate late fees', () => {
     status: ReservationStatus.Borrowed,
     borrowedAt: borrowedDate,
     reservedAt: reservedDate,
-    dueAt: convertISOToDateString(faker.date.recent({ days: 10 })),
+    dueAt: convertDateToISODateString(faker.date.recent({ days: 10 })),
     lateFee: 0,
   });
 
@@ -75,7 +75,7 @@ describe('calculate late fees', () => {
     status: ReservationStatus.Borrowed,
     borrowedAt: faker.date.past(),
     reservedAt: faker.date.past(),
-    dueAt: convertISOToDateString(faker.date.past()),
+    dueAt: convertDateToISODateString(faker.date.past()),
     lateFee: 0,
   });
 

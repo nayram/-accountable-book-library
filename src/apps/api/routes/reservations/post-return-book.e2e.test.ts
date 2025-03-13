@@ -14,7 +14,7 @@ import { bookFixtures } from '@tests/utils/fixtures/books/book-fixtures';
 import { BookStatus } from '@modules/shared/books/domain/book/book-status';
 import { reservationFixtures } from '@tests/utils/fixtures/reservations/reservation-fixtures';
 import { ReservationStatus } from '@modules/reservations/domain/reservation/reservation-status';
-import { convertISOToDateString } from '@modules/shared/core/domain/value-objects/iso-date';
+import { convertDateToISODateString } from '@modules/shared/core/domain/value-objects/iso-date';
 import { reservationModel } from '@modules/shared/reservations/infrastructure/reservation-model';
 import { walletFixtures } from '@tests/utils/fixtures/wallet/wallet-fixtures';
 
@@ -38,7 +38,7 @@ describe('POST /reservations/:id/return', () => {
 
     const nonExistentReservationId = reservationIdFixtures.create();
     const date = faker.date.recent();
-    const returnedAt = convertISOToDateString(date);
+    const returnedAt = convertDateToISODateString(date);
 
     beforeEach(async () => {
       user = await userFixtures.insert();
@@ -47,7 +47,7 @@ describe('POST /reservations/:id/return', () => {
       const borrowedBook = await bookFixtures.insert({ referenceId: reference.id, status: BookStatus.Borrowed });
       const borrowedBook2 = await bookFixtures.insert({ referenceId: reference.id, status: BookStatus.Borrowed });
 
-      const dueDate = convertISOToDateString(date);
+      const dueDate = convertDateToISODateString(date);
       const borrowedDate = faker.date.past();
       const reservedDate = faker.date.past();
 
@@ -85,7 +85,7 @@ describe('POST /reservations/:id/return', () => {
         status: ReservationStatus.Borrowed,
         borrowedAt: borrowedDate,
         reservedAt: reservedDate,
-        dueAt: convertISOToDateString(faker.date.past()),
+        dueAt: convertDateToISODateString(faker.date.past()),
         lateFee: 0,
       });
     });

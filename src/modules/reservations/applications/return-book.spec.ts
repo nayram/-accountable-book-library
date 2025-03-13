@@ -7,7 +7,7 @@ import { ReservationDoesNotExistError } from '@modules/shared/reservations/domai
 import { BookId } from '@modules/shared/books/domain/book/book-id';
 import { reservationIdFixtures } from '@tests/utils/fixtures/reservations/reservation-id-fixtures';
 import { reservationReturnedAtFixtures } from '@tests/utils/fixtures/reservations/reservation-returned-at-fixtures';
-import { convertISOToDateString } from '@modules/shared/core/domain/value-objects/iso-date';
+import { convertDateToISODateString } from '@modules/shared/core/domain/value-objects/iso-date';
 import { Money } from '@modules/shared/core/domain/value-objects/money';
 import { userIdFixtures } from '@tests/utils/fixtures/users/user-id-fixtures';
 import { bookFixtures } from '@tests/utils/fixtures/books/book-fixtures';
@@ -45,7 +45,7 @@ describe('return book', () => {
   const borrowedBook = bookFixtures.create({ status: BookStatus.Borrowed, referenceId });
   const borrowedBook2 = bookFixtures.create({ status: BookStatus.Borrowed, referenceId });
 
-  const dueDate = convertISOToDateString(systemDateTime);
+  const dueDate = convertDateToISODateString(systemDateTime);
 
   const borrowedDate = faker.date.past();
   const reservedDate = faker.date.past();
@@ -68,7 +68,7 @@ describe('return book', () => {
     status: ReservationStatus.Borrowed,
     borrowedAt: borrowedDate,
     reservedAt: reservedDate,
-    dueAt: convertISOToDateString(faker.date.past()),
+    dueAt: convertDateToISODateString(faker.date.past()),
     lateFee: 0,
   });
 
@@ -181,7 +181,7 @@ describe('return book', () => {
   });
 
   it('should return book successfully with late fees', async () => {
-    const returnedAt = convertISOToDateString(systemDateTime);
+    const returnedAt = convertDateToISODateString(systemDateTime);
     const dueAt = reservationWithPossibleLateFees.dueAt || '';
     await returnBook({
       reservationId: reservationWithPossibleLateFees.id,

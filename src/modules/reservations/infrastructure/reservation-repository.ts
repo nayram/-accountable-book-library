@@ -7,7 +7,6 @@ import { fromDTO, toDTO } from './reservation-dto';
 
 export function reservationRepositoryBuilder({ model }: { model: ReservationModel }): ReservationRepository {
   return {
-
     async findBySearchParams(searchParams) {
       const filter: Record<string, unknown> = {};
 

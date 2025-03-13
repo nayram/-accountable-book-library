@@ -1,10 +1,10 @@
 import { faker } from '@faker-js/faker/locale/en';
 
-import { convertISOToDateString } from '@modules/shared/core/domain/value-objects/iso-date';
+import { convertDateToISODateString } from '@modules/shared/core/domain/value-objects/iso-date';
 
 export const reservationReturnedAtFixtures = {
   create() {
-    return convertISOToDateString(faker.date.recent());
+    return convertDateToISODateString(faker.date.recent());
   },
 
   invalid() {

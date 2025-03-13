@@ -5,7 +5,7 @@ import { Reservation } from '@modules/reservations/domain/reservation/reservatio
 import { reservationModel } from '@modules/shared/reservations/infrastructure/reservation-model';
 import { toDTO } from '@modules/reservations/infrastructure/reservation-dto';
 import { Money } from '@modules/shared/core/domain/value-objects/money';
-import { convertISOToDateString } from '@modules/shared/core/domain/value-objects/iso-date';
+import { convertDateToISODateString } from '@modules/shared/core/domain/value-objects/iso-date';
 
 import { userIdFixtures } from '../users/user-id-fixtures';
 import { referenceIdFixtures } from '../references/reference-id-fixtures';
@@ -48,7 +48,7 @@ export const reservationFixtures = {
 function createReservation(): Reservation {
   const date = faker.date.recent();
   const dueAtDate = faker.date.soon({ days: 7, refDate: date });
-  const dueAt = faker.helpers.arrayElement([null, convertISOToDateString(dueAtDate)]);
+  const dueAt = faker.helpers.arrayElement([null, convertDateToISODateString(dueAtDate)]);
   return {
     id: reservationIdFixtures.create(),
     userId: userIdFixtures.create(),

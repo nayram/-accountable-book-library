@@ -22,7 +22,6 @@ export const createReservation = createReservationBuilder({
   uuidGenerator,
 });
 
-
 export const borrowBook = borrowBookBuilder({
   reservationRepository,
   reservationTransactionsRepository,

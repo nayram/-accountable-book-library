@@ -1,6 +1,5 @@
 import { faker } from '@faker-js/faker/locale/en';
 
-import { Pagination } from '@modules/shared/core/domain/pagination';
 import { reservationFixtures } from '@tests/utils/fixtures/reservations/reservation-fixtures';
 import { referenceIdFixtures } from '@tests/utils/fixtures/references/reference-id-fixtures';
 import { userIdFixtures } from '@tests/utils/fixtures/users/user-id-fixtures';
@@ -9,8 +8,6 @@ import { reservationIdFixtures } from '@tests/utils/fixtures/reservations/reserv
 import { ReservationDoesNotExistError } from '@modules/shared/reservations/domain/reservation-does-not-exist';
 import { reservationDueAtFixtures } from '@tests/utils/fixtures/reservations/reservation-due-at-fixtures';
 
-import { SearchParams } from '../domain/search-params';
-import { reservationModel } from '../../shared/reservations/infrastructure/reservation-model';
 import { ReservationStatus } from '../domain/reservation/reservation-status';
 
 import { reservationRepository } from '.';

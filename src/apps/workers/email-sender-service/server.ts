@@ -1,6 +1,7 @@
 import { Server } from 'http';
 
 import config from 'config';
+
 import { start } from '@libs/resource-manager/resource-starter';
 import redis, { RedisConsumer } from '@resources/redis';
 

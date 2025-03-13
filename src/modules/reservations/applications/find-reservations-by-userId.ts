@@ -1,5 +1,4 @@
 import { createUserId } from '@modules/shared/users/domain/user/user-id';
-
 import { UseCase } from '@modules/shared/core/application/use-case';
 
 import { ReservationRepository } from '../domain/reservation-repository';

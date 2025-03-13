@@ -1,7 +1,7 @@
 import { Schema } from 'mongoose';
 
 import { ReservationDTO } from '@modules/shared/reservations/infrastructure/reservation-model';
-import { convertISOToDateString } from '@modules/shared/core/domain/value-objects/iso-date';
+import { convertDateToISODateString } from '@modules/shared/core/domain/value-objects/iso-date';
 
 import { Reservation } from '../domain/reservation/reservation';
 
@@ -30,8 +30,8 @@ export function fromDTO(dto: ReservationDTO): Reservation {
     status: dto.status,
     reservationFee: dto.reservation_fee,
     lateFee: dto.late_fee,
-    returnedAt: dto.returned_at ? convertISOToDateString(dto.returned_at) : null,
-    dueAt: dto.due_at ? convertISOToDateString(dto.due_at) : null,
+    returnedAt: dto.returned_at ? convertDateToISODateString(dto.returned_at) : null,
+    dueAt: dto.due_at ? convertDateToISODateString(dto.due_at) : null,
     borrowedAt: dto.borrowed_at,
     reservedAt: dto.reserved_at,
   };

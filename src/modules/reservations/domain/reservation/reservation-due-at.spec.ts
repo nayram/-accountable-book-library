@@ -1,5 +1,5 @@
 import { FieldValidationError } from '@modules/shared/core/domain/field-validation-error';
-import { convertISOToDateString } from '@modules/shared/core/domain/value-objects/iso-date';
+import { convertDateToISODateString } from '@modules/shared/core/domain/value-objects/iso-date';
 
 import { createReservationDueAt } from './reservation-due-at';
 
@@ -16,7 +16,7 @@ describe('createDueAt', () => {
     const date = new Date();
     date.setDate(date.getDate() + 3);
 
-    const validDate = convertISOToDateString(date);
+    const validDate = convertDateToISODateString(date);
 
     const result = createReservationDueAt(validDate);
 
