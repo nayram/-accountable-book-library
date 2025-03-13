@@ -1,6 +1,6 @@
 # Book Library API
 
-A backend system for managing a library’s collection of books, allowing users to search, reserve, and borrow titles. This API supports operations on references, books, reservations, users, and wallets, and integrates with background workers for notifications.
+A backend system for managing a library’s collection of books, allowing users to search, reserve, and borrow titles. This API supports operations on references, books, reservations and integrates with background workers for notifications.
 
 ## Setup
 
