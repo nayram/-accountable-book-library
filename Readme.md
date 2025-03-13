@@ -139,7 +139,7 @@ To create data for each reference run the command `yarn run seed:import-books`. 
 
 ### Users
 
-To import sample user data run the command `yarn seed:import-users`. You can view the sample user data [here](/migrations/seeders/users/users-collection.ts)
+To import sample user data run the command `yarn seed:import-users`. You can view the sample user data [here](/migrations/seeders/users/users-collection.ts). There isn't an endpoint to create users so running is necessary to test the api, especially the reservations.
 
 ## API
 
