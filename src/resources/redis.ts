@@ -20,12 +20,6 @@ export interface RedisConnector extends EventEmitter {
   disconnect(): Promise<void>;
 }
 
-/**
- * Creates a Redis connector
- * @param {Object} options Configuration options
- * @param {string} options.url Redis connection URL
- * @returns {RedisConnector} A Redis connector object
- */
 function createRedisConnector(
   { host, port }: { host: string; port: number } = { host: redis.host, port: redis.port },
 ): RedisConnector {

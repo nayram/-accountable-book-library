@@ -37,9 +37,8 @@ async function main(): Promise<void> {
         }
       }
 
-      // Calculate import duration
       const importDuration = (Date.now() - importStartTime) / 1000;
-      console.info(`✅ Successfully imported ${importedCount} books in ${importDuration.toFixed(2)} seconds`);
+      console.info(`Successfully imported ${importedCount} books in ${importDuration.toFixed(2)} seconds`);
       console.info(`Average: ${(importedCount / importDuration).toFixed(2)} books per second`);
     }
   } catch (error) {

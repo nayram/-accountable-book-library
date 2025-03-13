@@ -17,12 +17,11 @@ async function onReady() {
       .listen(port, (error) => {
         if (error) {
           console.error(error);
-          process.emit('SIGTERM');
         }
         console.info(`Server is running on ${port}`);
       })
       .on('error', (error) => {
-        console.error('error -- ', error);
+        console.error('error', error);
         process.emit('SIGTERM');
       });
   }

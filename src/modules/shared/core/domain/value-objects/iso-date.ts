@@ -6,9 +6,6 @@ function isValidDate(value: Date): boolean {
   return !isNaN(value.getTime());
 }
 
-/**
- * Date ISO Format: YYYY-MM-DD
- */
 function hasValidISOFormat(value: string) {
   return /^\d{4}-\d{2}-\d{2}$/.test(value);
 }

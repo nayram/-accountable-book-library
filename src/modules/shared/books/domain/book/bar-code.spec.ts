@@ -1,6 +1,6 @@
 import { FieldValidationError } from '@modules/shared/core/domain/field-validation-error';
 
-import { createBarcode } from './bar-code'; // Assuming barcode.ts is the file
+import { createBarcode } from './bar-code';
 
 describe('createBarcode', () => {
   it('should return a string when a valid barcode is provided', () => {
@@ -10,7 +10,7 @@ describe('createBarcode', () => {
   });
 
   it('should throw a FieldValidationError when the barcode is shorter than 12 characters', () => {
-    const invalidBarcodeValue = '12345678901'; // 11 characters
+    const invalidBarcodeValue = '12345678901';
     expect(() => createBarcode(invalidBarcodeValue)).toThrow(FieldValidationError);
     expect(() => createBarcode(invalidBarcodeValue)).toThrow(`${invalidBarcodeValue} is not a valid barcode`);
   });

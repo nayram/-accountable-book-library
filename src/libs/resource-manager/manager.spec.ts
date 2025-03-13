@@ -1,6 +1,6 @@
 import { EventEmitter } from 'events';
 
-import { createConnections, Resource } from './manager'; // Adjust import path as needed
+import { createConnections, Resource } from './manager';
 
 describe('Connection Manager', () => {
   const createMockResource = (name: string) => {
