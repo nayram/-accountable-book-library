@@ -47,11 +47,11 @@ To import the references withing the provided csv file,
 
 ### Books
 
-To create data for each reference run the command `seed:import-books`. 4 books are created for each reference.
+To create data for each reference run the command `yarn run seed:import-books`. 4 books are created for each reference.
 
 ### Users
 
-To import sample user data run the command `seed:import-users`. You can view the sample user data [here](/migrations/seeders/users/users-collection.ts)
+To import sample user data run the command `yarn seed:import-users`. You can view the sample user data [here](/migrations/seeders/users/users-collection.ts)
 
 ## API
 
@@ -59,7 +59,7 @@ To test the api, you can import the json file [here](/Insomnia_2025-03-13.json)
 
 all endpoints are prefixed by `/api`
 
-All environmental variables neccessary to run the API is can be found in the `/config` folder. The library [config](https://www.npmjs.com/package/config) is used to manage the environmental variables.
+All environmental variables neccessary to run the API can be found in the [`/config`](/config/default.json) folder. The library [config](https://www.npmjs.com/package/config) is used to manage the environmental variables.
 
 Use the command `yarn dev` to start the api (Make sure you mongodb running either in docker using docker-compose or on your local machine).
 
