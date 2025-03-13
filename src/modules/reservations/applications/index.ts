@@ -7,11 +7,11 @@ import { findReferenceById } from '@modules/references/application';
 import { reservationTransactionsRepository, reservationRepository } from '../infrastructure';
 
 import { createReservationBuilder } from './create-reservation';
-import { findReservationsBuilder } from './find-reservations';
 import { borrowBookBuilder } from './borrow-book';
 import { returnBookBuilder } from './return-book';
 import { calculateLateFeesBuilder } from './calculate-late-fees';
 import { findReservationByIdBuilder } from './find-reservation-by-id';
+import { findReservationsByUserIdBuilder } from './find-reservations-by-userId';
 
 export const createReservation = createReservationBuilder({
   walletRepository,
@@ -22,7 +22,6 @@ export const createReservation = createReservationBuilder({
   uuidGenerator,
 });
 
-export const findReservations = findReservationsBuilder({ reservationRepository });
 
 export const borrowBook = borrowBookBuilder({
   reservationRepository,
@@ -47,3 +46,5 @@ export const calculateLateFees = calculateLateFeesBuilder({
 });
 
 export const findReservationById = findReservationByIdBuilder({ reservationRepository });
+
+export const findReservationsByUserId = findReservationsByUserIdBuilder({ reservationRepository });

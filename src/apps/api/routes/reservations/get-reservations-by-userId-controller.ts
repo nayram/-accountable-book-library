@@ -1,20 +1,25 @@
 import { NextFunction, Response, Request } from 'express';
 import { StatusCodes } from 'http-status-codes';
-
+import { FindReservationsByUserIdUseCase } from '@modules/reservations/applications/find-reservations-by-userId';
 import { FieldValidationError } from '@modules/shared/core/domain/field-validation-error';
 import { BadRequest, NotFound } from '@api/errors/http-error';
-import { FindReservationByIdUseCase } from '@modules/reservations/applications/find-reservation-by-id';
 import { ReservationDoesNotExistError } from '@modules/shared/reservations/domain/reservation-does-not-exist';
 
-export function getReservationControllerBuilder({
-  findReservationById,
+export function getReservationsByUserIdControllerBuilder({
+  findReservationsByUserId,
 }: {
-  findReservationById: FindReservationByIdUseCase;
+  findReservationsByUserId: FindReservationsByUserIdUseCase;
 }) {
-  return async function getReservationController(req: Request, res: Response, next: NextFunction) {
+  return async function getReservationsByUserIdController(req: Request, res: Response, next: NextFunction) {
     try {
-      const reservation = await findReservationById({ id: req.params.id });
-      res.status(StatusCodes.OK).send(reservation);
+      const userId = req.headers['authorization'];
+
+      if (userId) {
+        const reservations = await findReservationsByUserId({ userId });
+        res.status(StatusCodes.OK).send(reservations);
+      } else {
+        res.sendStatus(StatusCodes.UNAUTHORIZED);
+      }
     } catch (error) {
       if (error instanceof FieldValidationError) {
         next(BadRequest(error.message));
