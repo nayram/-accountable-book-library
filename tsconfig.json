@@ -20,5 +20,5 @@
       "@api/*": ["src/apps/api/*"]
     }
   },
-  "exclude": ["node_modules", "docker"]
+  "exclude": ["node_modules", "docker", "dist"]
 }

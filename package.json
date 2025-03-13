@@ -5,7 +5,7 @@
   "license": "MIT",
   "scripts": {
     "build": "tsc --project tsconfig.build.json",
-    "dev": "nodemon --exec ts-node -r tsconfig-paths/register src/apps/api/server.ts",
+    "dev": "ts-node -r tsconfig-paths/register src/apps/api/server.ts",
     "lint": "eslint . --ext .ts",
     "lint:fix": "eslint . --ext .ts,.tsx --fix",
     "format": "prettier --write .",
@@ -14,6 +14,7 @@
     "seed:import-references": "ts-node -r tsconfig-paths/register migrations/seeders/references/import-references.ts",
     "seed:import-users": "ts-node -r tsconfig-paths/register migrations/seeders/users/import-users.ts",
     "seed:import-books": "ts-node -r tsconfig-paths/register migrations/seeders/books/import-books.ts",
+    "seed:import-late-returns-and-up-coming": "ts-node -r tsconfig-paths/register migrations/seeders/late-returns-and-up-coming-due-at-reservations/index.ts",
     "workers:process-late-returns": "ts-node -r tsconfig-paths/register src/apps/workers/process-late-returns-notification-service/run.ts",
     "workers:process-up-coming-reservations": "ts-node -r tsconfig-paths/register src/apps/workers/process-up-coming-notification-service/run.ts",
     "workers:email-sender-service": "ts-node -r tsconfig-paths/register src/apps/workers/email-sender-service/server.ts"
