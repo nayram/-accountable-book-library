@@ -133,13 +133,41 @@ To import the references withing the provided csv file,
 3. Make the mongodb instance is running in docker
 4. Open the terminal and run the command `yarn run seed:import-references`
 
+command
+
+```bash
+yarn run seed:import-references
+```
+
 ### Books
 
 To create data for each reference run the command `yarn run seed:import-books`. 4 books are created for each reference.
 
+command
+
+```bash
+yarn run seed:import-books
+```
+
 ### Users
 
 To import sample user data run the command `yarn seed:import-users`. You can view the sample user data [here](/migrations/seeders/users/users-collection.ts). There isn't an endpoint to create users so running is necessary to test the api, especially the reservations.
+
+command
+
+```bash
+yarn seed:import-users
+```
+
+### Reservations
+
+This seeder is needed to test the workers. It should run after the seeders above.
+
+command
+
+```bash
+yarn seed:import-late-returns-and-up-coming
+```
 
 ## API
 
@@ -622,6 +650,17 @@ There are 3 workers within this project. The workers are
 - [Process Late Returns](/src/apps/workers/process-late-returns-notification-service/run.ts) -
   processing reservations with late returns (7 days after the due date)
 - [Process Upcoming Reservations](/src/apps/workers/process-up-coming-notification-service/run.ts) - processing reservations with upcoming due dates (2 days before)
+
+In order to test this worker make sure to run all the `seeders` mentioned above.
+
+Listing those seeders again. Run the sequentially
+
+```bash
+yarn seed:import-references
+yarn seed:import-books
+yarn seed:import-users
+yarn seed:import-late-returns-and-up-coming
+```
 
 ### Email Sender Service
 
