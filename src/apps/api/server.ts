@@ -2,40 +2,37 @@ import { Server } from 'http';
 
 import config from 'config';
 
-import { isConnected, connectMongoDb as db } from '@resources/mongodb';
+import { connectMongoDb as db } from '@resources/mongodb';
+import { start } from '@libs/resource-manager/resource-starter';
 
 import app from './app';
 
 const port = config.get<number>('port');
 
-function bookLibraryServerBuilder() {
-  let server: Server;
-  return {
-    async start() {
-      if (isConnected()) return;
-      await db()
-        .on('connected', async () => {
-          if (!server) {
-            server = app.listen(port, () => {
-              console.info(`Server is running on ${port}`);
-            });
-          }
-        })
-        .on('disconnected', () => {
-          console.info('connections closed');
-          if (server) {
-            server.close();
-            console.info('Server shutdown');
-          }
-        })
-        .connect();
-    },
-    async stop() {
-      if (isConnected()) {
-        await db().disconnect();
-      }
-    },
-  };
+let server: Server;
+
+async function onReady() {
+  if (!server) {
+    server = app
+      .listen(port, (error) => {
+        if (error) {
+          console.error(error);
+          process.emit('SIGTERM');
+        }
+        console.info(`Server is running on ${port}`);
+      })
+      .on('error', (error) => {
+        console.error('error -- ', error);
+        process.emit('SIGTERM');
+      });
+  }
 }
 
-export const server = bookLibraryServerBuilder();
+async function onShutDown() {
+  if (server) {
+    server.close();
+    console.info('Server shutdown');
+  }
+}
+
+start({ resources: [db()], onReady, onShutDown });

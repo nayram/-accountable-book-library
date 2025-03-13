@@ -5,7 +5,7 @@
   "license": "MIT",
   "scripts": {
     "build": "tsc",
-    "dev": "nodemon --exec ts-node -r tsconfig-paths/register src/apps/api/index.ts",
+    "dev": "nodemon --exec ts-node -r tsconfig-paths/register src/apps/api/server.ts",
     "lint": "eslint . --ext .ts",
     "lint:fix": "eslint . --ext .ts,.tsx --fix",
     "format": "prettier --write .",
@@ -14,9 +14,9 @@
     "seed:import-references": "ts-node -r tsconfig-paths/register migrations/seeders/references/import-references.ts",
     "seed:import-users": "ts-node -r tsconfig-paths/register migrations/seeders/users/import-users.ts",
     "seed:import-books": "ts-node -r tsconfig-paths/register migrations/seeders/books/import-books.ts",
-    "workers:fetch-late-return-reservations": "ts-node -r tsconfig-paths/register src/apps/workers/fetch-late-return-reservations-worker/run.ts",
-    "workers:fetch-up-coming-due-reservations": "ts-node -r tsconfig-paths/register src/apps/workers/fetch-up-coming-due-reservatoins-worker/run.ts",
-    "workers:calculate-reservation-late-fees": "ts-node -r tsconfig-paths/register src/apps/workers/calculate-reservation-late-fees-worker/server.ts"
+    "workers:process-late-returns": "ts-node -r tsconfig-paths/register src/apps/workers/late-returns-notification-service/run.ts",
+    "workers:process-up-coming-reservations": "ts-node -r tsconfig-paths/register src/apps/workers/up-coming-notification-service/run.ts",
+    "workers:email-sender-service": "ts-node -r tsconfig-paths/register src/apps/workers/email-sender-service/server.ts"
   },
   "devDependencies": {
     "@eslint/js": "^9.21.0",
@@ -49,6 +49,7 @@
   },
   "dependencies": {
     "@sendgrid/mail": "^8.1.4",
+    "bullmq": "^5.42.0",
     "config": "^3.3.12",
     "cors": "^2.8.5",
     "csv-parse": "^5.6.0",

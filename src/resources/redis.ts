@@ -2,15 +2,21 @@ import { EventEmitter } from 'events';
 
 import config from 'config';
 import { RedisClientType, createClient } from 'redis';
+import { Queue, Worker } from 'bullmq';
 
-const redisUrl = config.get<string>('redisUrl');
+const redis = config.get<{ host: string; port: number }>('redis');
 
 let client: RedisClientType;
+
+export type RedisQueue = Queue;
+export type RedisConsumer = Worker;
 
 export interface RedisConnector extends EventEmitter {
   name: string;
   connect(): Promise<void>;
   getConnection(): RedisClientType;
+  createQueue(topic: string): RedisQueue;
+  createConsumer(topic: string, handler: (args: unknown) => Promise<void>): RedisConsumer;
   disconnect(): Promise<void>;
 }
 
@@ -20,7 +26,9 @@ export interface RedisConnector extends EventEmitter {
  * @param {string} options.url Redis connection URL
  * @returns {RedisConnector} A Redis connector object
  */
-function createRedisConnector({ url = redisUrl }: { url?: string } = {}): RedisConnector {
+function createRedisConnector(
+  { host, port }: { host: string; port: number } = { host: redis.host, port: redis.port },
+): RedisConnector {
   const emitter = new EventEmitter();
   const name = 'RedisConnection';
 
@@ -28,7 +36,7 @@ function createRedisConnector({ url = redisUrl }: { url?: string } = {}): RedisC
     name,
     async connect() {
       if (client) return;
-      client = createClient({ url });
+      client = createClient({ url: `redis://${host}:${port}` });
 
       await client
         .on('error', (error) => {
@@ -59,6 +67,12 @@ function createRedisConnector({ url = redisUrl }: { url?: string } = {}): RedisC
         await client.quit();
         emitter.emit('disconnected', { name });
       }
+    },
+    createQueue(topic: string) {
+      return new Queue(topic, { connection: { host, port } });
+    },
+    createConsumer(topic: string, handler: (args: unknown) => Promise<void>) {
+      return new Worker(topic, handler, { connection: { host, port } });
     },
   };
 

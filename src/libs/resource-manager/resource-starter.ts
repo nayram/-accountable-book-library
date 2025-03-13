@@ -3,7 +3,7 @@ import { EventEmitter } from 'events';
 
 import { createConnections, ConnectionManager } from './manager';
 
-const DELAY = 15000;
+const DELAY = 1500;
 
 interface Resource extends EventEmitter {
   name: string;

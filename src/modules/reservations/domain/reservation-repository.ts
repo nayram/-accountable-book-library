@@ -10,4 +10,6 @@ export interface ReservationRepository {
   find(pagination: Pagination, searchParams: SearchParams): Promise<PaginatedResults<Reservation>>;
   findBySearchParams(searchParams: SearchParams): Promise<Reservation[]>;
   findById(id: ReservationId): Promise<Reservation>;
+  streamUpcomingDueDateReservations(): AsyncIterableIterator<Reservation>;
+  streamLateReturnReservations(): AsyncIterableIterator<Reservation>;
 }
