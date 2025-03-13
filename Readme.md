@@ -121,6 +121,8 @@ All endpoints are prefixed with `/api`.
 - **User History:** `GET /users/me/reservations`  
   Header: `Authorization: userId`
 
+> **Tip:** You can test the API endpoints by importing the [Insomnia JSON document](./Insomnia_2025-03-13.json) into Insomnia.
+
 ## Workers
 
 There are three background workers that run separately. Each worker uses Redis and BullMQ; the Email Sender Service additionally uses SendGrid.
@@ -180,4 +182,3 @@ There are three background workers that run separately. Each worker uses Redis a
 ## License
 
 MIT
-
