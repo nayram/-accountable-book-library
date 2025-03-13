@@ -1,6 +1,6 @@
 # Book Library API
 
-A backend system for managing a library’s collection of books, allowing users to search, reserve, and borrow titles. This API supports operations on references, books, reservations, users, and wallets, and integrates with background workers for notifications.
+A backend system for managing a library’s collection of books, allowing users to search, reserve, and borrow titles. This API supports CRUD operations on references, books, reservations, users, and wallets, and integrates with background workers for notifications.
 
 ## Setup
 
@@ -125,7 +125,8 @@ All endpoints are prefixed with `/api`.
 
 ## Workers
 
-There are three background workers that run separately. Each worker uses Redis and BullMQ; the Email Sender Service additionally uses SendGrid.
+There are three background workers that run separately. Each worker uses Redis and BullMQ; the Email Sender Service additionally uses SendGrid.  
+> **Note:** To test the Email Sender Service with valid emails, update the `emailEnv` value in `/config/default.json` to `"live"` and ensure a valid SendGrid API key is provided.
 
 ### Email Sender Service
 
@@ -178,6 +179,27 @@ There are three background workers that run separately. Each worker uses Redis a
 > yarn seed:import-users
 > yarn seed:import-late-returns-and-up-coming
 > ```
+
+## Tests
+
+- **Test File Naming Conventions:**  
+  - **Unit tests:** Files end with `.spec.ts`  
+  - **Integration tests:** Files end with `.test.ts`  
+  - **End-to-end tests:** Files end with `.e2e.test.ts`
+
+- **Run Tests:**
+
+  ```bash
+  yarn test
+  ```
+
+## Linting
+
+To check code style and enforce linting rules:
+
+```bash
+yarn lint
+```
 
 ## License
 
