@@ -63,7 +63,7 @@ updatedAt: Date;
 
 A book is the physical copy of the reference. This is what a libray can loan out and user can reserve. A unique id is it's barcode
 
-Model
+Aggregate
 
 ```js
 id: BookId;
@@ -78,7 +78,7 @@ updatedAt: Date;
 
 This is representative of the borrowing and reservation functionality. It could be seen as the load facility given to users.
 
-Domain Model
+Aggregate
 
 ```js
 id: ReservationId;
@@ -110,7 +110,7 @@ updatedAt: Date;
 
 Every user has access to a wallet.
 
-Domain Model
+Aggregate
 
 ```js
 id: WalletId;
