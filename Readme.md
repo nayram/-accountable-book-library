@@ -32,6 +32,94 @@ This is a Book Library API project that allows users to manage a collection of b
    docker compose up -d
    ```
 
+## Core Modules
+
+- References
+- Books
+- Reservations
+- Users
+- Wallet
+
+### References
+
+This is the definition for a book represented by it's title, author, publisher, publicationYear and it externalReferenceId (This is mapped to the id in the CSV file). The externalReferenceId could be any alphanumeric value, eg, IBAN.
+
+Domain Model
+
+```js
+id: ReferenceId;
+externalReferenceId: ExternalReferenceId;
+title: Title;
+publicationYear: PublicationYear;
+author: Author;
+publisher: Publisher;
+price: Price;
+softDelete: boolean;
+createdAt: Date;
+updatedAt: Date;
+```
+
+### Books
+
+A book is the physical copy of the reference. This is what a libray can loan out and user can reserve. A unique id is it's barcode
+
+Model
+
+```js
+id: BookId;
+referenceId: ReferenceId;
+barcode: Barcode;
+status: BookStatus('available', 'borrowed', 'reserved', 'purchased');
+createdAt: Date;
+updatedAt: Date;
+```
+
+### Reservations
+
+This is representative of the borrowing and reservation functionality. It could be seen as the load facility given to users.
+
+Domain Model
+
+```js
+id: ReservationId;
+userId: UserId;
+bookId: BookId;
+status: ReservationStatus('reserved', 'borrowed', 'returned', 'closed');
+reservationFee: Money;
+lateFee: LateFee;
+referenceId: ReferenceId;
+reservedAt: Date;
+borrowedAt: Date;
+returnedAt: ReservationReturnAt;
+dueAt: ReservationDueAt;
+```
+
+### Users
+
+Domain Model
+
+```js
+id: UserId;
+name: Name;
+email: UserEmail;
+createdAt: Date;
+updatedAt: Date;
+```
+
+### Wallet
+
+Every user has access to a wallet.
+
+Domain Model
+
+```js
+id: WalletId;
+userId: UserId;
+balance: Balance;
+createdAt: Date;
+updatedAt: Date;
+```
+
 ## Seeders
 
 Sample data is included in the `migrations/seeders` folder for `books`, `references` and `users`
@@ -531,8 +619,8 @@ curl --request GET \
 There are 3 workers within this project. The workers are
 
 - [Email Sender Service](/src/apps/workers/email-sender-service/server.ts) notify users by email
-- [Process Late Returns](/src/apps/workers/process-late-returns-notification-service/run.ts) - 
-processing reservations with late returns (7 days after the due date)
+- [Process Late Returns](/src/apps/workers/process-late-returns-notification-service/run.ts) -
+  processing reservations with late returns (7 days after the due date)
 - [Process Upcoming Reservations](/src/apps/workers/process-up-coming-notification-service/run.ts) - processing reservations with upcoming due dates (2 days before)
 
 ### Email Sender Service
@@ -567,6 +655,7 @@ yarn run workers:process-late-returns
 ```
 
 ### Process Upcoming Reservations
+
 This [worker](/src/apps/workers/process-up-coming-notification-service/run.ts) is a worker that should run by a scheduler or cron job to fetch reservations that due in 2 days. These are reservations with the status `reserved`. The worker composes and publishes the reminders to the queue service to be consumed by the `email-sender-service`
 
 #### Dependencies
@@ -574,13 +663,11 @@ This [worker](/src/apps/workers/process-up-coming-notification-service/run.ts) i
 - [Redis](https://www.npmjs.com/package/redis)
 - [BullMQ](https://github.com/taskforcesh/bullmq)
 
-
 To run the worker
 
 ```bash
 yarn run workers:process-up-coming-reservations
 ```
-
 
 ## License
 
@@ -589,5 +676,3 @@ This project is licensed under the MIT License.
 ## Contributing
 
 Contributions are welcome! Please open an issue or submit a pull request.
-
-
